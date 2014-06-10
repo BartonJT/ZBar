@@ -178,6 +178,9 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 @dynamic sourceType, allowsEditing, allowsImageEditing, showsCameraControls,
     showsHelpOnFail, cameraMode, takesPicture, maxScanDimension;
 
+
+#pragma mark - Class Methods -
+
 + (BOOL) isSourceTypeAvailable: (UIImagePickerControllerSourceType) sourceType
 {
     if(sourceType != UIImagePickerControllerSourceTypeCamera)
@@ -208,6 +211,9 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
                [NSNumber numberWithInteger:
                    UIImagePickerControllerCameraCaptureModeVideo]]);
 }
+
+
+#pragma mark - Initialisation Methods -
 
 - (void) _init
 {
@@ -455,6 +461,9 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 }
 
+
+#pragma mark - View Lifecycle -
+
 - (void) viewDidLoad
 {
     [super viewDidLoad];
@@ -549,6 +558,13 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     zlog(@"willAppear: anim=%d orient=%d",
          animated, self.interfaceOrientation);
     [self initControls];
+    
+    // Add autofocus observer.
+    AVCaptureDevice *camDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    int flags = NSKeyValueObservingOptionNew;
+    [camDevice addObserver:self forKeyPath:@"adjustingFocus" options:flags context:nil];
+
+    
     [super viewWillAppear: animated];
 
     [readerView willRotateToInterfaceOrientation: self.interfaceOrientation
@@ -568,19 +584,12 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     didHideStatusBar = didHideStatusBar || willHideStatusBar;
 }
 
-- (void) dismissModalViewControllerAnimated: (BOOL) animated
-{
-    if(didHideStatusBar) {
-        [[UIApplication sharedApplication]
-            setStatusBarHidden: NO
-            withAnimation: UIStatusBarAnimationFade];
-        didHideStatusBar = NO;
-    }
-    [super dismissModalViewControllerAnimated: animated];
-}
-
 - (void) viewWillDisappear: (BOOL) animated
 {
+    // Remove autofocus observer.
+    AVCaptureDevice *camDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    [camDevice removeObserver:self forKeyPath:@"adjustingFocus"];
+    
     readerView.captureReader.enableReader = NO;
 
     if(didHideStatusBar) {
@@ -638,6 +647,20 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     }
     rotating = NO;
 }
+
+- (void) dismissModalViewControllerAnimated: (BOOL) animated
+{
+    if(didHideStatusBar) {
+        [[UIApplication sharedApplication]
+         setStatusBarHidden: NO
+         withAnimation: UIStatusBarAnimationFade];
+        didHideStatusBar = NO;
+    }
+    [super dismissModalViewControllerAnimated: animated];
+}
+
+
+#pragma mark - Object Methods -
 
 - (ZBarReaderView*) readerView
 {
@@ -821,6 +844,23 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
                 completion: ^(BOOL finished) {
                     shutter.hidden = YES;
                 }];
+}
+
+
+#pragma mark - Autofocus Observer -
+
+- (void) observeValueForKeyPath:(NSString *)keyPath
+                       ofObject:(id)object
+                         change:(NSDictionary *)change
+                        context:(void *)context
+{
+    // Note: The camera in the iPad 2 does not autofocus and so will not receive these events.
+    if ([keyPath isEqualToString:@"adjustingFocus"])
+    {
+        BOOL adjustingFocus = [ [change objectForKey:NSKeyValueChangeNewKey] isEqualToNumber:[NSNumber numberWithInt:1] ];
+        NSLog(@"Is adjusting focus? %@", adjustingFocus ? @"YES" : @"NO" );
+        NSLog(@"Change dictionary: %@", change);
+    }
 }
 
 

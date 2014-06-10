@@ -264,7 +264,7 @@
 
     // lock device and set focus mode
     NSError *error = nil;
-    if([device lockForConfiguration: &error]) {
+    if([device lockForConfiguration:&error]) {
         locked = YES;
         [self configureDevice];
     }
