@@ -884,87 +884,6 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
 
 #pragma mark - Tracking Methods -
 
-- (void) updateTracking:(CALayer*)trk
-             withSymbol:(ZBarSymbol*)sym
-{
-    return;
-    /*
-    if (!sym)
-    {
-        return;
-    }
-
-    CGRect r = sym.bounds;
-    
-    if (r.size.width  <= 32 &&
-        r.size.height <= 32)
-    {
-        return;
-    }
-    
-    r = CGRectInset(r, -24, -24);
-
-    CALayer *current = trk.presentationLayer;
-    CGPoint cp = current.position;
-    CGPoint p = CGPointMake(CGRectGetMidX(r), CGRectGetMidY(r));
-    p = CGPointMake((p.x * 3 + cp.x) / 4, (p.y * 3 + cp.y) / 4);
-
-    CGRect cr = current.bounds;
-    r.origin = cr.origin;
-    r.size.width = (r.size.width * 3 + cr.size.width) / 4;
-    r.size.height = (r.size.height * 3 + cr.size.height) / 4;
-
-    CAMediaTimingFunction *linear =
-        [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-
-    CABasicAnimation *resize =
-        [CABasicAnimation animationWithKeyPath:@"bounds"];
-    resize.fromValue = [NSValue valueWithCGRect:cr];
-    resize.toValue = [NSValue valueWithCGRect:r];
-    resize.duration = .2;
-    resize.timingFunction = linear;
-    resize.fillMode = kCAFillModeForwards;
-    resize.removedOnCompletion = NO;
-
-    CABasicAnimation *move =
-        [CABasicAnimation animationWithKeyPath:@"position"];
-    move.fromValue = [NSValue valueWithCGPoint:cp];
-    move.toValue = [NSValue valueWithCGPoint:p];
-    move.duration = .2;
-    move.timingFunction = linear;
-    move.fillMode = kCAFillModeForwards;
-    move.removedOnCompletion = NO;
-
-    CABasicAnimation *on =
-        [CABasicAnimation animationWithKeyPath:@"opacity"];
-    on.fromValue = [NSNumber numberWithDouble:current.opacity];
-    on.toValue = [NSNumber numberWithDouble:1];
-    on.duration = .2;
-    on.timingFunction = linear;
-    on.fillMode = kCAFillModeForwards;
-    on.removedOnCompletion = NO;
-
-    CABasicAnimation *off = nil;
-    if (!TARGET_IPHONE_SIMULATOR)
-    {
-        off = [CABasicAnimation animationWithKeyPath:@"opacity"];
-        off.fromValue = [NSNumber numberWithDouble:1];
-        off.toValue = [NSNumber numberWithDouble:0];
-        off.beginTime = .5;
-        off.duration = .5;
-        off.timingFunction = linear;
-    }
-
-    CAAnimationGroup *group = [CAAnimationGroup animation];
-    group.animations = [NSArray arrayWithObjects:resize, move, on, off, nil];
-    group.duration = 1;
-    group.fillMode = kCAFillModeForwards;
-    group.removedOnCompletion = !TARGET_IPHONE_SIMULATOR;
-    [trk addAnimation:group
-               forKey:@"tracking"];
-     */
-}
-
 - (void) didTrackSymbols:(ZBarSymbolSet*)syms
 {
     // Change the target image to a green square to indicate a successful read.
@@ -1005,9 +924,6 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     {
         return;
     }
-
-    [self updateTracking:tracking
-              withSymbol:sym];
 }
 
 
