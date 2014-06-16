@@ -709,7 +709,8 @@ match_segment_exp (zbar_decoder_t *dcode,
 {
     databar_decoder_t *db = &dcode->databar;
     int bestsegs[22], i = 0, segs[22], seq[22];
-    int ifixed = seg - (int)db->segs, fixed = IDX(seg), maxcnt = 0;
+    long ifixed = seg - db->segs;
+    int fixed = IDX(seg), maxcnt = 0;
     int iseg[DATABAR_MAX_SEGMENTS];
     unsigned csegs = db->csegs, width = seg->width, maxage = 0x7fff;
 
@@ -742,7 +743,7 @@ match_segment_exp (zbar_decoder_t *dcode,
         
         for (; i >= 0 && seq[i] >= 0; i--)
         {
-            int j;
+            int j = 0;
             dbprintf(2, " [%d]%d", i, seq[i]);
 
             if (seq[i] == fixed)
@@ -752,7 +753,7 @@ match_segment_exp (zbar_decoder_t *dcode,
                 if (segs[i] < 0 && check_width(width, seg->width, 14))
                 {
                     dbprintf(2, "*");
-                    j = ifixed;
+                    j = (int)ifixed;
                 }
                 else
                 {
