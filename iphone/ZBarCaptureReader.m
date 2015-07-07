@@ -243,9 +243,11 @@ enum {
     
     OSAtomicAnd32Barrier(~PAUSED, &state);
     
+    /*
     zlog(@"latency: delegate=%gs total=%gs",
          timer_elapsed(t_start, timer_now()),
          timer_elapsed(t_scan, timer_now()));
+     */
 }
 
 - (void) setFramesPerSecond:(CGFloat)fps

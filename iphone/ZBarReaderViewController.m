@@ -730,6 +730,8 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     // stopRunning can take a really long time (>1s observed),
     // so defer until the view transitions are complete
     [self.readerView stop];
+    
+    [super viewDidDisappear:animated];
 }
 
 - (void) dismissModalViewControllerAnimated:(BOOL)animated

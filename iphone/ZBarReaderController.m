@@ -759,12 +759,13 @@ CGImageRef UIGetScreenImage(void);
         }
     }
 
+    /*
     long numReadSymbols = (!syms) ? 0 : [syms count];
     double elapsedTimer = timer_elapsed(t_start, timer_now());
     
     zlog(@"read %ld filtered symbols in %gs total\n",
           numReadSymbols, elapsedTimer);
-    
+    */
     return syms;
 }
 
