@@ -750,14 +750,67 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 
 #pragma mark - View Rotation Code -
 
-- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orient
+- (BOOL) shouldAutorotate
 {
-    return((supportedOrientationsMask >> orient) & 1);
+    return TRUE;
 }
+
+
+- (NSUInteger) supportedInterfaceOrientations
+{
+    return supportedOrientationsMask;
+}
+
+
+- (void) viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    zlog(@"will transition to size.");
+    
+    if (helpController)
+    {
+        [helpController viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    }
+    
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
+                                                {
+                                                    rotating = YES;
+                                                    
+                                                    if (self.readerView)
+                                                    {
+                                                        [self.readerView willRotateToInterfaceOrientation:self.interfaceOrientation
+                                                                                                 duration:0];
+                                                    }
+                                                    
+                                                    if (self.readerView)
+                                                    {
+                                                        [self.readerView setNeedsLayout];
+                                                    }
+                                                }
+                                 completion:^(id<UIViewControllerTransitionCoordinatorContext> context)
+                                                {
+                                                    zlog(@"didRotate");
+                                                    
+                                                    if (!rotating && self.readerView)
+                                                    {
+                                                        // work around UITabBarController bug: willRotate is not called
+                                                        // for non-portrait initial interface orientation
+                                                        [self.readerView willRotateToInterfaceOrientation:self.interfaceOrientation
+                                                                                                 duration:0];
+                                                        [self.readerView setNeedsLayout];
+                                                    }
+                                                    
+                                                    rotating = NO;
+                                                }];
+}
+
 
 - (void) willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation
                                  duration:(NSTimeInterval)duration
 {
+    [super willRotateToInterfaceOrientation:orientation duration:duration];
+    
     zlog(@"willRotate: orient=%ld #%g", (long)orientation, duration);
     
     rotating = YES;
@@ -772,6 +825,8 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 - (void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)orientation
                                           duration:(NSTimeInterval)duration
 {
+    [super willAnimateRotationToInterfaceOrientation:orientation duration:duration];
+    
     zlog(@"willAnimateRotation: orient=%ld #%g", (long)orientation, duration);
     
     if (helpController)
@@ -788,6 +843,8 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 
 - (void) didRotateFromInterfaceOrientation:(UIInterfaceOrientation)orientation
 {
+    [super didRotateFromInterfaceOrientation:orientation];
+    
     zlog(@"didRotate(%d): orient=%ld", rotating, (long)orientation);
     
     if (!rotating && self.readerView)
