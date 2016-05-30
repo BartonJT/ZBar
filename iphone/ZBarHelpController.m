@@ -199,7 +199,7 @@
          NSStringFromCGRect(toolbar.frame));
 }
 
-- (NSUInteger) supportedInterfaceOrientations
+- (UIInterfaceOrientationMask) supportedInterfaceOrientations
 {
     UIViewController *parent = self.parentViewController;
     if(parent && !orientations)

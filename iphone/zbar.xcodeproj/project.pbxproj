@@ -772,7 +772,7 @@
 <<<<<<< HEAD
 =======
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastUpgradeCheck = 0700;
 			};
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "zbar" */;
@@ -982,6 +982,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_TESTABILITY = YES;
 				EXCLUDED_SOURCE_FILE_NAMES = "";
 				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphoneos*][arch=*]" = ZBarReaderViewImpl_Simulator.m;
 				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphonesimulator*][arch=*]" = (
@@ -1062,6 +1063,7 @@
 				INFOPLIST_FILE = examples/readertest/readertest.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = net.sourceforge.zbar.test.readertest;
 				PRODUCT_NAME = readertest;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1083,6 +1085,7 @@
 				INFOPLIST_FILE = examples/readertest/readertest.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = net.sourceforge.zbar.test.readertest;
 				PRODUCT_NAME = readertest;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				ZERO_LINK = NO;
@@ -1171,6 +1174,7 @@
 				INFOPLIST_FILE = examples/readertest/readertest.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = net.sourceforge.zbar.test.readertest;
 				PRODUCT_NAME = readertest;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				ZERO_LINK = NO;

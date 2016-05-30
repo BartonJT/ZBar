@@ -697,7 +697,7 @@ CGImageRef UIGetScreenImage(void);
 
 - (id <NSFastEnumeration>) scanImage: (CGImageRef) image
 {
-    timer_start;
+    /*timer_start;*/
 
     NSInteger nsyms = [self scanImage:image
                           withScaling:0];

@@ -236,7 +236,7 @@ enum {
 
 - (void) didReadNewSymbolsFromImage:(ZBarImage*)img
 {
-    timer_start;
+    /*timer_start;*/
     
     [captureDelegate captureReader:self
         didReadNewSymbolsFromImage:img];
