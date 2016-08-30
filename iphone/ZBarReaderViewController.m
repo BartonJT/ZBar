@@ -42,26 +42,31 @@ AVPositionForUICamera (UIImagePickerControllerCameraDevice camera)
     }
 =======
 static CGFloat const ZBRVCControlsHeight = 54.0f;
+static NSString *const ZBRVCFocusObserver = @"adjustingFocus";
 
 static inline AVCaptureDevicePosition
 AVPositionForUICamera (UIImagePickerControllerCameraDevice camera)
 {
-    switch(camera)
+    switch (camera)
     {
         case UIImagePickerControllerCameraDeviceRear:
-            return(AVCaptureDevicePositionBack);
+            return AVCaptureDevicePositionBack;
         case UIImagePickerControllerCameraDeviceFront:
-            return(AVCaptureDevicePositionFront);
+            return AVCaptureDevicePositionFront;
     }
     
+<<<<<<< HEAD
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
     return(-1);
+=======
+    return -1;
+>>>>>>> 56cb785... Tweaking files to allow for animations when scanner is focusing or reading barcodes.
 }
 
 static inline UIImagePickerControllerCameraDevice
 UICameraForAVPosition (AVCaptureDevicePosition position)
 {
-    switch(position)
+    switch (position)
     {
 <<<<<<< HEAD
     case AVCaptureDevicePositionBack:
@@ -71,15 +76,19 @@ UICameraForAVPosition (AVCaptureDevicePosition position)
     }
 =======
         case AVCaptureDevicePositionBack:
-            return(UIImagePickerControllerCameraDeviceRear);
+            return UIImagePickerControllerCameraDeviceRear;
         case AVCaptureDevicePositionFront:
-            return(UIImagePickerControllerCameraDeviceFront);
+            return UIImagePickerControllerCameraDeviceFront;
         case AVCaptureDevicePositionUnspecified:
             break;
     }
     
+<<<<<<< HEAD
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
     return(-1);
+=======
+    return -1;
+>>>>>>> 56cb785... Tweaking files to allow for animations when scanner is focusing or reading barcodes.
 }
 
 static inline AVCaptureDevice*
@@ -91,13 +100,14 @@ AVDeviceForUICamera (UIImagePickerControllerCameraDevice camera)
         return(nil);
 =======
     
-    if(position < 0)
+    if (position < 0)
     {
-        return(nil);
+        return nil;
     }
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 
 #if !TARGET_IPHONE_SIMULATOR
+<<<<<<< HEAD
     NSArray *allDevices =
         [AVCaptureDevice devicesWithMediaType: AVMediaTypeVideo];
 <<<<<<< HEAD
@@ -106,23 +116,26 @@ AVDeviceForUICamera (UIImagePickerControllerCameraDevice camera)
         if(device.position == position)
             return(device);
 =======
+=======
+    NSArray *allDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+>>>>>>> 56cb785... Tweaking files to allow for animations when scanner is focusing or reading barcodes.
     for (AVCaptureDevice *device in allDevices)
     {
         // FIXME how to quantify "best" of several (theoretical) possibilities
-        if(device.position == position)
+        if (device.position == position)
         {
-            return(device);
+            return device;
         }
     }
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 #endif
-    return(nil);
+    return nil;
 }
 
 static inline AVCaptureTorchMode
 AVTorchModeForUIFlashMode (UIImagePickerControllerCameraFlashMode mode)
 {
-    switch(mode)
+    switch (mode)
     {
 <<<<<<< HEAD
     case UIImagePickerControllerCameraFlashModeAuto:
@@ -134,15 +147,19 @@ AVTorchModeForUIFlashMode (UIImagePickerControllerCameraFlashMode mode)
     }
 =======
         case UIImagePickerControllerCameraFlashModeAuto:
-            return(AVCaptureTorchModeAuto);
+            return AVCaptureTorchModeAuto;
         case UIImagePickerControllerCameraFlashModeOn:
-            return(AVCaptureTorchModeOn);
+            return AVCaptureTorchModeOn;
         case UIImagePickerControllerCameraFlashModeOff:
             break;
     }
     
+<<<<<<< HEAD
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
     return(AVCaptureTorchModeOff);
+=======
+    return AVCaptureTorchModeOff;
+>>>>>>> 56cb785... Tweaking files to allow for animations when scanner is focusing or reading barcodes.
 }
 
 static inline NSString*
@@ -152,64 +169,97 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     switch(quality)
     {
     case UIImagePickerControllerQualityTypeHigh:
-        return(AVCaptureSessionPresetHigh);
+        return AVCaptureSessionPresetHigh;
     case UIImagePickerControllerQualityType640x480:
-        return(AVCaptureSessionPreset640x480);
+        return AVCaptureSessionPreset640x480;
     case UIImagePickerControllerQualityTypeMedium:
-        return(AVCaptureSessionPresetMedium);
+        return AVCaptureSessionPresetMedium;
     case UIImagePickerControllerQualityTypeLow:
-        return(AVCaptureSessionPresetLow);
+        return AVCaptureSessionPresetLow;
     case UIImagePickerControllerQualityTypeIFrame1280x720:
-        return(AVCaptureSessionPresetiFrame1280x720);
+        return AVCaptureSessionPresetiFrame1280x720;
     case UIImagePickerControllerQualityTypeIFrame960x540:
-        return(AVCaptureSessionPresetiFrame960x540);
+        return AVCaptureSessionPresetiFrame960x540;
     }
 #endif
-    return(nil);
+    return nil;
 }
 
 
 @implementation ZBarReaderViewController
 
-@synthesize scanner, readerDelegate, showsZBarControls,
-    supportedOrientationsMask, tracksSymbols, enableCache, cameraOverlayView,
-    cameraViewTransform, cameraDevice, cameraFlashMode, videoQuality,
-    readerView, scanCrop;
-@dynamic sourceType, allowsEditing, allowsImageEditing, showsCameraControls,
-    showsHelpOnFail, cameraMode, takesPicture, maxScanDimension;
+@synthesize
+    scanner,
+    readerDelegate,
+    readerView = _readerView,
+    showsZBarControls,
+    supportedOrientationsMask,
+    tracksSymbols,
+    enableCache,
+    cameraOverlayView,
+    cameraViewTransform,
+    cameraDevice,
+    cameraFlashMode,
+    videoQuality,
+    scanCrop;
+
+@dynamic
+    sourceType,
+    allowsEditing,
+    allowsImageEditing,
+    showsCameraControls,
+    showsHelpOnFail,
+    cameraMode,
+    takesPicture,
+    maxScanDimension;
 
 
 #pragma mark - Class Methods -
 
-+ (BOOL) isSourceTypeAvailable: (UIImagePickerControllerSourceType) sourceType
++ (BOOL) isSourceTypeAvailable:(UIImagePickerControllerSourceType)sourceType
 {
-    if(sourceType != UIImagePickerControllerSourceTypeCamera)
-        return(NO);
-    return(TARGET_IPHONE_SIMULATOR ||
-           [UIImagePickerController isSourceTypeAvailable: sourceType]);
+    BOOL isAvailable = NO;
+    
+    if (sourceType == UIImagePickerControllerSourceTypeCamera)
+    {
+        isAvailable = (TARGET_IPHONE_SIMULATOR ||
+                       [UIImagePickerController isSourceTypeAvailable:sourceType]);
+    }
+    
+    return isAvailable;
 }
 
-+ (BOOL) isCameraDeviceAvailable: (UIImagePickerControllerCameraDevice) camera
++ (BOOL) isCameraDeviceAvailable:(UIImagePickerControllerCameraDevice)camera
 {
-    return(TARGET_IPHONE_SIMULATOR ||
-           [UIImagePickerController isCameraDeviceAvailable: camera]);
+    BOOL isAvailable = (TARGET_IPHONE_SIMULATOR ||
+                        [UIImagePickerController isCameraDeviceAvailable:camera]);
+    
+    return isAvailable;
 }
 
-+ (BOOL) isFlashAvailableForCameraDevice: (UIImagePickerControllerCameraDevice) camera
++ (BOOL) isFlashAvailableForCameraDevice:(UIImagePickerControllerCameraDevice)camera
 {
-    return(TARGET_IPHONE_SIMULATOR ||
-           [UIImagePickerController isFlashAvailableForCameraDevice: camera]);
+    BOOL isAvailable = (TARGET_IPHONE_SIMULATOR ||
+                        [UIImagePickerController isFlashAvailableForCameraDevice:camera]);
+    
+    return isAvailable;
 }
 
-+ (NSArray*) availableCaptureModesForCameraDevice: (UIImagePickerControllerCameraDevice) camera
++ (NSArray*) availableCaptureModesForCameraDevice:(UIImagePickerControllerCameraDevice)camera
 {
-    if(![self isCameraDeviceAvailable: camera])
-        return([NSArray array]);
-
-    // current reader only supports automatic detection
-    return([NSArray arrayWithObject:
-               [NSNumber numberWithInteger:
-                   UIImagePickerControllerCameraCaptureModeVideo]]);
+    NSArray *array = nil;
+    
+    if (![self isCameraDeviceAvailable:camera])
+    {
+        array = [NSArray array];
+    }
+    else
+    {
+        // The current reader only supports automatic detection.
+        array = [NSArray arrayWithObject:[NSNumber numberWithInteger:UIImagePickerControllerCameraCaptureModeVideo]];
+    }
+    
+    return array;
 }
 
 
@@ -219,7 +269,9 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 {
     supportedOrientationsMask =
         ZBarOrientationMask(UIInterfaceOrientationPortrait);
-    showsZBarControls = tracksSymbols = enableCache = YES;
+    showsZBarControls = YES;
+    tracksSymbols = YES;
+    enableCache = YES;
     scanCrop = CGRectMake(0, 0, 1, 1);
     cameraViewTransform = CGAffineTransformIdentity;
 
@@ -227,51 +279,66 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     videoQuality = UIImagePickerControllerQualityType640x480;
     AVCaptureDevice *device = nil;
 #if !TARGET_IPHONE_SIMULATOR
-    device = [AVCaptureDevice defaultDeviceWithMediaType: AVMediaTypeVideo];
+    device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
 #endif
-    if(device)
+    
+    if (device)
+    {
         cameraDevice = UICameraForAVPosition(device.position);
+    }
     else
+    {
         cameraDevice = UIImagePickerControllerCameraDeviceRear;
+    }
 
     // create our own scanner to store configuration,
     // independent of whether view is loaded
     scanner = [ZBarImageScanner new];
-    [scanner setSymbology: 0
-             config: ZBAR_CFG_X_DENSITY
-             to: 3];
-    [scanner setSymbology: 0
-             config: ZBAR_CFG_Y_DENSITY
-             to: 3];
+    [scanner setSymbology:0
+                   config:ZBAR_CFG_X_DENSITY
+                       to:3];
+    [scanner setSymbology:0
+                   config:ZBAR_CFG_Y_DENSITY
+                       to:3];
 }
 
 - (id) init
 {
-    if(!TARGET_IPHONE_SIMULATOR &&
-       !NSClassFromString(@"AVCaptureSession")) {
+    if (!TARGET_IPHONE_SIMULATOR &&
+       !NSClassFromString(@"AVCaptureSession"))
+    {
         // fallback to old interface
         zlog(@"Falling back to ZBarReaderController");
         [self release];
-        return((id)[ZBarReaderController new]);
+        
+        id aSelf = [[ZBarReaderController alloc] init];
+        return aSelf;
     }
 
     self = [super init];
-    if(!self)
-        return(nil);
+    
+    if (!self)
+    {
+        return nil;
+    }
 
     self.wantsFullScreenLayout = YES;
     [self _init];
-    return(self);
+    
+    return self;
 }
 
-- (id) initWithCoder: (NSCoder*) decoder
+- (id) initWithCoder:(NSCoder*) decoder
 {
-    self = [super initWithCoder: decoder];
-    if(!self)
-        return(nil);
+    self = [super initWithCoder:decoder];
+    
+    if (!self)
+    {
+        return nil;
+    }
 
     [self _init];
-    return(self);
+    return self;
 }
 
 - (void) cleanup
@@ -280,9 +347,9 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     cameraSim.readerView = nil;
     [cameraSim release];
     cameraSim = nil;
-    readerView.readerDelegate = nil;
-    [readerView release];
-    readerView = nil;
+    _readerView.readerDelegate = nil;
+    [_readerView release];
+    _readerView = nil;
     [controls release];
     controls = nil;
     [shutter release];
@@ -332,9 +399,14 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     
     if (controls)
     {
+<<<<<<< HEAD
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
         assert(controls.superview == view);
         [view bringSubviewToFront: controls];
+=======
+        NSAssert(controls.superview == view, @"The wrong constrols has been obtained");
+        [view bringSubviewToFront:controls];
+>>>>>>> 56cb785... Tweaking files to allow for animations when scanner is focusing or reading barcodes.
         return;
     }
 
@@ -434,28 +506,38 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 
 - (void) initVideoQuality
 {
-    if(!readerView) {
-        assert(0);
+    NSAssert(_readerView, @"No reader view");
+    
+    if (!_readerView)
+    {
         return;
     }
 
-    AVCaptureSession *session = readerView.session;
+    AVCaptureSession *session = _readerView.session;
     NSString *preset = AVSessionPresetForUIVideoQuality(videoQuality);
-    if(session && preset && [session canSetSessionPreset: preset]) {
+    
+    if (session && preset && [session canSetSessionPreset:preset])
+    {
         zlog(@"set session preset=%@", preset);
         session.sessionPreset = preset;
     }
     else
+    {
         zlog(@"unable to set session preset=%@", preset);
+    }
 }
 
 - (void) loadView
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
     self.view = [[UIView alloc]
                     initWithFrame: CGRectMake(0, 0, 320, 480)];
 =======
     UIView *view = [[UIView alloc] initWithFrame: CGRectMake(0, 0, 320, 480)];
+=======
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+>>>>>>> 56cb785... Tweaking files to allow for animations when scanner is focusing or reading barcodes.
     self.view = view;
     [view release];
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
@@ -488,15 +570,15 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     view.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                              UIViewAutoresizingFlexibleHeight);
 
-    readerView = [[ZBarReaderView alloc] initWithImageScanner:scanner];
+    _readerView = [[ZBarReaderView alloc] initWithImageScanner:scanner];
     CGRect bounds = view.bounds;
     CGRect r = bounds;
     NSUInteger autoresize = (UIViewAutoresizingFlexibleWidth |
                              UIViewAutoresizingFlexibleHeight);
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 
-    if(showsZBarControls ||
-       self.parentViewController.modalViewController == self)
+    if (showsZBarControls ||
+        self.parentViewController.modalViewController == self)
     {
         autoresize |= UIViewAutoresizingFlexibleBottomMargin;
 <<<<<<< HEAD
@@ -505,44 +587,53 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 =======
         //r.size.height -= ZBRVCControlsHeight;
     }
+
+    self.readerView.frame = r;
+    self.readerView.autoresizingMask = autoresize;
     
+<<<<<<< HEAD
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
     readerView.frame = r;
     readerView.autoresizingMask = autoresize;
+=======
+>>>>>>> 56cb785... Tweaking files to allow for animations when scanner is focusing or reading barcodes.
     AVCaptureDevice *device = AVDeviceForUICamera(cameraDevice);
-    if(device && device != readerView.device)
-        readerView.device = device;
-    readerView.torchMode = AVTorchModeForUIFlashMode(cameraFlashMode);
+    if (device &&
+        device != self.readerView.device)
+    {
+        self.readerView.device = device;
+    }
+    
+    self.readerView.torchMode = AVTorchModeForUIFlashMode(cameraFlashMode);
     [self initVideoQuality];
 
-    readerView.readerDelegate = (id<ZBarReaderViewDelegate>)self;
-    readerView.scanCrop = scanCrop;
-    readerView.previewTransform = cameraViewTransform;
-    readerView.tracksSymbols = tracksSymbols;
-    readerView.enableCache = enableCache;
-    [view addSubview: readerView];
+    self.readerView.readerDelegate = (id<ZBarReaderViewDelegate>)self;
+    self.readerView.scanCrop = scanCrop;
+    self.readerView.previewTransform = cameraViewTransform;
+    self.readerView.tracksSymbols = tracksSymbols;
+    self.readerView.enableCache = enableCache;
+    [view addSubview:self.readerView];
 
-    shutter = [[UIView alloc]
-                  initWithFrame: r];
+    shutter = [[UIView alloc] initWithFrame:r];
     shutter.backgroundColor = [UIColor blackColor];
     shutter.opaque = NO;
-    shutter.autoresizingMask =
-        UIViewAutoresizingFlexibleWidth |
-        UIViewAutoresizingFlexibleHeight;
-    [view addSubview: shutter];
+    shutter.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                UIViewAutoresizingFlexibleHeight);
+    [view addSubview:shutter];
 
-    if(cameraOverlayView) {
-        assert(!cameraOverlayView.superview);
+    if (cameraOverlayView)
+    {
+        NSAssert(!cameraOverlayView.superview, @"Camera overlay does not have a superview");
         [cameraOverlayView removeFromSuperview];
-        [view addSubview: cameraOverlayView];
+        [view addSubview:cameraOverlayView];
     }
 
     [self initControls];
 
-    if(TARGET_IPHONE_SIMULATOR) {
-        cameraSim = [[ZBarCameraSimulator alloc]
-                        initWithViewController: self];
-        cameraSim.readerView = readerView;
+    if (TARGET_IPHONE_SIMULATOR)
+    {
+        cameraSim = [[ZBarCameraSimulator alloc] initWithViewController:self];
+        cameraSim.readerView = self.readerView;
     }
 }
 
@@ -553,7 +644,7 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     [super viewDidUnload];
 }
 
-- (void) viewWillAppear: (BOOL) animated
+- (void) viewWillAppear:(BOOL)animated
 {
     zlog(@"willAppear: anim=%d orient=%d",
          animated, self.interfaceOrientation);
@@ -562,256 +653,313 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     // Add autofocus observer.
     AVCaptureDevice *camDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     int flags = NSKeyValueObservingOptionNew;
-    [camDevice addObserver:self forKeyPath:@"adjustingFocus" options:flags context:nil];
+    [camDevice addObserver:self
+                forKeyPath:ZBRVCFocusObserver
+                   options:flags
+                   context:nil];
 
     
-    [super viewWillAppear: animated];
+    [super viewWillAppear:animated];
 
-    [readerView willRotateToInterfaceOrientation: self.interfaceOrientation
-                duration: 0];
-    [readerView performSelector: @selector(start)
-                withObject: nil
-                afterDelay: .001];
+    [self.readerView willRotateToInterfaceOrientation:self.interfaceOrientation
+                                             duration:0];
+    [self.readerView performSelector:@selector(start)
+                          withObject:nil
+                          afterDelay:0.001];
     shutter.alpha = 1;
     shutter.hidden = NO;
 
     UIApplication *app = [UIApplication sharedApplication];
     BOOL willHideStatusBar =
         !didHideStatusBar && self.wantsFullScreenLayout && !app.statusBarHidden;
-    if(willHideStatusBar)
-        [app setStatusBarHidden: YES
-             withAnimation: UIStatusBarAnimationFade];
+    
+    if (willHideStatusBar)
+    {
+        [app setStatusBarHidden:YES
+                  withAnimation:UIStatusBarAnimationFade];
+    }
     didHideStatusBar = didHideStatusBar || willHideStatusBar;
 }
 
-- (void) viewWillDisappear: (BOOL) animated
+- (void) viewWillDisappear:(BOOL)animated
 {
     // Remove autofocus observer.
     AVCaptureDevice *camDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    [camDevice removeObserver:self forKeyPath:@"adjustingFocus"];
+    [camDevice removeObserver:self forKeyPath:ZBRVCFocusObserver];
     
-    readerView.captureReader.enableReader = NO;
+    self.readerView.captureReader.enableReader = NO;
 
-    if(didHideStatusBar) {
-        [[UIApplication sharedApplication]
-            setStatusBarHidden: NO
-            withAnimation: UIStatusBarAnimationFade];
+    if (didHideStatusBar)
+    {
+        [[UIApplication sharedApplication] setStatusBarHidden:NO
+                                                withAnimation:UIStatusBarAnimationFade];
         didHideStatusBar = NO;
     }
 
-    [super viewWillDisappear: animated];
+    [super viewWillDisappear:animated];
 }
 
-- (void) viewDidDisappear: (BOOL) animated
+- (void) viewDidDisappear:(BOOL)animated
 {
     // stopRunning can take a really long time (>1s observed),
     // so defer until the view transitions are complete
-    [readerView stop];
+    [self.readerView stop];
 }
 
-- (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) orient
+- (void) dismissModalViewControllerAnimated:(BOOL)animated
+{
+    if (didHideStatusBar)
+    {
+        [[UIApplication sharedApplication] setStatusBarHidden:NO
+                                                withAnimation:UIStatusBarAnimationFade];
+        
+        didHideStatusBar = NO;
+    }
+    
+    [super dismissModalViewControllerAnimated:animated];
+}
+
+
+#pragma mark - View Rotation Code -
+
+- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orient
 {
     return((supportedOrientationsMask >> orient) & 1);
 }
 
-- (void) willRotateToInterfaceOrientation: (UIInterfaceOrientation) orient
-                                 duration: (NSTimeInterval) duration
+- (void) willRotateToInterfaceOrientation:(UIInterfaceOrientation) orient
+                                 duration:(NSTimeInterval) duration
 {
     zlog(@"willRotate: orient=%d #%g", orient, duration);
     rotating = YES;
-    if(readerView)
-        [readerView willRotateToInterfaceOrientation: orient
-                    duration: duration];
+    if (self.readerView)
+    {
+        [self.readerView willRotateToInterfaceOrientation:orient
+                                                 duration:duration];
+    }
 }
 
-- (void) willAnimateRotationToInterfaceOrientation: (UIInterfaceOrientation) orient
-                                          duration: (NSTimeInterval) duration
+- (void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)orient
+                                          duration:(NSTimeInterval)duration
 {
     zlog(@"willAnimateRotation: orient=%d #%g", orient, duration);
-    if(helpController)
-        [helpController willAnimateRotationToInterfaceOrientation: orient
-                        duration: duration];
-    if(readerView)
-        [readerView setNeedsLayout];
+    if (helpController)
+    {
+        [helpController willAnimateRotationToInterfaceOrientation:orient
+                                                         duration:duration];
+    }
+    
+    if (self.readerView)
+    {
+        [self.readerView setNeedsLayout];
+    }
 }
 
-- (void) didRotateFromInterfaceOrientation: (UIInterfaceOrientation) orient
+- (void) didRotateFromInterfaceOrientation:(UIInterfaceOrientation)orient
 {
     zlog(@"didRotate(%d): orient=%d", rotating, orient);
-    if(!rotating && readerView) {
+    
+    if (!rotating && self.readerView)
+    {
         // work around UITabBarController bug: willRotate is not called
         // for non-portrait initial interface orientation
-        [readerView willRotateToInterfaceOrientation: self.interfaceOrientation
-                    duration: 0];
-        [readerView setNeedsLayout];
+        [self.readerView willRotateToInterfaceOrientation:self.interfaceOrientation
+                                                 duration:0];
+        [self.readerView setNeedsLayout];
     }
+    
     rotating = NO;
-}
-
-- (void) dismissModalViewControllerAnimated: (BOOL) animated
-{
-    if(didHideStatusBar) {
-        [[UIApplication sharedApplication]
-         setStatusBarHidden: NO
-         withAnimation: UIStatusBarAnimationFade];
-        didHideStatusBar = NO;
-    }
-    [super dismissModalViewControllerAnimated: animated];
 }
 
 
 #pragma mark - Object Methods -
 
-- (ZBarReaderView*) readerView
-{
-    // force view to load
-    (void)self.view;
-    assert(readerView);
-    return(readerView);
-}
-
-- (void) setTracksSymbols: (BOOL) track
+- (void) setTracksSymbols:(BOOL)track
 {
     tracksSymbols = track;
-    if(readerView)
-        readerView.tracksSymbols = track;
+    
+    if (self.readerView)
+    {
+        self.readerView.tracksSymbols = track;
+    }
 }
 
-- (void) setEnableCache: (BOOL) enable
+- (void) setEnableCache:(BOOL)enable
 {
     enableCache = enable;
-    if(readerView)
-        readerView.enableCache = enable;
+    
+    if (self.readerView)
+    {
+        self.readerView.enableCache = enable;
+    }
 }
 
-- (void) setScanCrop: (CGRect) r
+- (void) setScanCrop:(CGRect)r
 {
     scanCrop = r;
-    if(readerView)
-        readerView.scanCrop = r;
+    
+    if (self.readerView)
+    {
+        self.readerView.scanCrop = r;
+    }
 }
 
-- (void) setCameraOverlayView: (UIView*) newview
+- (void) setCameraOverlayView:(UIView*)newview
 {
     UIView *oldview = cameraOverlayView;
     [oldview removeFromSuperview];
 
     cameraOverlayView = [newview retain];
-    if([self isViewLoaded] && newview)
-        [self.view addSubview: newview];
+    
+    if ([self isViewLoaded] && newview)
+    {
+        [self.view addSubview:newview];
+    }
 
     [oldview release];
 }
 
-- (void) setCameraViewTransform: (CGAffineTransform) xfrm
+- (void) setCameraViewTransform:(CGAffineTransform)xfrm
 {
     cameraViewTransform = xfrm;
-    if(readerView)
-        readerView.previewTransform = xfrm;
+    
+    if (self.readerView)
+    {
+        self.readerView.previewTransform = xfrm;
+    }
 }
 
 - (void) cancel
 {
-    if(!readerDelegate)
+    if (!readerDelegate)
+    {
         return;
+    }
+    
     SEL cb = @selector(imagePickerControllerDidCancel:);
-    if([readerDelegate respondsToSelector: cb])
-        [readerDelegate
-            imagePickerControllerDidCancel: (UIImagePickerController*)self];
+    
+    if ([readerDelegate respondsToSelector:cb])
+    {
+        [readerDelegate imagePickerControllerDidCancel:(UIImagePickerController*)self];
+    }
     else
-        [self dismissModalViewControllerAnimated: YES];
+    {
+        [self dismissModalViewControllerAnimated:YES];
+    }
 }
 
 - (void) info
 {
-    [self showHelpWithReason: @"INFO"];
+    [self showHelpWithReason:@"INFO"];
 }
 
-- (void) showHelpWithReason: (NSString*) reason
+- (void) showHelpWithReason:(NSString*)reason
 {
-    if(helpController)
+    if (helpController)
+    {
         return;
-    helpController = [[ZBarHelpController alloc]
-                         initWithReason: reason];
+    }
+    
+    helpController = [[ZBarHelpController alloc] initWithReason:reason];
     helpController.delegate = (id<ZBarHelpDelegate>)self;
     helpController.wantsFullScreenLayout = YES;
+    
     UIView *helpView = helpController.view;
     helpView.alpha = 0;
     helpView.frame = self.view.bounds;
-    [helpController viewWillAppear: YES];
-    [self.view addSubview: helpView];
-    [UIView beginAnimations: @"ZBarHelp"
-            context: nil];
+    
+    [helpController viewWillAppear:YES];
+    
+    [self.view addSubview:helpView];
+    
+    [UIView beginAnimations:@"ZBarHelp"
+                    context:nil];
     helpController.view.alpha = 1;
+    
     [UIView commitAnimations];
 }
 
-- (void) takePicture
+- (void)takePicture
 {
-    if(TARGET_IPHONE_SIMULATOR) {
+    if (TARGET_IPHONE_SIMULATOR)
+    {
         [cameraSim takePicture];
         // FIXME return selected image
     }
-    else if(readerView)
-        [readerView.captureReader captureFrame];
-}
-
-- (void) setCameraDevice: (UIImagePickerControllerCameraDevice) camera
-{
-    cameraDevice = camera;
-    if(readerView) {
-        AVCaptureDevice *device = AVDeviceForUICamera(camera);
-        if(device)
-            readerView.device = device;
+    else if (self.readerView)
+    {
+        [self.readerView.captureReader captureFrame];
     }
 }
 
-- (void) setCameraFlashMode: (UIImagePickerControllerCameraFlashMode) mode
+- (void) setCameraDevice:(UIImagePickerControllerCameraDevice)camera
 {
-    cameraFlashMode = mode;
-    if(readerView)
-        readerView.torchMode = AVTorchModeForUIFlashMode(mode);
+    cameraDevice = camera;
+    
+    if (self.readerView)
+    {
+        AVCaptureDevice *device = AVDeviceForUICamera(camera);
+        
+        if (device)
+        {
+            self.readerView.device = device;
+        }
+    }
 }
 
-- (UIImagePickerControllerCameraCaptureMode) cameraCaptureMode
+- (void) setCameraFlashMode:(UIImagePickerControllerCameraFlashMode)mode
+{
+    cameraFlashMode = mode;
+    
+    if (self.readerView)
+    {
+        self.readerView.torchMode = AVTorchModeForUIFlashMode(mode);
+    }
+}
+
+- (UIImagePickerControllerCameraCaptureMode)cameraCaptureMode
 {
     return(UIImagePickerControllerCameraCaptureModeVideo);
 }
 
-- (void) setCameraCaptureMode: (UIImagePickerControllerCameraCaptureMode) mode
+- (void) setCameraCaptureMode:(UIImagePickerControllerCameraCaptureMode)mode
 {
     NSAssert2(mode == UIImagePickerControllerCameraCaptureModeVideo,
               @"attempt to set unsupported value (%d)"
               @" for %@ property", mode, @"cameraCaptureMode");
 }
 
-- (void) setVideoQuality: (UIImagePickerControllerQualityType) quality
+- (void) setVideoQuality:(UIImagePickerControllerQualityType)quality
 {
     videoQuality = quality;
-    if(readerView)
+    
+    if (self.readerView)
+    {
         [self initVideoQuality];
+    }
 }
 
 
-// ZBarHelpDelegate
+#pragma mark - ZBarHelpDelegate -
 
-- (void) helpControllerDidFinish: (ZBarHelpController*) help
+- (void) helpControllerDidFinish:(ZBarHelpController*)help
 {
-    assert(help == helpController);
-    [help viewWillDisappear: YES];
-    [UIView beginAnimations: @"ZBarHelp"
-            context: NULL];
-    [UIView setAnimationDelegate: self];
-    [UIView setAnimationDidStopSelector: @selector(removeHelp:done:context:)];
+    NSAssert(help == helpController, @"Incorrect help controller returned.");
+    [help viewWillDisappear:YES];
+    [UIView beginAnimations:@"ZBarHelp"
+                    context:NULL];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(removeHelp:done:context:)];
     help.view.alpha = 0;
     [UIView commitAnimations];
 }
 
-- (void) removeHelp: (NSString*) tag
-               done: (NSNumber*) done
-            context: (void*) ctx
+- (void) removeHelp:(NSString*)tag
+               done:(NSNumber*)done
+            context:(void*)ctx
 {
-    if([tag isEqualToString: @"ZBarHelp"] && helpController) {
+    if ([tag isEqualToString:@"ZBarHelp"] && helpController)
+    {
         [helpController.view removeFromSuperview];
         [helpController release];
         helpController = nil;
@@ -819,31 +967,38 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 }
 
 
-// ZBarReaderViewDelegate
+#pragma mark - ZBarReaderViewDelegate -
 
-- (void) readerView: (ZBarReaderView*) readerView
-     didReadSymbols: (ZBarSymbolSet*) syms
-          fromImage: (UIImage*) image
-{
-    [readerDelegate
-        imagePickerController: (UIImagePickerController*)self
-        didFinishPickingMediaWithInfo:
-            [NSDictionary dictionaryWithObjectsAndKeys:
-                image, UIImagePickerControllerOriginalImage,
-                syms, ZBarReaderControllerResults,
-                nil]];
+- (void) readerView:(ZBarReaderView*)readerView
+     didReadSymbols:(ZBarSymbolSet*)syms
+          fromImage:(UIImage*)image
+{    
+    if (readerDelegate)
+    {
+        [readerDelegate imagePickerController:(UIImagePickerController*)self
+                didFinishPickingMediaWithInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                               image,
+                                               UIImagePickerControllerOriginalImage,
+                                               syms,
+                                               ZBarReaderControllerResults,
+                                               nil]];
+    }
 }
 
-- (void) readerViewDidStart: (ZBarReaderView*) readerView
+- (void) readerViewDidStart:(ZBarReaderView*)readerView
 {
-    if(!shutter.hidden)
-        [UIView animateWithDuration: .25
-                animations: ^{
-                    shutter.alpha = 0;
-                }
-                completion: ^(BOOL finished) {
-                    shutter.hidden = YES;
-                }];
+    if (!shutter.hidden)
+    {
+        [UIView animateWithDuration:0.25f
+                         animations:^{
+                             
+                             shutter.alpha = 0;
+                         }
+                         completion:^(BOOL finished) {
+                             
+                             shutter.hidden = YES;
+                         }];
+    }
 }
 
 
@@ -855,16 +1010,36 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
                         context:(void *)context
 {
     // Note: The camera in the iPad 2 does not autofocus and so will not receive these events.
-    if ([keyPath isEqualToString:@"adjustingFocus"])
+    if ([keyPath isEqualToString:ZBRVCFocusObserver])
     {
         BOOL adjustingFocus = [ [change objectForKey:NSKeyValueChangeNewKey] isEqualToNumber:[NSNumber numberWithInt:1] ];
-        NSLog(@"Is adjusting focus? %@", adjustingFocus ? @"YES" : @"NO" );
-        NSLog(@"Change dictionary: %@", change);
+        NSLog(@"Adjusting focus: %@", adjustingFocus ? @"Yes" : @"No");
+        
+        [UIView animateWithDuration:.25
+                         animations:^{
+                             
+                             CGRect frame = self.readerView.targetOutline.frame;
+                             
+                             if (adjustingFocus)
+                             {
+                                 frame.size.width  = frame.size.width  * 1.10f;
+                                 frame.size.height = frame.size.height * 1.10f;
+                             }
+                             else
+                             {
+                                 frame.size.width  = frame.size.width  / 110 * 100;
+                                 frame.size.height = frame.size.height / 110 * 100;
+                             }
+                             
+                             self.readerView.targetOutline.frame = frame;
+                         }
+                         completion:^(BOOL finished) {
+                         }];
     }
 }
 
 
-// "deprecated" properties
+#pragma mark - "deprecated" properties -
 
 #define DEPRECATED_PROPERTY(getter, setter, type, val, ignore) \
     - (type) getter                                    \

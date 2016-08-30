@@ -60,10 +60,7 @@ typedef enum {
 @end
 
 
-@interface ZBarReaderController
-    : UIImagePickerController
-    < UINavigationControllerDelegate,
-      UIImagePickerControllerDelegate >
+@interface ZBarReaderController : UIImagePickerController <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 {
     ZBarImageScanner *scanner;
     ZBarHelpController *help;
