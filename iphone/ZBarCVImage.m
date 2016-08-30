@@ -166,10 +166,10 @@ static const CGDataProviderDirectCallbacks asyncProvider = {
     }
 
     CVPixelBufferLockBaseAddress(self.pixelBuffer, kCVPixelBufferLock_ReadOnly);
-    int w = CVPixelBufferGetWidth(self.pixelBuffer);
-    int h = CVPixelBufferGetHeight(self.pixelBuffer);
-    int dy = CVPixelBufferGetBytesPerRowOfPlane(self.pixelBuffer, 0);
-    int duv = CVPixelBufferGetBytesPerRowOfPlane(self.pixelBuffer, 1);
+    long w = CVPixelBufferGetWidth(self.pixelBuffer);
+    long h = CVPixelBufferGetHeight(self.pixelBuffer);
+    long dy = CVPixelBufferGetBytesPerRowOfPlane(self.pixelBuffer, 0);
+    long duv = CVPixelBufferGetBytesPerRowOfPlane(self.pixelBuffer, 1);
     uint8_t *py = CVPixelBufferGetBaseAddressOfPlane(self.pixelBuffer, 0);
     uint8_t *puv = CVPixelBufferGetBaseAddressOfPlane(self.pixelBuffer, 1);
     
@@ -178,7 +178,7 @@ static const CGDataProviderDirectCallbacks asyncProvider = {
         goto error;
     }
 
-    int datalen = 3 * w * h;
+    long datalen = 3 * w * h;
     // Quartz accesses some undocumented amount past allocated data?
     // ...allocate extra to compensate
     uint8_t *pdst = _rgbBuffer = malloc(datalen + 3 * w);

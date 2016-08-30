@@ -143,11 +143,11 @@ static inline int
 databar_postprocess_exp (zbar_decoder_t *dcode,
                          int *data)
 {
-    int i = 0, enc;
+    long i = 0, enc;
     unsigned n;
     unsigned char *buf;
     unsigned long d = *(data++);
-    int len = d / 211 + 4, buflen;
+    long len = d / 211 + 4, buflen;
 
     /* grok encodation method */
     d = *(data++);
@@ -179,7 +179,7 @@ databar_postprocess_exp (zbar_decoder_t *dcode,
         buflen = VAR_MAX(len, 9 - 2) + 2;
     }
     dbprintf(2, " buflen=%d enc=%d", buflen, enc);
-    zassert(buflen > 2, -1, "buflen=%d\n", buflen);
+    zassert(buflen > 2, -1, "buflen=%ld\n", buflen);
 
     if(enc < 4) {
         /* grok variable length symbol bit field */
@@ -455,13 +455,13 @@ databar_postprocess (zbar_decoder_t *dcode,
 
     dbprintf(2, "\n    d={%d,%d,%d,%d}", d[0], d[1], d[2], d[3]);
     unsigned long r = d[0] * 1597 + d[1];
-    d[1] = r / 10000;
+    d[1] = (int)r / 10000;
     r %= 10000;
     r = r * 2841 + d[2];
-    d[2] = r / 10000;
+    d[2] = (int)r / 10000;
     r %= 10000;
     r = r * 1597 + d[3];
-    d[3] = r / 10000;
+    d[3] = (int)r / 10000;
     dbprintf(2, " r=%ld", r);
 
     for(i = 4; --i >= 0; ) {

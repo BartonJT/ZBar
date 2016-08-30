@@ -31,6 +31,7 @@
 #import "debug.h"
 #import "math.h"
 
+<<<<<<< HEAD
 #define DEGREES_TO_RADIANS(angle) (angle / 180.0 * M_PI)
 
 <<<<<<< HEAD
@@ -44,8 +45,9 @@ AVPositionForUICamera (UIImagePickerControllerCameraDevice camera)
         return(AVCaptureDevicePositionFront);
     }
 =======
+=======
+>>>>>>> f5703ae... Refining code. Removed the dual personality of ZBarReaderView by integrating all of the code from ZBarReaderViewImpl_Capture into it. Now need to decide on efficient workaround for simulator support if desired.
 static CGFloat const ZBRVCControlsHeight = 54.0f;
-static NSString *const ZBRVCFocusObserver = @"adjustingFocus";
 
 static inline AVCaptureDevicePosition
 AVPositionForUICamera (UIImagePickerControllerCameraDevice camera)
@@ -199,7 +201,6 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     supportedOrientationsMask,
     tracksSymbols,
     enableCache,
-    isAnimatingReaderView = _isAnimatingReaderView,
     cameraOverlayView,
     cameraViewTransform,
     cameraDevice,
@@ -276,32 +277,30 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     showsZBarControls = YES;
     tracksSymbols = YES;
     enableCache = YES;
-    _isAnimatingReaderView = NO;
     scanCrop = CGRectMake(0, 0, 1, 1);
     cameraViewTransform = CGAffineTransformIdentity;
 
     cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
     videoQuality = UIImagePickerControllerQualityType640x480;
-    AVCaptureDevice *device = nil;
-#if !TARGET_IPHONE_SIMULATOR
-    device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-#endif
     
-    if (device)
+    if (!TARGET_IPHONE_SIMULATOR)
     {
+        AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
         cameraDevice = UICameraForAVPosition(device.position);
     }
     else
     {
-        cameraDevice = UIImagePickerControllerCameraDeviceRear;
+        cameraDevice = nil;
     }
 
     // create our own scanner to store configuration,
-    // independent of whether view is loaded
-    scanner = [ZBarImageScanner new];
+    // independent of whether the view is loaded
+    scanner = [[ZBarImageScanner alloc] init];
+    
     [scanner setSymbology:0
                    config:ZBAR_CFG_X_DENSITY
                        to:3];
+    
     [scanner setSymbology:0
                    config:ZBAR_CFG_Y_DENSITY
                        to:3];
@@ -686,14 +685,6 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     zlog(@"willAppear: anim=%d orient=%d",
          animated, self.interfaceOrientation);
     [self initControls];
-    
-    // Add autofocus observer.
-    AVCaptureDevice *camDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    int flags = NSKeyValueObservingOptionNew;
-    [camDevice addObserver:self
-                forKeyPath:ZBRVCFocusObserver
-                   options:flags
-                   context:nil];
 
     
     [super viewWillAppear:animated];
@@ -719,11 +710,7 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 }
 
 - (void) viewWillDisappear:(BOOL)animated
-{
-    // Remove autofocus observer.
-    AVCaptureDevice *camDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    [camDevice removeObserver:self forKeyPath:ZBRVCFocusObserver];
-    
+{    
     self.readerView.captureReader.enableReader = NO;
 
     if (didHideStatusBar)
@@ -916,14 +903,10 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     [UIView commitAnimations];
 }
 
-- (void)takePicture
+- (void) takePicture
 {
-    if (TARGET_IPHONE_SIMULATOR)
-    {
-        [cameraSim takePicture];
-        // FIXME return selected image
-    }
-    else if (self.readerView)
+    if (!TARGET_IPHONE_SIMULATOR &&
+        self.readerView)
     {
         [self.readerView.captureReader captureFrame];
     }
@@ -1035,98 +1018,6 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
                              
                              shutter.hidden = YES;
                          }];
-    }
-}
-
-
-#pragma mark - Autofocus Animations -
-
-- (void) animateIncreasingFocus
-{
-    self.isAnimatingReaderView = YES;
-    
-    [UIView animateWithDuration:0.50
-                     animations:^{
-                      
-                         CGRect frame = self.readerView.targetOutline.bounds;
-                         
-                         frame.size.width  = frame.size.width  * 1.10f;
-                         frame.size.height = frame.size.height * 1.10f;
-                         
-                         CGAffineTransform transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(45));
-                         self.readerView.targetOutline.transform = transform;
-                         
-                         self.readerView.targetOutline.bounds = frame;
-                     }
-                     completion:^(BOOL finished) {
-                         
-                         [self animateDecreasingFocus];
-                     }];
-}
-
-
-- (void) animateDecreasingFocus
-{
-    [UIView animateWithDuration:0.50
-                     animations:^{
-                         
-                         CGRect frame = self.readerView.targetOutline.bounds;
-                         
-                         frame.size.width  = frame.size.width  / 110 * 80;
-                         frame.size.height = frame.size.height / 110 * 80;
-                         
-                         CGAffineTransform transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(-45));
-                         self.readerView.targetOutline.transform = transform;
-                         self.readerView.targetOutline.bounds = frame;
-                     }
-                     completion:^(BOOL finished) {
-                         
-                         [self animateOriginalFrame];
-                     }];
-}
-
-
-- (void) animateOriginalFrame
-{
-    [UIView animateWithDuration:0.25
-                     animations:^{
-                         
-                         CGRect frame = self.readerView.targetOutline.bounds;
-                         
-                         CGAffineTransform transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(0));
-                         self.readerView.targetOutline.transform = transform;
-                         
-                         frame.size.width  = frame.size.width  / 80 * 100;
-                         frame.size.height = frame.size.height / 80 * 100;
-                         
-                         self.readerView.targetOutline.bounds = frame;
-                     }
-                     completion:^(BOOL finished) {
-                         
-                         self.isAnimatingReaderView = NO;
-                     }];
-}
-
-
-#pragma mark - Autofocus Observer -
-
-- (void) observeValueForKeyPath:(NSString *)keyPath
-                       ofObject:(id)object
-                         change:(NSDictionary *)change
-                        context:(void *)context
-{
-    // Note: The camera in the iPad 2 does not autofocus and so will not receive these events.
-    if ([keyPath isEqualToString:ZBRVCFocusObserver])
-    {
-        BOOL adjustingFocus = [ [change objectForKey:NSKeyValueChangeNewKey] isEqualToNumber:[NSNumber numberWithInt:1] ];
-        
-        if (adjustingFocus)
-        {
-            if (!self.isAnimatingReaderView)
-            {
-                [self animateIncreasingFocus];
-            }
-        }
     }
 }
 

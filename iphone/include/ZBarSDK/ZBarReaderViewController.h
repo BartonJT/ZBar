@@ -52,7 +52,7 @@
     UIImagePickerControllerCameraDevice cameraDevice;
     UIImagePickerControllerCameraFlashMode cameraFlashMode;
     UIImagePickerControllerQualityType videoQuality;
-    BOOL showsZBarControls, tracksSymbols, enableCache, _isAnimatingReaderView;
+    BOOL showsZBarControls, tracksSymbols, enableCache;
 
     ZBarHelpController *helpController;
     UIView *controls, *shutter;
@@ -112,8 +112,6 @@
 
 // this flag still works, but its use is deprecated
 @property (nonatomic) BOOL enableCache;
-
-@property (nonatomic) BOOL isAnimatingReaderView;
 
 // these are present only for backward compatibility.
 // they will error if inappropriate/unsupported values are set

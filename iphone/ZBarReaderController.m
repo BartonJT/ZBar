@@ -350,8 +350,8 @@ CGImageRef UIGetScreenImage(void);
         dt_frame = timer_elapsed(t_frame, now);
     t_frame = now;
 
-    int w = CGImageGetWidth(image);
-    int h = CGImageGetHeight(image);
+    NSInteger w = CGImageGetWidth(image);
+    NSInteger h = CGImageGetHeight(image);
     CGRect crop;
     if(w >= h)
         crop = CGRectMake(scanCrop.origin.x * w, scanCrop.origin.y * h,
@@ -401,7 +401,7 @@ CGImageRef UIGetScreenImage(void);
                           initWithCGImage: image
                           crop: crop
                           size: size];
-    int nsyms = [scanner scanImage: zimg];
+    NSInteger nsyms = [scanner scanImage: zimg];
     [zimg release];
 
     return(nsyms);
@@ -546,8 +546,8 @@ CGImageRef UIGetScreenImage(void);
         return;
     }
 
-    int nsyms = [self scanImage: image.CGImage
-                      withScaling: 0];
+    NSInteger nsyms = [self scanImage:image.CGImage
+                          withScaling:0];
 
     ZBarSymbol *sym = nil;
     if(nsyms)
@@ -698,21 +698,26 @@ CGImageRef UIGetScreenImage(void);
 {
     timer_start;
 
-    int nsyms = [self scanImage: image
-                      withScaling: 0];
+    NSInteger nsyms = [self scanImage:image
+                          withScaling:0];
 
     if(!nsyms &&
        CGImageGetWidth(image) >= 640 &&
        CGImageGetHeight(image) >= 640)
+    {
         // make one more attempt for close up, grainy images
-        nsyms = [self scanImage: image
-                      withScaling: .5];
+        nsyms = [self scanImage:image
+                    withScaling:.5];
+    }
 
     NSMutableArray *syms = nil;
-    if(nsyms) {
+    if (nsyms)
+    {
         // quality/type filtering
         int max_quality = MIN_QUALITY;
-        for(ZBarSymbol *sym in scanner.results) {
+        
+        for (ZBarSymbol *sym in scanner.results)
+        {
             zbar_symbol_type_t type = sym.type;
             int quality;
             if(type == ZBAR_QRCODE)
@@ -739,7 +744,7 @@ CGImageRef UIGetScreenImage(void);
         }
     }
 
-    zlog(@"read %d filtered symbols in %gs total\n",
+    zlog(@"read %u filtered symbols in %gs total\n",
           (!syms) ? 0 : [syms count], timer_elapsed(t_start, timer_now()));
     return(syms);
 }

@@ -22,9 +22,10 @@
 //------------------------------------------------------------------------
 
 #import <UIKit/UIKit.h>
+
 #import "ZBarImageScanner.h"
 
-@class AVCaptureSession, AVCaptureDevice;
+@class AVCaptureSession, AVCaptureDevice, AVCaptureInput;
 @class CALayer;
 @class ZBarImageScanner, ZBarCaptureReader, ZBarReaderView;
 
@@ -62,6 +63,7 @@
 <<<<<<< HEAD
 =======
     
+    BOOL  _isAnimatingTargetOutline;
     CGRect _targetOutlineFrame;
     UIImageView *_targetOutline;
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
@@ -73,10 +75,22 @@
     CGFloat imageScale;
     CGSize imageSize;
     BOOL started, running, locked;
+    
+    AVCaptureSession *session;
+    AVCaptureDevice *device;
+    AVCaptureInput *input;
 }
 
 // supply a pre-configured image scanner.
 - (id) initWithImageScanner:(ZBarImageScanner*)imageScanner;
+
+- (void) initSubviews;
+
+- (void) updateCrop;
+
+- (void) setImageSize:(CGSize)size;
+
+- (void) didTrackSymbols:(ZBarSymbolSet*)syms;
 
 // start the video stream and barcode reader.
 - (void) start;
@@ -90,6 +104,7 @@
 // compensate for device/camera/interface orientation
 - (void) willRotateToInterfaceOrientation:(UIInterfaceOrientation)orient
                                  duration:(NSTimeInterval)duration;
+
 
 // delegate is notified of decode results.
 @property (nonatomic, assign) id<ZBarReaderViewDelegate> readerDelegate;
@@ -144,8 +159,12 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
+=======
+@property (nonatomic, assign) BOOL isAnimatingTargetOutline;
+>>>>>>> f5703ae... Refining code. Removed the dual personality of ZBarReaderView by integrating all of the code from ZBarReaderViewImpl_Capture into it. Now need to decide on efficient workaround for simulator support if desired.
 @property (nonatomic, assign) CGRect targetOutlineFrame;
 >>>>>>> 7d61f19... Tweaking files to remove some questionable code.
 @property (nonatomic, retain) UIImageView *targetOutline;

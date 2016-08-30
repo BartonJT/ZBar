@@ -23,12 +23,19 @@
 
 #import <ZBarSDK/ZBarReaderView.h>
 
+#import <AVFoundation/AVFoundation.h>
+#import <CoreMedia/CoreMedia.h>
+#import <CoreVideo/CoreVideo.h>
+
 #define MODULE ZBarReaderView
+#import <ZBarSDK/ZBarCaptureReader.h>
 #import "debug.h"
 
-// silence warning
-@interface ZBarReaderViewImpl : NSObject
-@end
+
+#define DEGREES_TO_RADIANS(angle) (angle / 180.0 * M_PI)
+
+static NSString *const ZBRVFocusObserver = @"adjustingFocus";
+
 
 @implementation ZBarReaderView
 
@@ -43,33 +50,34 @@
     scanCrop,
     previewTransform,
     captureReader,
-    targetOutlineFrame  = _targetOutlineFrame,
-    targetOutline       = _targetOutline;
+    isAnimatingTargetOutline = _isAnimatingTargetOutline,
+    targetOutlineFrame       = _targetOutlineFrame,
+    targetOutline            = _targetOutline,
+    device,
+    session;
 
 @dynamic
     scanner,
     allowsPinchZoom,
-    enableCache,
-    device,
-    session;
+    enableCache;
 
 
 #pragma mark - Initialisation Methods -
 
-+ (id) alloc
-{
-    if (self == [ZBarReaderView class])
-    {
-        // this is an abstract wrapper for implementation selected
-        // at compile time.  replace with concrete subclass.
-        return (id)[ZBarReaderViewImpl alloc];
-    }
-    
-    return [super alloc];
-}
-
 - (void) initSubviews
 {
+    preview = [[AVCaptureVideoPreviewLayer layerWithSession: session] retain];
+    CGRect bounds = self.bounds;
+    bounds.origin = CGPointZero;
+    preview.bounds = bounds;
+    preview.position = CGPointMake(bounds.size.width / 2,
+                                   bounds.size.height / 2);
+    
+    AVCaptureVideoPreviewLayer *videoPreview = (AVCaptureVideoPreviewLayer *)preview;
+    videoPreview.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    [self.layer addSublayer: preview];
+    
+    
     NSAssert(preview, @"Failed ot initialise preview");
 
     overlay = [CALayer new];
@@ -157,6 +165,7 @@
 {
     NSAssert(scanner, @"A valid scanner object was not passed");
 
+    _isAnimatingTargetOutline = NO;
     tracksSymbols = YES;
     interfaceOrientation = UIInterfaceOrientationPortrait;
     torchMode = 2; // AVCaptureTorchModeAuto
@@ -168,6 +177,61 @@
     pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self
                                                       action:@selector(handlePinch)];
     [self addGestureRecognizer:pinch];
+    
+    
+    session = [[AVCaptureSession alloc] init];
+    
+    NSNotificationCenter *notify = [NSNotificationCenter defaultCenter];
+    
+    [notify addObserver:self
+               selector:@selector(onVideoError:)
+                   name:AVCaptureSessionRuntimeErrorNotification
+                 object:session];
+    
+    [notify addObserver:self
+               selector:@selector(onVideoStart:)
+                   name:AVCaptureSessionDidStartRunningNotification
+                 object:session];
+    
+    [notify addObserver:self
+               selector:@selector(onVideoStop:)
+                   name:AVCaptureSessionDidStopRunningNotification
+                 object:session];
+    
+    [notify addObserver:self
+               selector:@selector(onVideoStop:)
+                   name:AVCaptureSessionWasInterruptedNotification
+                 object:session];
+    
+    [notify addObserver:self
+               selector:@selector(onVideoStart:)
+                   name:AVCaptureSessionInterruptionEndedNotification
+                 object:session];
+    
+    self.device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    
+    captureReader = [[ZBarCaptureReader alloc] initWithImageScanner:scanner];
+    captureReader.captureDelegate = (id<ZBarCaptureDelegate>)self;
+    [session addOutput: captureReader.captureOutput];
+    
+    if ([session canSetSessionPreset: AVCaptureSessionPreset640x480])
+    {
+        session.sessionPreset = AVCaptureSessionPreset640x480;
+    }
+    
+    [captureReader addObserver:self
+                    forKeyPath:@"size"
+                       options:0
+                       context:NULL];
+    
+    [self initSubviews];
+    
+    // Add autofocus observer.
+    int flags = NSKeyValueObservingOptionNew;
+    [device addObserver:self
+             forKeyPath:ZBRVFocusObserver
+                options:flags
+                context:nil];
 }
 
 - (id) initWithImageScanner:(ZBarImageScanner*)scanner
@@ -231,65 +295,80 @@
     return self ;
 }
 
+
+#pragma mark - Deallocation Methods -
+
 - (void) dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    // Remove autofocus observer.
+    device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    [device removeObserver:self forKeyPath:ZBRVFocusObserver];
+    
+    if (showsFPS)
+    {
+        @try
+        {
+            [captureReader removeObserver:self
+                               forKeyPath:@"framesPerSecond"];
+        }
+        @catch(...) { }
+    }
+    @try
+    {
+        [captureReader removeObserver:self
+                           forKeyPath:@"size"];
+    }
+    @catch(...) { }
+    
+    captureReader.captureDelegate = nil;
+    [captureReader release];
+    captureReader = nil;
+    
+    [device release];
+    device = nil;
+    
+    [input release];
+    input = nil;
+    
+    [session release];
+    session = nil;
+    
+    
     [preview removeFromSuperlayer];
     [preview release];
     preview = nil;
+    
     [overlay release];
     overlay = nil;
+    
     [cropLayer release];
     cropLayer = nil;
+    
     [tracking release];
     tracking = nil;
+    
     [trackingColor release];
     trackingColor = nil;
+    
     [fpsLabel release];
     fpsLabel = nil;
+    
     [fpsView release];
     fpsView = nil;
+    
     [pinch release];
     pinch = nil;
+    
+    [_targetOutline release];
+    _targetOutline = nil;
     
     [super dealloc];
 }
 
-- (void) resetTracking
-{
-    [tracking removeAllAnimations];
-    [CATransaction begin];
-    [CATransaction setDisableActions:YES];
-    CGSize size = overlay.bounds.size;
-    CGRect crop = effectiveCrop;
-    tracking.frame = CGRectMake(crop.origin.x * size.width,
-                                crop.origin.y * size.height,
-                                crop.size.width * size.width,
-                                crop.size.height * size.height);
-    tracking.opacity = 0;
-    [CATransaction commit];
-}
 
-- (void) updateCrop
-{
-}
-
-static inline CGFloat rotationForInterfaceOrientation (int orient)
-{
-    // resolve camera/device image orientation to view/interface orientation
-    switch(orient)
-    {
-        case UIInterfaceOrientationLandscapeLeft:
-            return(M_PI_2);
-        case UIInterfaceOrientationPortraitUpsideDown:
-            return(M_PI);
-        case UIInterfaceOrientationLandscapeRight:
-            return(3 * M_PI_2);
-        case UIInterfaceOrientationPortrait:
-            return(2 * M_PI);
-    }
-    
-    return 0;
-}
+#pragma mark - UIView Methods -
 
 - (void) layoutSubviews
 {
@@ -299,24 +378,24 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     {
         return;
     }
-
+    
     [CATransaction begin];
     
     if (animationDuration)
     {
         [CATransaction setAnimationDuration:animationDuration];
         [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:
-                                                    kCAMediaTimingFunctionEaseInEaseOut]];
+                                                   kCAMediaTimingFunctionEaseInEaseOut]];
     }
     else
     {
         [CATransaction setDisableActions:YES];
     }
-
+    
     [super layoutSubviews];
     fpsView.frame = CGRectMake(bounds.size.width - 80, bounds.size.height - 32,
                                80 + 12, 32 + 12);
-
+    
     // orient view bounds to match camera image
     CGSize psize;
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation))
@@ -327,7 +406,7 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     {
         psize = bounds.size;
     }
-
+    
     // calculate scale from view coordinates to image coordinates
     // FIXME assumes AVLayerVideoGravityResizeAspectFill
     CGFloat scalex = imageSize.width / psize.width;
@@ -340,7 +419,7 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     }
     // apply zoom
     imageScale /= zoom;
-
+    
     // scale crop by zoom factor
     CGFloat z = 1 / zoom;
     CGFloat t = (1 - z) / 2;
@@ -348,7 +427,7 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
                                  scanCrop.origin.y * z + t,
                                  scanCrop.size.width * z,
                                  scanCrop.size.height * z);
-
+    
     // convert effective preview area to normalized image coordinates
     CGRect previewCrop;
     
@@ -368,7 +447,7 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     
     previewCrop.origin = CGPointMake((1 - previewCrop.size.width) / 2,
                                      (1 - previewCrop.size.height) / 2);
-
+    
     // clip crop to visible preview area
     effectiveCrop = CGRectIntersection(zoomCrop, previewCrop);
     
@@ -376,7 +455,7 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     {
         effectiveCrop = zoomCrop;
     }
-
+    
     // size preview to match image in view coordinates
     CGFloat viewScale = 1 / imageScale;
     
@@ -385,16 +464,16 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
         psize = CGSizeMake(imageSize.width * viewScale,
                            imageSize.height * viewScale);
     }
-
+    
     preview.bounds = CGRectMake(0, 0, psize.height, psize.width);
     // center preview in view
     preview.position = CGPointMake(bounds.size.width / 2,
                                    bounds.size.height / 2);
-
+    
     CGFloat angle = rotationForInterfaceOrientation(interfaceOrientation);
     CATransform3D xform = CATransform3DMakeAffineTransform(previewTransform);
     preview.transform = CATransform3DRotate(xform, angle, 0, 0, 1);
-
+    
     // scale overlay to match actual image
     if (imageSize.width && imageSize.height)
     {
@@ -407,12 +486,12 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     
     // center overlay in preview
     overlay.position = CGPointMake(psize.height / 2, psize.width / 2);
-
+    
     // image coordinates rotated from preview
     xform = CATransform3DMakeRotation(M_PI_2, 0, 0, 1);
     overlay.transform = CATransform3DScale(xform, viewScale, viewScale, 1);
     tracking.borderWidth = imageScale;
-
+    
 #ifndef NDEBUG
     preview.backgroundColor = [UIColor yellowColor].CGColor;
     overlay.borderWidth = 2 * imageScale;
@@ -421,21 +500,66 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
                                  effectiveCrop.origin.y * imageSize.height,
                                  effectiveCrop.size.width * imageSize.width,
                                  effectiveCrop.size.height * imageSize.height);
-    zlog(@"layoutSubviews: bounds=%@ orient=%d image=%@ crop=%@ zoom=%g\n"
+    zlog(@"layoutSubviews: bounds=%@ orient=%ld image=%@ crop=%@ zoom=%g\n"
          @"=> preview=%@ crop=(z%@ p%@ %@ i%@) scale=%g %c %g = 1/%g",
-         NSStringFromCGSize(bounds.size), interfaceOrientation,
+         NSStringFromCGSize(bounds.size), (long)interfaceOrientation,
          NSStringFromCGSize(imageSize), NSStringFromCGRect(scanCrop), zoom,
          NSStringFromCGSize(psize), NSStringFromCGRect(zoomCrop),
          NSStringFromCGRect(previewCrop), NSStringFromCGRect(effectiveCrop),
          NSStringFromCGRect(cropLayer.frame),
          scalex, (scalex > scaley) ? '>' : '<', scaley, viewScale);
 #endif
-
+    
     [self resetTracking];
     [self updateCrop];
-
+    
     [CATransaction commit];
     animationDuration = 0;
+}
+
+
+#pragma mark - View Orientation Methods -
+
+static inline CGFloat rotationForInterfaceOrientation (int orient)
+{
+    // resolve camera/device image orientation to view/interface orientation
+    switch(orient)
+    {
+        case UIInterfaceOrientationLandscapeLeft:
+            return(M_PI_2);
+        case UIInterfaceOrientationPortraitUpsideDown:
+            return(M_PI);
+        case UIInterfaceOrientationLandscapeRight:
+            return(3 * M_PI_2);
+        case UIInterfaceOrientationPortrait:
+            return(2 * M_PI);
+    }
+    
+    return 0;
+}
+
+- (void) willRotateToInterfaceOrientation:(UIInterfaceOrientation)orient
+                                 duration:(NSTimeInterval)duration
+{
+    if (interfaceOrientation != orient)
+    {
+        zlog(@"orient=%ld #%g", (long)orient, duration);
+        interfaceOrientation = orient;
+        animationDuration = duration;
+    }
+}
+
+
+#pragma mark - Setter/Getter Methods -
+
+- (void) updateCrop
+{
+    captureReader.scanCrop = effectiveCrop;
+}
+
+- (ZBarImageScanner*) scanner
+{
+    return captureReader.scanner;
 }
 
 - (void) setImageSize:(CGSize)size
@@ -449,14 +573,63 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     [self setNeedsLayout];
 }
 
-- (void) willRotateToInterfaceOrientation:(UIInterfaceOrientation)orient
-                                 duration:(NSTimeInterval)duration
+- (void) setDevice:(AVCaptureDevice*)newdev
 {
-    if (interfaceOrientation != orient)
+    id olddev = device;
+    AVCaptureInput *oldinput = input;
+    assert(!olddev == !oldinput);
+    
+    NSError *error = nil;
+    device = [newdev retain];
+    
+    if (device)
     {
-        zlog(@"orient=%d #%g", orient, duration);
-        interfaceOrientation = orient;
-        animationDuration = duration;
+        assert([device hasMediaType: AVMediaTypeVideo]);
+        input = [[AVCaptureDeviceInput alloc] initWithDevice:newdev
+                                                       error:&error];
+        assert(input);
+    }
+    else
+    {
+        input = nil;
+    }
+    
+    [session beginConfiguration];
+    
+    if(oldinput)
+    {
+        [session removeInput: oldinput];
+    }
+    if(input)
+    {
+        [session addInput: input];
+    }
+    
+    [session commitConfiguration];
+    
+    [olddev release];
+    [oldinput release];
+}
+
+- (BOOL) enableCache
+{
+    return captureReader.enableCache;
+}
+
+- (void) setEnableCache:(BOOL)enable
+{
+    captureReader.enableCache = enable;
+}
+
+- (void) setTorchMode:(NSInteger)mode
+{
+    if (running && [device isTorchModeSupported: mode])
+    {
+        @try
+        {
+            device.torchMode = mode;
+        }
+        @catch(...) { }
     }
 }
 
@@ -512,6 +685,23 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     }
     
     fpsView.hidden = !show;
+    
+    @try
+    {
+        if(show)
+        {
+            [captureReader addObserver:self
+                            forKeyPath:@"framesPerSecond"
+                               options:0
+                               context:NULL];
+        }
+        else
+        {
+            [captureReader removeObserver:self
+                               forKeyPath:@"framesPerSecond"];
+        }
+    }
+    @catch(...) { }
 }
 
 - (void) setZoom:(CGFloat)z
@@ -565,6 +755,24 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     [self setNeedsLayout];
 }
 
+
+#pragma mark -
+
+- (void) resetTracking
+{
+    [tracking removeAllAnimations];
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+    CGSize size = overlay.bounds.size;
+    CGRect crop = effectiveCrop;
+    tracking.frame = CGRectMake(crop.origin.x * size.width,
+                                crop.origin.y * size.height,
+                                crop.size.width * size.width,
+                                crop.size.height * size.height);
+    tracking.opacity = 0;
+    [CATransaction commit];
+}
+
 - (void) start
 {
     if (started)
@@ -578,6 +786,9 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     fpsLabel.text = @"--- fps ";
 
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    
+    [session startRunning];
+    captureReader.enableReader = YES;
 }
 
 - (void) stop
@@ -590,13 +801,58 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     started = NO;
 
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+    
+    captureReader.enableReader = NO;
+    [session stopRunning];
 }
 
 - (void) flushCache
 {
+    [captureReader flushCache];
 }
 
-// UIGestureRecognizer callback
+- (void) configureDevice
+{
+    if ([device isFocusModeSupported: AVCaptureFocusModeContinuousAutoFocus])
+    {
+        device.focusMode = AVCaptureFocusModeContinuousAutoFocus;
+    }
+    
+    if ([device isTorchModeSupported: torchMode])
+    {
+        device.torchMode = torchMode;
+    }
+}
+
+
+- (void) lockDevice
+{
+    if (!running || locked)
+    {
+        assert(0);
+        
+        return;
+    }
+    
+    // lock device and set focus mode
+    NSError *error = nil;
+    if ([device lockForConfiguration:&error])
+    {
+        locked = YES;
+        [self configureDevice];
+    }
+    else
+    {
+        zlog(@"failed to lock device: %@", error);
+        // just keep trying
+        [self performSelector:@selector(lockDevice)
+                   withObject:nil
+                   afterDelay:0.5];
+    }
+}
+
+
+#pragma mark - UIGestureRecognizer Callback -
 
 - (void) handlePinch
 {
@@ -625,20 +881,27 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     }
 }
 
+
+#pragma mark - Tracking Methods -
+
 - (void) updateTracking:(CALayer*)trk
              withSymbol:(ZBarSymbol*)sym
 {
+    return;
+    /*
     if (!sym)
     {
         return;
     }
 
     CGRect r = sym.bounds;
+    
     if (r.size.width  <= 32 &&
         r.size.height <= 32)
     {
         return;
     }
+    
     r = CGRectInset(r, -24, -24);
 
     CALayer *current = trk.presentationLayer;
@@ -699,6 +962,7 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     group.removedOnCompletion = !TARGET_IPHONE_SIMULATOR;
     [trk addAnimation:group
                forKey:@"tracking"];
+     */
 }
 
 - (void) didTrackSymbols:(ZBarSymbolSet*)syms
@@ -746,4 +1010,252 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
               withSymbol:sym];
 }
 
+
+#pragma mark - Autofocus Animations -
+
+- (void) animateIncreasingFocus
+{
+    self.isAnimatingTargetOutline = YES;
+    
+    [UIView animateWithDuration:0.50
+                     animations:^{
+                         
+                         CGRect frame = self.targetOutline.bounds;
+                         
+                         frame.size.width  = frame.size.width  * 1.10f;
+                         frame.size.height = frame.size.height * 1.10f;
+                         
+                         CGAffineTransform transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(45));
+                         self.targetOutline.transform = transform;
+                         
+                         self.targetOutline.bounds = frame;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         [self animateDecreasingFocus];
+                     }];
+}
+
+
+- (void) animateDecreasingFocus
+{
+    [UIView animateWithDuration:0.50
+                     animations:^{
+                         
+                         CGRect frame = self.targetOutline.bounds;
+                         
+                         frame.size.width  = frame.size.width  / 110 * 80;
+                         frame.size.height = frame.size.height / 110 * 80;
+                         
+                         CGAffineTransform transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(-45));
+                         self.targetOutline.transform = transform;
+                         self.targetOutline.bounds = frame;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         [self animateOriginalFrame];
+                     }];
+}
+
+
+- (void) animateOriginalFrame
+{
+    [UIView animateWithDuration:0.25
+                     animations:^{
+                         
+                         CGRect frame = self.targetOutline.bounds;
+                         
+                         CGAffineTransform transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(0));
+                         self.targetOutline.transform = transform;
+                         
+                         frame.size.width  = frame.size.width  / 80 * 100;
+                         frame.size.height = frame.size.height / 80 * 100;
+                         
+                         self.targetOutline.bounds = frame;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         self.isAnimatingTargetOutline = NO;
+                     }];
+}
+
+
+#pragma mark - NSKeyValueObserving -
+
+- (void) observeValueForKeyPath:(NSString*)keyPath
+                       ofObject:(id)object
+                         change:(NSDictionary*)change
+                        context:(void*)context
+{   
+    // Note: The camera in the iPad 2 does not autofocus and so will not receive these events.
+    if ([keyPath isEqualToString:ZBRVFocusObserver])
+    {
+        BOOL adjustingFocus = [[change objectForKey:NSKeyValueChangeNewKey] isEqualToNumber:[NSNumber numberWithInt:1]];
+        
+        if (adjustingFocus)
+        {
+            if (!self.isAnimatingTargetOutline &&
+                self.window != nil)
+            {
+                [self animateIncreasingFocus];
+            }
+        }
+    }
+    
+    if (object == captureReader)
+    {
+        if ([keyPath isEqualToString: @"size"])
+        {
+            // Adjust preview to match image size
+            [self setImageSize: captureReader.size];
+        }
+        else if ([keyPath isEqualToString: @"framesPerSecond"])
+        {
+            fpsLabel.text = [NSString stringWithFormat: @"%.2ffps ",
+                             captureReader.framesPerSecond];
+        }
+    }
+}
+
+
+#pragma mark - AVCaptureSession Notifications -
+
+- (void) onVideoStart:(NSNotification*)note
+{
+    zlog(@"onVideoStart: running=%d %@", running, note);
+    
+    if (running)
+    {
+        return;
+    }
+    
+    running = YES;
+    locked = NO;
+    
+    [self lockDevice];
+    
+    if ([readerDelegate respondsToSelector:@selector(readerViewDidStart:)])
+    {
+        [readerDelegate readerViewDidStart:self];
+    }
+}
+
+- (void) onVideoStop:(NSNotification*)note
+{
+    zlog(@"onVideoStop: %@", note);
+    
+    if (!running)
+    {
+        return;
+    }
+    
+    running = NO;
+    
+    if (locked)
+    {
+        [device unlockForConfiguration];
+    }
+    else
+    {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self
+                                                 selector:@selector(lockDevice)
+                                                   object:nil];
+    }
+    
+    locked = NO;
+    
+    if (readerDelegate &&
+        [readerDelegate respondsToSelector:@selector(readerView:didStopWithError:)])
+    {
+        [readerDelegate readerView:self
+                  didStopWithError:nil];
+    }
+}
+
+- (void) onVideoError: (NSNotification*) note
+{
+    zlog(@"onVideoError: %@", note);
+    
+    if (running)
+    {
+        // FIXME does session always stop on error?
+        running = started = NO;
+        [device unlockForConfiguration];
+    }
+    
+    NSError *err = [note.userInfo objectForKey: AVCaptureSessionErrorKey];
+    
+    if (readerDelegate &&
+        [readerDelegate respondsToSelector:@selector(readerView:didStopWithError:)])
+    {
+        [readerDelegate readerView:self
+                  didStopWithError:err];
+    }
+    else
+    {
+        NSLog(@"ZBarReaderView: ERROR during capture: %@: %@",
+              [err localizedDescription],
+              [err localizedFailureReason]);
+    }
+}
+
+
+#pragma mark - ZBarCaptureDelegate -
+
+- (void) captureReader:(ZBarCaptureReader*)reader
+       didTrackSymbols:(ZBarSymbolSet*)syms
+{
+    [self didTrackSymbols: syms];
+}
+
+- (void)       captureReader:(ZBarCaptureReader*)reader
+  didReadNewSymbolsFromImage:(ZBarImage*)zimg
+{
+    zlog(@"scanned %d symbols: %@", zimg.symbols.count, zimg);
+    
+    if (!readerDelegate)
+    {
+        return;
+    }
+    
+    UIImageOrientation orient = [UIDevice currentDevice].orientation;
+    
+    if (!UIDeviceOrientationIsValidInterfaceOrientation(orient))
+    {
+        orient = interfaceOrientation;
+        
+        if (orient == UIInterfaceOrientationLandscapeLeft)
+        {
+            orient = UIDeviceOrientationLandscapeLeft;
+        }
+        else if (orient == UIInterfaceOrientationLandscapeRight)
+        {
+            orient = UIDeviceOrientationLandscapeRight;
+        }
+    }
+    switch (orient)
+    {
+        case UIDeviceOrientationPortraitUpsideDown:
+            orient = UIImageOrientationLeft;
+            break;
+        case UIDeviceOrientationLandscapeLeft:
+            orient = UIImageOrientationUp;
+            break;
+        case UIDeviceOrientationLandscapeRight:
+            orient = UIImageOrientationDown;
+            break;
+        default:
+            orient = UIImageOrientationRight;
+            break;
+    }
+    
+    UIImage *uiimg = [zimg UIImageWithOrientation: orient];
+    
+    [readerDelegate readerView:self
+                didReadSymbols:zimg.symbols
+                     fromImage:uiimg];
+}
+
+
 @end
+

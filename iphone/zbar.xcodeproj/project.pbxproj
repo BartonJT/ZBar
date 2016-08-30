@@ -55,8 +55,6 @@
 		DC299B311208FCA3006A023C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC67C08210A079BE0033B702 /* UIKit.framework */; };
 		DC299B841208FCAB006A023C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 		DC3AAB4F11B71A040021C7B1 /* ZBarCVImage.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3AAB4D11B71A040021C7B1 /* ZBarCVImage.m */; };
-		DC3CE47811FA1622008FAF88 /* ZBarReaderViewImpl_Capture.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3CE47611FA1622008FAF88 /* ZBarReaderViewImpl_Capture.m */; };
-		DC3CE47911FA1622008FAF88 /* ZBarReaderViewImpl_Simulator.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3CE47711FA1622008FAF88 /* ZBarReaderViewImpl_Simulator.m */; };
 		DC3CEE921215C93200D7A786 /* zbar.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = DC67C11710A07A810033B702 /* zbar.h */; };
 		DC3CEE941215C97F00D7A786 /* Decoder.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = DC50463512034A4C009FF359 /* Decoder.h */; };
 		DC3CEE951215C97F00D7A786 /* Exception.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = DC50463612034A4C009FF359 /* Exception.h */; };
@@ -132,6 +130,7 @@
 		DCDC6E3011ADCA8E00021380 /* ZBarReaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = DCDC6E2F11ADCA8E00021380 /* ZBarReaderView.m */; };
 		DCE9900D129719F100D2655C /* code93.c in Sources */ = {isa = PBXBuildFile; fileRef = DCE9900B129719F100D2655C /* code93.c */; };
 		DCF5C9AD11EA3AD100E7DC21 /* databar.c in Sources */ = {isa = PBXBuildFile; fileRef = DCF5C9AB11EA3AD100E7DC21 /* databar.c */; };
+		FD4CC8B3194A8F1D003627B6 /* ZBarCaptureReader.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC3CEFA51216347100D7A786 /* ZBarCaptureReader.h */; };
 		FDA987C819417325005735AC /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = DC299AF51208B7BD006A023C /* config.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FDA987C919417325005735AC /* ZBarCVImage.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3AAB4C11B71A040021C7B1 /* ZBarCVImage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FDA987CA19417325005735AC /* ZBarCameraSimulator.h in Headers */ = {isa = PBXBuildFile; fileRef = DC5D76C5136FA8F20069AEF5 /* ZBarCameraSimulator.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -157,7 +156,6 @@
 		FDA987DF194173A9005735AC /* config.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC299AF51208B7BD006A023C /* config.h */; };
 		FDA987E0194173A9005735AC /* ZBarCVImage.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC3AAB4C11B71A040021C7B1 /* ZBarCVImage.h */; };
 		FDA987E1194173A9005735AC /* ZBarCameraSimulator.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC5D76C5136FA8F20069AEF5 /* ZBarCameraSimulator.h */; };
-		FDA987E2194173AA005735AC /* ZBarCaptureReader.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC3CEFA51216347100D7A786 /* ZBarCaptureReader.h */; };
 		FDA987E3194173AA005735AC /* ZBarHelpController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DCB3789A12A43C7E0059B07B /* ZBarHelpController.h */; };
 		FDA987E4194173AA005735AC /* ZBarImage.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC3CEFA61216347100D7A786 /* ZBarImage.h */; };
 		FDA987E5194173AA005735AC /* ZBarImageScanner.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC3CEFA71216347100D7A786 /* ZBarImageScanner.h */; };
@@ -299,10 +297,10 @@
 			dstPath = "include/${PRODUCT_NAME}";
 			dstSubfolderSpec = 16;
 			files = (
+				FD4CC8B3194A8F1D003627B6 /* ZBarCaptureReader.h in CopyFiles */,
 				FDA987DF194173A9005735AC /* config.h in CopyFiles */,
 				FDA987E0194173A9005735AC /* ZBarCVImage.h in CopyFiles */,
 				FDA987E1194173A9005735AC /* ZBarCameraSimulator.h in CopyFiles */,
-				FDA987E2194173AA005735AC /* ZBarCaptureReader.h in CopyFiles */,
 				FDA987E3194173AA005735AC /* ZBarHelpController.h in CopyFiles */,
 				FDA987E4194173AA005735AC /* ZBarImage.h in CopyFiles */,
 				FDA987E5194173AA005735AC /* ZBarImageScanner.h in CopyFiles */,
@@ -892,8 +890,6 @@
 				DCDC6E3011ADCA8E00021380 /* ZBarReaderView.m in Sources */,
 				DC3AAB4F11B71A040021C7B1 /* ZBarCVImage.m in Sources */,
 				DCF5C9AD11EA3AD100E7DC21 /* databar.c in Sources */,
-				DC3CE47811FA1622008FAF88 /* ZBarReaderViewImpl_Capture.m in Sources */,
-				DC3CE47911FA1622008FAF88 /* ZBarReaderViewImpl_Simulator.m in Sources */,
 				DCE9900D129719F100D2655C /* code93.c in Sources */,
 				DC5D76C3136FA8C40069AEF5 /* ZBarCameraSimulator.m in Sources */,
 				DC290E281351496400A9B857 /* codabar.c in Sources */,
@@ -934,6 +930,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphonesimulator*][arch=*]" = "";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -944,9 +941,12 @@
 					include,
 					../include,
 					../zbar,
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = zbar;
+				PUBLIC_HEADERS_FOLDER_PATH = zbar;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -962,17 +962,20 @@
 					include,
 					../include,
 					../zbar,
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = zbar;
+				PUBLIC_HEADERS_FOLDER_PATH = zbar;
 				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
 		1DEB922308733DC00010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				EXCLUDED_SOURCE_FILE_NAMES = "";
 				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphoneos*][arch=*]" = ZBarReaderViewImpl_Simulator.m;
@@ -985,7 +988,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG_OBJC=1";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				OTHER_LDFLAGS = "-all_load";
 				PREBINDING = NO;
 				PROVISIONING_PROFILE = "";
@@ -998,7 +1001,6 @@
 		1DEB922408733DC00010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				EXCLUDED_SOURCE_FILE_NAMES = "";
 				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphoneos*][arch=*]" = ZBarReaderViewImpl_Simulator.m;
@@ -1010,7 +1012,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "NDEBUG=1";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				OTHER_LDFLAGS = "-all_load";
 				PREBINDING = NO;
 				PROVISIONING_PROFILE = "";
@@ -1086,7 +1088,6 @@
 		DC3748D71357BC69004E69D6 /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				EXCLUDED_SOURCE_FILE_NAMES = "";
 				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphoneos*][arch=*]" = ZBarReaderViewImpl_Simulator.m;
@@ -1098,7 +1099,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "NDEBUG=1";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				OTHER_LDFLAGS = "-all_load";
 				PREBINDING = NO;
 				PROVISIONING_PROFILE = "";
@@ -1119,10 +1120,14 @@
 					include,
 					../include,
 					../zbar,
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = zbar;
+				PUBLIC_HEADERS_FOLDER_PATH = zbar;
 				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Distribution;
 		};
@@ -1174,6 +1179,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphonesimulator*][arch=*]" = "";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				PRODUCT_NAME = ZBarSDK;

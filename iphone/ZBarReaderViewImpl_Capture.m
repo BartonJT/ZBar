@@ -20,7 +20,7 @@
 //
 //  http://sourceforge.net/projects/zbar
 //------------------------------------------------------------------------
-
+/*
 #import <AVFoundation/AVFoundation.h>
 #import <CoreMedia/CoreMedia.h>
 #import <CoreVideo/CoreVideo.h>
@@ -52,7 +52,7 @@
 
 @implementation ZBarReaderViewImpl
 
-@synthesize device, session;
+//@synthesize device, session;
 
 
 #pragma mark - Initialisation Methods -
@@ -494,3 +494,4 @@
 }
 
 @end
+ */

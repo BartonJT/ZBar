@@ -21,11 +21,12 @@
 //  http://sourceforge.net/projects/zbar
 //------------------------------------------------------------------------
 
+#import <ZBarSDK/ZBarCaptureReader.h>
+
 #import <libkern/OSAtomic.h>
 #import <AVFoundation/AVFoundation.h>
 #import <CoreMedia/CoreMedia.h>
 #import <CoreVideo/CoreVideo.h>
-#import <ZBarSDK/ZBarCaptureReader.h>
 #import <ZBarSDK/ZBarImageScanner.h>
 #import "ZBarCVImage.h"
 
@@ -328,7 +329,7 @@ enum {
     }
 
     OSType format = CVPixelBufferGetPixelFormatType(buf);
-    int planes = CVPixelBufferGetPlaneCount(buf);
+    NSInteger planes = CVPixelBufferGetPlaneCount(buf);
 
     if (format != kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange ||
         !planes)
@@ -337,8 +338,8 @@ enum {
         goto error;
     }
 
-    int w = CVPixelBufferGetBytesPerRowOfPlane(buf, 0);
-    int h = CVPixelBufferGetHeightOfPlane(buf, 0);
+    NSInteger w = CVPixelBufferGetBytesPerRowOfPlane(buf, 0);
+    NSInteger h = CVPixelBufferGetHeightOfPlane(buf, 0);
     
     CVReturn rc = CVPixelBufferLockBaseAddress(buf, kCVPixelBufferLock_ReadOnly);
     
@@ -356,7 +357,7 @@ enum {
             withLength:w * h];
 
         BOOL doTrack = NO;
-        int ngood = 0;
+        NSInteger ngood = 0;
         ZBarSymbolSet *syms = nil;
         
         @synchronized(self.scanner)
@@ -396,8 +397,8 @@ enum {
             
             if (nraw > 0 || (_state & CAPTURE))
             {
-                zlog(@"scan image: %dx%d crop=%@ ngood=%d nraw=%d st=%d",
-                     w, h, NSStringFromCGRect(image.crop), ngood, nraw, _state);
+                zlog(@"scan image: %ldx%ld crop=%@ ngood=%ld nraw=%d st=%d",
+                     (long)w, (long)h, NSStringFromCGRect(image.crop), (long)ngood, nraw, _state);
             }
             
             if (ngood || (_state & CAPTURE))
