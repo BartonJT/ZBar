@@ -34,18 +34,15 @@
 
 @synthesize readerDelegate, tracksSymbols, trackingColor, torchMode, showsFPS,
     zoom, maxZoom, scanCrop, previewTransform, captureReader;
-@synthesize targetOutline = _targetOutline;
 @dynamic scanner, allowsPinchZoom, enableCache, device, session;
 
 + (id) alloc
 {
-    if (self == [ZBarReaderView class])
-    {
+    if(self == [ZBarReaderView class]) {
         // this is an abstract wrapper for implementation selected
         // at compile time.  replace with concrete subclass.
         return((id)[ZBarReaderViewImpl alloc]);
     }
-    
     return([super alloc]);
 }
 
@@ -102,26 +99,6 @@
     [fpsView addSubview: fpsLabel];
 
     self.zoom = 1.25;
-    
-    UIImage *_targetImage = [[UIImage alloc] initWithContentsOfFile:
-                                [[NSBundle mainBundle] pathForResource:@"squaretarget2" ofType:@"png"]];
-    _targetOutline = [[UIImageView alloc] initWithImage:_targetImage];
-    [_targetImage release];
-    
-    _targetOutline.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin   |
-                                       UIViewAutoresizingFlexibleRightMargin |
-                                       UIViewAutoresizingFlexibleLeftMargin  |
-                                       UIViewAutoresizingFlexibleBottomMargin);
-    
-    CGRect frame = _targetOutline.frame;
-    CGFloat viewWidth  = self.frame.size.width;
-    CGFloat viewHeight = self.frame.size.height;
-    frame.origin.x = (viewWidth/2) - (frame.size.width/2);
-    frame.origin.y = (viewHeight/2) - (frame.size.height/2);
-    
-    _targetOutline.frame = frame;
-    
-    [self addSubview:_targetOutline];
 }
 
 - (void) _initWithImageScanner: (ZBarImageScanner*) scanner
@@ -169,23 +146,19 @@
         return(nil);
 
     [scanner setSymbology: 0
-                   config: ZBAR_CFG_X_DENSITY
-                       to: 3];
+             config: ZBAR_CFG_X_DENSITY
+             to: 3];
     [scanner setSymbology: 0
-                   config: ZBAR_CFG_Y_DENSITY
-                       to: 3];
+             config: ZBAR_CFG_Y_DENSITY
+             to: 3];
     return(self);
 }
 
 - (id) initWithCoder: (NSCoder*) decoder
 {
-    self = [super initWithCoder:decoder];
-    
-    if (!self)
-    {
+    self = [super initWithCoder: decoder];
+    if(!self)
         return(nil);
-    }
-    
     ZBarImageScanner *scanner =
         [[ZBarImageScanner new]
             autorelease];
@@ -197,7 +170,6 @@
     [scanner setSymbology: 0
              config: ZBAR_CFG_Y_DENSITY
              to: 3];
-    
     return(self);
 }
 
@@ -247,14 +219,14 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
     // resolve camera/device image orientation to view/interface orientation
     switch(orient)
     {
-        case UIInterfaceOrientationLandscapeLeft:
-            return(M_PI_2);
-        case UIInterfaceOrientationPortraitUpsideDown:
-            return(M_PI);
-        case UIInterfaceOrientationLandscapeRight:
-            return(3 * M_PI_2);
-        case UIInterfaceOrientationPortrait:
-            return(2 * M_PI);
+    case UIInterfaceOrientationLandscapeLeft:
+        return(M_PI_2);
+    case UIInterfaceOrientationPortraitUpsideDown:
+        return(M_PI);
+    case UIInterfaceOrientationLandscapeRight:
+        return(3 * M_PI_2);
+    case UIInterfaceOrientationPortrait:
+        return(2 * M_PI);
     }
     return(0);
 }
@@ -426,23 +398,18 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
 
 - (void) setTrackingColor: (UIColor*) color
 {
-    if (!color)
-    {
+    if(!color)
         return;
-    }
-    
+    [color retain];
     [trackingColor release];
-    trackingColor = [color retain];
-    tracking.borderColor = trackingColor.CGColor;
+    trackingColor = color;
+    tracking.borderColor = color.CGColor;
 }
 
 - (void) setShowsFPS: (BOOL) show
 {
-    if (show == showsFPS)
-    {
+    if(show == showsFPS)
         return;
-    }
-    
     fpsView.hidden = !show;
 }
 
@@ -454,7 +421,6 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
         z = maxZoom;
     if(z == zoom)
         return;
-    
     zoom = z;
 
     [self setNeedsLayout];

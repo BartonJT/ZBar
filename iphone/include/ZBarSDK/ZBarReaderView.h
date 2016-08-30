@@ -60,6 +60,11 @@
     NSInteger torchMode;
     UIInterfaceOrientation interfaceOrientation;
     NSTimeInterval animationDuration;
+<<<<<<< HEAD
+=======
+    
+    UIImageView *_targetOutline;
+>>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 
     CALayer *preview, *overlay, *tracking, *cropLayer;
     UIView *fpsView;
@@ -137,4 +142,9 @@
 // this flag still works, but its use is deprecated
 @property (nonatomic) BOOL enableCache;
 
+<<<<<<< HEAD
+=======
+@property (nonatomic, retain) UIImageView *targetOutline;
+
+>>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 @end

@@ -30,6 +30,7 @@
 #define MODULE ZBarReaderViewController
 #import "debug.h"
 
+<<<<<<< HEAD
 static inline AVCaptureDevicePosition
 AVPositionForUICamera (UIImagePickerControllerCameraDevice camera)
 {
@@ -39,6 +40,21 @@ AVPositionForUICamera (UIImagePickerControllerCameraDevice camera)
     case UIImagePickerControllerCameraDeviceFront:
         return(AVCaptureDevicePositionFront);
     }
+=======
+static CGFloat const ZBRVCControlsHeight = 54.0f;
+
+static inline AVCaptureDevicePosition
+AVPositionForUICamera (UIImagePickerControllerCameraDevice camera)
+{
+    switch(camera)
+    {
+        case UIImagePickerControllerCameraDeviceRear:
+            return(AVCaptureDevicePositionBack);
+        case UIImagePickerControllerCameraDeviceFront:
+            return(AVCaptureDevicePositionFront);
+    }
+    
+>>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
     return(-1);
 }
 
@@ -47,11 +63,22 @@ UICameraForAVPosition (AVCaptureDevicePosition position)
 {
     switch(position)
     {
+<<<<<<< HEAD
     case AVCaptureDevicePositionBack:
         return(UIImagePickerControllerCameraDeviceRear);
     case AVCaptureDevicePositionFront:
         return(UIImagePickerControllerCameraDeviceFront);
     }
+=======
+        case AVCaptureDevicePositionBack:
+            return(UIImagePickerControllerCameraDeviceRear);
+        case AVCaptureDevicePositionFront:
+            return(UIImagePickerControllerCameraDeviceFront);
+        case AVCaptureDevicePositionUnspecified:
+            break;
+    }
+    
+>>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
     return(-1);
 }
 
@@ -59,16 +86,35 @@ static inline AVCaptureDevice*
 AVDeviceForUICamera (UIImagePickerControllerCameraDevice camera)
 {
     AVCaptureDevicePosition position = AVPositionForUICamera(camera);
+<<<<<<< HEAD
     if(position < 0)
         return(nil);
+=======
+    
+    if(position < 0)
+    {
+        return(nil);
+    }
+>>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 
 #if !TARGET_IPHONE_SIMULATOR
     NSArray *allDevices =
         [AVCaptureDevice devicesWithMediaType: AVMediaTypeVideo];
+<<<<<<< HEAD
     for(AVCaptureDevice *device in allDevices)
         // FIXME how to quantify "best" of several (theoretical) possibilities
         if(device.position == position)
             return(device);
+=======
+    for (AVCaptureDevice *device in allDevices)
+    {
+        // FIXME how to quantify "best" of several (theoretical) possibilities
+        if(device.position == position)
+        {
+            return(device);
+        }
+    }
+>>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 #endif
     return(nil);
 }
@@ -78,6 +124,7 @@ AVTorchModeForUIFlashMode (UIImagePickerControllerCameraFlashMode mode)
 {
     switch(mode)
     {
+<<<<<<< HEAD
     case UIImagePickerControllerCameraFlashModeAuto:
         return(AVCaptureTorchModeAuto);
     case UIImagePickerControllerCameraFlashModeOn:
@@ -85,6 +132,16 @@ AVTorchModeForUIFlashMode (UIImagePickerControllerCameraFlashMode mode)
     case UIImagePickerControllerCameraFlashModeOff:
         break;
     }
+=======
+        case UIImagePickerControllerCameraFlashModeAuto:
+            return(AVCaptureTorchModeAuto);
+        case UIImagePickerControllerCameraFlashModeOn:
+            return(AVCaptureTorchModeOn);
+        case UIImagePickerControllerCameraFlashModeOff:
+            break;
+    }
+    
+>>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
     return(AVCaptureTorchModeOff);
 }
 
@@ -233,27 +290,50 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     cameraOverlayView = nil;
     [scanner release];
     scanner = nil;
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
     [super dealloc];
 }
 
 - (void) initControls
 {
+<<<<<<< HEAD
     if(!showsZBarControls && controls) {
+=======
+    if (!showsZBarControls && controls)
+    {
+>>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
         [controls removeFromSuperview];
         [controls release];
         controls = nil;
     }
+<<<<<<< HEAD
     if(!showsZBarControls)
         return;
 
     UIView *view = self.view;
     if(controls) {
+=======
+    
+    if (!showsZBarControls)
+    {
+        return;
+    }
+
+    UIView *view = self.view;
+    
+    if (controls)
+    {
+>>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
         assert(controls.superview == view);
         [view bringSubviewToFront: controls];
         return;
     }
 
     CGRect r = view.bounds;
+<<<<<<< HEAD
     r.origin.y = r.size.height - 54;
     r.size.height = 54;
     controls = [[UIView alloc]
@@ -299,6 +379,51 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     [toolbar release];
 
     [view addSubview: controls];
+=======
+    r.origin.y = r.size.height - ZBRVCControlsHeight;
+    r.size.height = ZBRVCControlsHeight;
+    controls = [[UIView alloc] initWithFrame:r];
+    controls.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                 UIViewAutoresizingFlexibleTopMargin);
+    controls.backgroundColor = [UIColor clearColor];
+
+    UIToolbar *toolbar = [[UIToolbar alloc] init];
+    r.origin.y = 0;
+    toolbar.frame = r;
+    toolbar.barStyle = UIBarStyleDefault;
+    toolbar.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                UIViewAutoresizingFlexibleHeight);
+
+    UIButton *info = [UIButton buttonWithType:UIButtonTypeInfoLight];
+    [info addTarget:self
+             action:@selector(info)
+   forControlEvents:UIControlEventTouchUpInside];
+    
+    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                  target:self
+                                                                                  action:@selector(cancel)];
+    
+    UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                                           target:nil
+                                                                           action:nil];
+    
+    UIBarButtonItem *infoButton = [[UIBarButtonItem alloc] initWithCustomView:info];
+
+    toolbar.items = [NSArray arrayWithObjects:
+                        cancelButton,
+                        space,
+                        infoButton,
+                        nil];
+    
+    [cancelButton release];
+    [space release];
+    [infoButton release];
+    
+    [controls addSubview:toolbar];
+    [toolbar release];
+
+    [view addSubview:controls];
+>>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 }
 
 - (void) initVideoQuality
@@ -320,13 +445,20 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 
 - (void) loadView
 {
+<<<<<<< HEAD
     self.view = [[UIView alloc]
                     initWithFrame: CGRectMake(0, 0, 320, 480)];
+=======
+    UIView *view = [[UIView alloc] initWithFrame: CGRectMake(0, 0, 320, 480)];
+    self.view = view;
+    [view release];
+>>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 }
 
 - (void) viewDidLoad
 {
     [super viewDidLoad];
+<<<<<<< HEAD
     UIView *view = self.view;
     view.backgroundColor = [UIColor blackColor];
     view.autoresizingMask =
@@ -340,13 +472,32 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     NSUInteger autoresize =
         UIViewAutoresizingFlexibleWidth |
         UIViewAutoresizingFlexibleHeight;
+=======
+    
+    UIView *view = self.view;
+    view.backgroundColor = [UIColor blackColor];
+    view.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                             UIViewAutoresizingFlexibleHeight);
+
+    readerView = [[ZBarReaderView alloc] initWithImageScanner:scanner];
+    CGRect bounds = view.bounds;
+    CGRect r = bounds;
+    NSUInteger autoresize = (UIViewAutoresizingFlexibleWidth |
+                             UIViewAutoresizingFlexibleHeight);
+>>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 
     if(showsZBarControls ||
        self.parentViewController.modalViewController == self)
     {
         autoresize |= UIViewAutoresizingFlexibleBottomMargin;
+<<<<<<< HEAD
         r.size.height -= 54;
     }
+=======
+        //r.size.height -= ZBRVCControlsHeight;
+    }
+    
+>>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
     readerView.frame = r;
     readerView.autoresizingMask = autoresize;
     AVCaptureDevice *device = AVDeviceForUICamera(cameraDevice);
