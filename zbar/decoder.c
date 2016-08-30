@@ -496,7 +496,11 @@ int zbar_decoder_set_config (zbar_decoder_t *dcode,
             zbar_decoder_set_config(dcode, *symp, cfg, val);
         return(0);
     }
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> bbfe4f6... Customised version of ZBar being used by rDriveway.
     if(cfg >= 0 && cfg < ZBAR_CFG_NUM)
         return(decoder_set_config_bool(dcode, sym, cfg, val));
     else if(cfg >= ZBAR_CFG_MIN_LEN && cfg <= ZBAR_CFG_MAX_LEN)

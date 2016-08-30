@@ -876,9 +876,17 @@ int zbar_scan_image (zbar_image_scanner_t *iscn,
                 _zbar_image_scanner_alloc_sym(iscn, ZBAR_COMPOSITE, datalen);
             ean_sym->orient = ean->orient;
             ean_sym->syms = _zbar_symbol_set_create();
+<<<<<<< HEAD
             memcpy(ean_sym->data, ean->data, ean->datalen);
             memcpy(ean_sym->data + ean->datalen,
                    addon->data, addon->datalen + 1);
+=======
+            if (ean_sym->data != NULL) {
+                memcpy(ean_sym->data, ean->data, ean->datalen);
+                memcpy(ean_sym->data + ean->datalen,
+                       addon->data, addon->datalen + 1);
+            }
+>>>>>>> bbfe4f6... Customised version of ZBar being used by rDriveway.
             ean_sym->syms->head = ean;
             ean->next = addon;
             ean_sym->syms->nsyms = 2;
