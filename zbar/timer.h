@@ -113,10 +113,11 @@ static inline int _zbar_timer_check (zbar_timer_t *timer)
 
 typedef struct timeval zbar_timer_t;
 
-static inline int _zbar_timer_now ()
+static inline long _zbar_timer_now ()
 {
     struct timeval now;
     gettimeofday(&now, NULL);
+    
     return(now.tv_sec * 1000 + now.tv_usec / 1000);
 }
 
@@ -124,24 +125,33 @@ static inline zbar_timer_t *_zbar_timer_init (zbar_timer_t *timer,
                                               int delay)
 {
     if(delay < 0)
-        return(NULL);
+    {
+        return NULL;
+    }
 
     gettimeofday(timer, NULL);
     timer->tv_usec += (delay % 1000) * 1000;
     timer->tv_sec += (delay / 1000) + (timer->tv_usec / 1000000);
     timer->tv_usec %= 1000000;
-    return(timer);
+    
+    return timer;
 }
 
-static inline int _zbar_timer_check (zbar_timer_t *timer)
+static inline long _zbar_timer_check (zbar_timer_t *timer)
 {
     struct timeval now;
-    if(!timer)
-        return(-1);
+    
+    if (!timer)
+    {
+        return (-1);
+    }
 
     gettimeofday(&now, NULL);
-    return((timer->tv_sec - now.tv_sec) * 1000 +
-           (timer->tv_usec - now.tv_usec) / 1000);
+    
+    long timerCheck = ((timer->tv_sec - now.tv_sec) * 1000 +
+                       (timer->tv_usec - now.tv_usec) / 1000);
+    
+    return timerCheck;
 }
 
 #else

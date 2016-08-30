@@ -217,27 +217,37 @@ static inline int code39_postprocess (zbar_decoder_t *dcode)
 {
     code39_decoder_t *dcode39 = &dcode->code39;
     dcode->direction = 1 - 2 * dcode39->direction;
+    
     int i;
-    if(dcode39->direction) {
+    
+    if (dcode39->direction)
+    {
         /* reverse buffer */
         dbprintf(2, " (rev)");
-        for(i = 0; i < dcode39->character / 2; i++) {
+        
+        for (i = 0; i < dcode39->character / 2; i++)
+        {
             unsigned j = dcode39->character - 1 - i;
-            char code = dcode->buf[i];
-            dcode->buf[i] = dcode->buf[j];
-            dcode->buf[j] = code;
+            char code = dcode->buffer[i];
+            dcode->buffer[i] = dcode->buffer[j];
+            dcode->buffer[j] = code;
         }
     }
-    for(i = 0; i < dcode39->character; i++)
-        dcode->buf[i] = ((dcode->buf[i] < 0x2b)
-                         ? code39_characters[(unsigned)dcode->buf[i]]
+    
+    for (i = 0; i < dcode39->character; i++)
+    {
+        dcode->buffer[i] = ((dcode->buffer[i] < 0x2b)
+                         ? code39_characters[(unsigned)dcode->buffer[i]]
                          : '?');
+    }
+    
     zassert(i < dcode->buf_alloc, -1, "i=%02x %s\n", i,
-            _zbar_decoder_buf_dump(dcode->buf, dcode39->character));
-    dcode->buflen = i;
-    dcode->buf[i] = '\0';
+            _zbar_decoder_buf_dump(dcode->buffer, dcode39->character));
+    dcode->bufferLength = i;
+    dcode->buffer[i] = '\0';
     dcode->modifiers = 0;
-    return(0);
+    
+    return 0;
 }
 
 static inline int
@@ -275,7 +285,7 @@ zbar_symbol_type_t _zbar_decode_code39 (zbar_decoder_t *dcode)
     if(dcode39->element == 10) {
         unsigned space = get_width(dcode, 0);
         if(dcode39->character &&
-           dcode->buf[dcode39->character - 1] == 0x2b) {  /* STOP */
+           dcode->buffer[dcode39->character - 1] == 0x2b) {  /* STOP */
             /* trim STOP character */
             dcode39->character--;
             zbar_symbol_type_t sym = ZBAR_NONE;
@@ -338,7 +348,7 @@ zbar_symbol_type_t _zbar_decode_code39 (zbar_decoder_t *dcode)
         dbprintf(2, "\n");
     }
 
-    dcode->buf[dcode39->character++] = c;
+    dcode->buffer[dcode39->character++] = c;
 
     return(ZBAR_NONE);
 }

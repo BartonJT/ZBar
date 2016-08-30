@@ -354,7 +354,7 @@ extern const char *zbar_symbol_get_data(const zbar_symbol_t *symbol);
 /** retrieve length of binary data.
  * @returns the length of the decoded data
  */
-extern unsigned int zbar_symbol_get_data_length(const zbar_symbol_t *symbol);
+extern unsigned long zbar_symbol_get_data_length(const zbar_symbol_t *symbol);
 
 /** retrieve a symbol confidence metric.
  * @returns an unscaled, relative quantity: larger values are better
@@ -442,7 +442,7 @@ zbar_symbol_first_component(const zbar_symbol_t *symbol);
  */
 extern char *zbar_symbol_xml(const zbar_symbol_t *symbol,
                              char **buffer,
-                             unsigned *buflen);
+                             unsigned long *bufferLength);
 
 /*@}*/
 
@@ -1354,11 +1354,12 @@ extern zbar_color_t zbar_decoder_get_color(const zbar_decoder_t *decoder);
  */
 extern const char *zbar_decoder_get_data(const zbar_decoder_t *decoder);
 
-/** retrieve length of binary data.
- * @returns the length of the decoded data or 0 if no new data
- * available.
+/** 
+ *  retrieve length of binary data.
+ *  @returns the length of the decoded data or 0 if no new data
+ *  available.
  */
-extern unsigned int
+extern unsigned long
 zbar_decoder_get_data_length(const zbar_decoder_t *decoder);
 
 /** retrieve last decoded symbol type.

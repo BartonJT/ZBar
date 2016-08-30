@@ -41,7 +41,7 @@ zbar_decoder_t *zbar_decoder_create ()
 {
     zbar_decoder_t *dcode = calloc(1, sizeof(zbar_decoder_t));
     dcode->buf_alloc = BUFFER_MIN;
-    dcode->buf = malloc(dcode->buf_alloc);
+    dcode->buffer = malloc(dcode->buf_alloc);
 
     /* initialize default configs */
 #ifdef ENABLE_EAN
@@ -99,11 +99,13 @@ zbar_decoder_t *zbar_decoder_create ()
 void zbar_decoder_destroy (zbar_decoder_t *dcode)
 {
 #ifdef ENABLE_DATABAR
-    if(dcode->databar.segs)
+    if (dcode->databar.segs) {
         free(dcode->databar.segs);
+    }
 #endif
-    if(dcode->buf)
-        free(dcode->buf);
+    if (dcode->buffer) {
+        free(dcode->buffer);
+    }
     free(dcode);
 }
 
@@ -183,12 +185,12 @@ zbar_color_t zbar_decoder_get_color (const zbar_decoder_t *dcode)
 
 const char *zbar_decoder_get_data (const zbar_decoder_t *dcode)
 {
-    return((char*)dcode->buf);
+    return((char*)dcode->buffer);
 }
 
-unsigned int zbar_decoder_get_data_length (const zbar_decoder_t *dcode)
+unsigned long zbar_decoder_get_data_length (const zbar_decoder_t *dcode)
 {
-    return(dcode->buflen);
+    return(dcode->bufferLength);
 }
 
 int zbar_decoder_get_direction (const zbar_decoder_t *dcode)
@@ -483,7 +485,8 @@ int zbar_decoder_set_config (zbar_decoder_t *dcode,
                              zbar_config_t cfg,
                              int val)
 {
-    if(sym == ZBAR_NONE) {
+    if (sym == ZBAR_NONE)
+    {
         static const zbar_symbol_type_t all[] = {
 	    ZBAR_EAN13, ZBAR_EAN2, ZBAR_EAN5, ZBAR_EAN8,
             ZBAR_UPCA, ZBAR_UPCE, ZBAR_ISBN10, ZBAR_ISBN13,
@@ -491,45 +494,77 @@ int zbar_decoder_set_config (zbar_decoder_t *dcode,
 	    ZBAR_CODE39, ZBAR_CODE93, ZBAR_CODE128, ZBAR_QRCODE, 
 	    ZBAR_PDF417, 0
         };
+        
         const zbar_symbol_type_t *symp;
-        for(symp = all; *symp; symp++)
+        
+        for (symp = all; *symp; symp++)
+        {
             zbar_decoder_set_config(dcode, *symp, cfg, val);
-        return(0);
+        }
+        
+        return 0;
     }
 <<<<<<< HEAD
 
 =======
     
+<<<<<<< HEAD
 >>>>>>> bbfe4f6... Customised version of ZBar being used by rDriveway.
     if(cfg >= 0 && cfg < ZBAR_CFG_NUM)
         return(decoder_set_config_bool(dcode, sym, cfg, val));
     else if(cfg >= ZBAR_CFG_MIN_LEN && cfg <= ZBAR_CFG_MAX_LEN)
         return(decoder_set_config_int(dcode, sym, cfg, val));
+=======
+    if (cfg >= 0 &&
+        cfg < ZBAR_CFG_NUM)
+    {
+        int success = decoder_set_config_bool(dcode, sym, cfg, val);
+        
+        return success;
+    }
+    else if (cfg >= ZBAR_CFG_MIN_LEN &&
+             cfg <= ZBAR_CFG_MAX_LEN)
+    {
+        int success = decoder_set_config_int(dcode, sym, cfg, val);
+        
+        return success;
+    }
+>>>>>>> c0153d8... Fixing implicit conversion warnings to ensure that program always correctly converts ints and longs.
     else
-        return(1);
+    {
+        return 1;
+    }
 }
 
 
 static char *decoder_dump = NULL;
 static unsigned decoder_dumplen = 0;
 
-const char *_zbar_decoder_buf_dump (unsigned char *buf,
-                                    unsigned int buflen)
+const char *_zbar_decoder_buf_dump (unsigned char *buffer,
+                                    unsigned long bufferLength)
 {
-    int dumplen = (buflen * 3) + 12;
+    long dumplen = (bufferLength * 3) + 12;
     char *p;
     int i;
 
-    if(!decoder_dump || dumplen > decoder_dumplen) {
-        if(decoder_dump)
+    if (!decoder_dump || dumplen > decoder_dumplen)
+    {
+        if(decoder_dump) {
             free(decoder_dump);
+        }
+        
         decoder_dump = malloc(dumplen);
-        decoder_dumplen = dumplen;
+        decoder_dumplen = (int)dumplen;
     }
+    
     p = decoder_dump +
-        snprintf(decoder_dump, 12, "buf[%04x]=",
-                 (buflen > 0xffff) ? 0xffff : buflen);
-    for(i = 0; i < buflen; i++)
-        p += snprintf(p, 4, "%s%02x", (i) ? " " : "",  buf[i]);
+        snprintf(decoder_dump, 12, "buf[%04lx]=",
+                 (bufferLength > 0xffff) ? 0xffff : bufferLength);
+    
+    for (i = 0; i < bufferLength; i++)
+    {
+        p += snprintf(p, 4, "%s%02x", (i) ? " " : "",  buffer[i]);
+    }
+    
     return(decoder_dump);
 }

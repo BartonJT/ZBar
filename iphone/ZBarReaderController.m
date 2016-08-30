@@ -701,9 +701,9 @@ CGImageRef UIGetScreenImage(void);
     NSInteger nsyms = [self scanImage:image
                           withScaling:0];
 
-    if(!nsyms &&
-       CGImageGetWidth(image) >= 640 &&
-       CGImageGetHeight(image) >= 640)
+    if (!nsyms &&
+        CGImageGetWidth(image) >= 640 &&
+        CGImageGetHeight(image) >= 640)
     {
         // make one more attempt for close up, grainy images
         nsyms = [self scanImage:image
@@ -711,6 +711,7 @@ CGImageRef UIGetScreenImage(void);
     }
 
     NSMutableArray *syms = nil;
+    
     if (nsyms)
     {
         // quality/type filtering
@@ -720,33 +721,51 @@ CGImageRef UIGetScreenImage(void);
         {
             zbar_symbol_type_t type = sym.type;
             int quality;
-            if(type == ZBAR_QRCODE)
+            
+            if (type == ZBAR_QRCODE)
+            {
                 quality = INT_MAX;
+            }
             else
+            {
                 quality = sym.quality;
+            }
 
-            if(quality < max_quality) {
+            if (quality < max_quality)
+            {
                 zlog(@"    type=%d quality=%d < %d\n",
                      type, quality, max_quality);
                 continue;
             }
 
-            if(max_quality < quality) {
+            if (max_quality < quality)
+            {
                 max_quality = quality;
-                if(syms)
+                
+                if (syms)
+                {
                     [syms removeAllObjects];
+                }
             }
+            
             zlog(@"    type=%d quality=%d\n", type, quality);
-            if(!syms)
+            
+            if (!syms)
+            {
                 syms = [NSMutableArray arrayWithCapacity: 1];
+            }
 
             [syms addObject: sym];
         }
     }
 
-    zlog(@"read %u filtered symbols in %gs total\n",
-          (!syms) ? 0 : [syms count], timer_elapsed(t_start, timer_now()));
-    return(syms);
+    long numReadSymbols = (!syms) ? 0 : [syms count];
+    double elapsedTimer = timer_elapsed(t_start, timer_now());
+    
+    zlog(@"read %ld filtered symbols in %gs total\n",
+          numReadSymbols, elapsedTimer);
+    
+    return syms;
 }
 
 @end

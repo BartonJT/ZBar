@@ -97,7 +97,7 @@ zbar_symbol_type_t _zbar_find_qr (zbar_decoder_t *dcode)
              qrf->line.eoffs);
 
     dcode->direction = 0;
-    dcode->buflen = 0;
+    dcode->bufferLength = 0;
     return(ZBAR_QRCODE);
 
 invalid:

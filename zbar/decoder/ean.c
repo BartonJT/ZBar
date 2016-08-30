@@ -725,15 +725,15 @@ static inline void postprocess (zbar_decoder_t *dcode,
             base--;
 
         for(; j < base && ean->buf[i] >= 0; i++, j++)
-            dcode->buf[j] = ean->buf[i] + '0';
+            dcode->buffer[j] = ean->buf[i] + '0';
 
         if(sym == ZBAR_ISBN10 && j == 9 &&
            TEST_CFG(ean->isbn10_config, ZBAR_CFG_EMIT_CHECK))
             /* recalculate ISBN-10 check digit */
-            dcode->buf[j++] = isbn10_calc_checksum(ean);
+            dcode->buffer[j++] = isbn10_calc_checksum(ean);
     }
-    dcode->buflen = j;
-    dcode->buf[j] = '\0';
+    dcode->bufferLength = j;
+    dcode->buffer[j] = '\0';
     dcode->direction = 1 - 2 * ean->direction;
     dcode->modifiers = 0;
     dbprintf(2, " base=%d j=%d (%s)", base, j, dcode->buf);

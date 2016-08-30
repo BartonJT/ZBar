@@ -682,8 +682,10 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 
 - (void) viewWillAppear:(BOOL)animated
 {
-    zlog(@"willAppear: anim=%d orient=%d",
-         animated, self.interfaceOrientation);
+    NSInteger orientation = (NSInteger)self.interfaceOrientation;
+    
+    zlog(@"willAppear: anim=%d orient=%ld",
+         animated, (long)orientation);
     [self initControls];
 
     
@@ -751,25 +753,28 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     return((supportedOrientationsMask >> orient) & 1);
 }
 
-- (void) willRotateToInterfaceOrientation:(UIInterfaceOrientation) orient
-                                 duration:(NSTimeInterval) duration
+- (void) willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation
+                                 duration:(NSTimeInterval)duration
 {
-    zlog(@"willRotate: orient=%d #%g", orient, duration);
+    zlog(@"willRotate: orient=%ld #%g", (long)orientation, duration);
+    
     rotating = YES;
+    
     if (self.readerView)
     {
-        [self.readerView willRotateToInterfaceOrientation:orient
+        [self.readerView willRotateToInterfaceOrientation:orientation
                                                  duration:duration];
     }
 }
 
-- (void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)orient
+- (void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)orientation
                                           duration:(NSTimeInterval)duration
 {
-    zlog(@"willAnimateRotation: orient=%d #%g", orient, duration);
+    zlog(@"willAnimateRotation: orient=%ld #%g", (long)orientation, duration);
+    
     if (helpController)
     {
-        [helpController willAnimateRotationToInterfaceOrientation:orient
+        [helpController willAnimateRotationToInterfaceOrientation:orientation
                                                          duration:duration];
     }
     
@@ -779,9 +784,9 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     }
 }
 
-- (void) didRotateFromInterfaceOrientation:(UIInterfaceOrientation)orient
+- (void) didRotateFromInterfaceOrientation:(UIInterfaceOrientation)orientation
 {
-    zlog(@"didRotate(%d): orient=%d", rotating, orient);
+    zlog(@"didRotate(%d): orient=%ld", rotating, (long)orientation);
     
     if (!rotating && self.readerView)
     {
@@ -942,8 +947,10 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     return(UIImagePickerControllerCameraCaptureModeVideo);
 }
 
-- (void) setCameraCaptureMode:(UIImagePickerControllerCameraCaptureMode)mode
+- (void) setCameraCaptureMode:(UIImagePickerControllerCameraCaptureMode)aMode
 {
+    int mode = (int)aMode;
+    
     NSAssert2(mode == UIImagePickerControllerCameraCaptureModeVideo,
               @"attempt to set unsupported value (%d)"
               @" for %@ property", mode, @"cameraCaptureMode");

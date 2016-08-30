@@ -156,7 +156,7 @@ int zbar_parse_config (const char *cfgstr,
 #ifdef HAVE_ERRNO_H
         errno = 0;
 #endif
-        *val = strtol(eq + 1, NULL, 0);
+        *val = (int)strtol(eq + 1, NULL, 0);
 #ifdef HAVE_ERRNO_H
         if(errno)
             return(1);

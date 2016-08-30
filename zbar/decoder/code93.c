@@ -134,7 +134,7 @@ decode6 (zbar_decoder_t *dcode)
     zassert(g0 >= 0 && g1 >= 0, -1,
             "dir=%x sig=%03x g0=%03x g1=%03x %s\n",
             dcode->code93.direction, sig, g0, g1,
-            _zbar_decoder_buf_dump(dcode->buf, dcode->code93.character));
+            _zbar_decoder_buf_dump(dcode->buffer, dcode->code93.character));
 
     c = (g0 + g1) & 0x3f;
     dbprintf(2, " g0=%x g1=%x c=%02x", g0, g1, c);
@@ -150,21 +150,31 @@ decode_start (zbar_decoder_t *dcode)
 
     dbprintf(2, "      code93:");
     c = encode6(dcode);
-    if(c < 0 || (c != 0x00f && c != 0x0f0))
+    
+    if (c < 0 || (c != 0x00f && c != 0x0f0))
+    {
         return(ZBAR_NONE);
+    }
 
     dir = (c >> 7);
 
-    if(dir) {
-        if(decode_e(pair_width(dcode, 0), s, 9))
-            return(ZBAR_NONE);
+    if (dir)
+    {
+        if (decode_e(pair_width(dcode, 0), s, 9))
+        {
+            return ZBAR_NONE;
+        }
+        
         qz = get_width(dcode, 8);
     }
 
     qz = get_width(dcode, 7);
-    if(qz && qz < (s * 3) / 4) {
+    
+    if (qz && qz < (s * 3) / 4)
+    {
         dbprintf(2, " [invalid qz %d]", qz);
-        return(ZBAR_NONE);
+        
+        return ZBAR_NONE;
     }
 
     /* decoded valid start/stop - initialize state */
@@ -174,7 +184,8 @@ decode_start (zbar_decoder_t *dcode)
     dcode93->width = s;
 
     dbprintf(2, " dir=%x [valid start]", dir);
-    return(ZBAR_PARTIAL);
+    
+    return ZBAR_PARTIAL;
 }
 
 static inline zbar_symbol_type_t
@@ -182,12 +193,20 @@ decode_abort (zbar_decoder_t *dcode,
               const char *reason)
 {
     code93_decoder_t *dcode93 = &dcode->code93;
-    if(dcode93->character > 1)
+    
+    if (dcode93->character > 1)
+    {
         release_lock(dcode, ZBAR_CODE93);
+    }
+    
     dcode93->character = -1;
-    if(reason)
+    
+    if (reason)
+    {
         dbprintf(1, " [%s]\n", reason);
-    return(ZBAR_NONE);
+    }
+    
+    return ZBAR_NONE;
 }
 
 static inline zbar_symbol_type_t
@@ -234,7 +253,7 @@ validate_checksums (zbar_decoder_t *dcode)
     unsigned sum_k = 0, acc_k = 0, i_k = (n - 1) % 15;
 
     for(i = 0; i < n - 2; i++) {
-        d = dcode->buf[(dcode93->direction) ? n - 1 - i : i];
+        d = dcode->buffer[(dcode93->direction) ? n - 1 - i : i];
 
         if(!i_c--) {
             acc_c = 0;
@@ -251,14 +270,14 @@ validate_checksums (zbar_decoder_t *dcode)
         sum_k = plusmod47(sum_k, acc_k);
     }
 
-    d = dcode->buf[(dcode93->direction) ? 1 : n - 2];
+    d = dcode->buffer[(dcode93->direction) ? 1 : n - 2];
     dbprintf(2, " C=%02x?=%02x", d, sum_c);
     if(d != sum_c)
         return(1);
 
     acc_k = plusmod47(acc_k, sum_c);
     sum_k = plusmod47(sum_k, acc_k);
-    d = dcode->buf[(dcode93->direction) ? 0 : n - 1];
+    d = dcode->buffer[(dcode93->direction) ? 0 : n - 1];
     dbprintf(2, " K=%02x?=%02x", d, sum_k);
     if(d != sum_k)
         return(1);
@@ -283,15 +302,15 @@ postprocess (zbar_decoder_t *dcode)
         dbprintf(2, " (rev)");
         for(i = 0; i < n / 2; i++) {
             unsigned j = n - 1 - i;
-            unsigned char d = dcode->buf[i];
-            dcode->buf[i] = dcode->buf[j];
-            dcode->buf[j] = d;
+            unsigned char d = dcode->buffer[i];
+            dcode->buffer[i] = dcode->buffer[j];
+            dcode->buffer[j] = d;
         }
     }
 
     n -= 2;
     for(i = 0, j = 0; i < n; ) {
-        unsigned char d = dcode->buf[i++];
+        unsigned char d = dcode->buffer[i++];
         if(d < 0xa)
             d = '0' + d;
         else if(d < 0x24)
@@ -301,8 +320,8 @@ postprocess (zbar_decoder_t *dcode)
         else {
             unsigned shift = d;
             zassert(shift < 0x2f, -1, "%s\n",
-                    _zbar_decoder_buf_dump(dcode->buf, dcode93->character));
-            d = dcode->buf[i++];
+                    _zbar_decoder_buf_dump(dcode->buffer, dcode93->character));
+            d = dcode->buffer[i++];
             if(d < 0xa || d >= 0x24)
                 return(1);
             d -= 0xa;
@@ -315,14 +334,14 @@ postprocess (zbar_decoder_t *dcode)
             default: return(1);
             }
         }
-        dcode->buf[j++] = d;
+        dcode->buffer[j++] = d;
     }
 
     zassert(j < dcode->buf_alloc, 1,
             "j=%02x %s\n", j,
-            _zbar_decoder_buf_dump(dcode->buf, dcode->code93.character));
-    dcode->buflen = j;
-    dcode->buf[j] = '\0';
+            _zbar_decoder_buf_dump(dcode->buffer, dcode->code93.character));
+    dcode->bufferLength = j;
+    dcode->buffer[j] = '\0';
     dcode->modifiers = 0;
     return(0);
 }
@@ -386,13 +405,13 @@ _zbar_decode_code93 (zbar_decoder_t *dcode)
         /* lock shared resources */
         if(acquire_lock(dcode, ZBAR_CODE93))
             return(decode_abort(dcode, NULL));
-        dcode->buf[0] = dcode93->buf;
+        dcode->buffer[0] = dcode93->buf;
     }
 
     if(!dcode93->character)
         dcode93->buf = c;
     else 
-        dcode->buf[dcode93->character] = c;
+        dcode->buffer[dcode93->character] = c;
     dcode93->character++;
 
     dbprintf(2, "\n");
