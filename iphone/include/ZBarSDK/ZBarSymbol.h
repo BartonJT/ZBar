@@ -22,29 +22,13 @@
 //------------------------------------------------------------------------
 
 #import <Foundation/Foundation.h>
-#import <CoreGraphics/CoreGraphics.h>
 #import "zbar.h"
 
 #ifdef __cplusplus
 using namespace zbar;
 #endif
 
-// Obj-C wrapper for ZBar result types
-
-@interface ZBarSymbolSet
-    : NSObject <NSFastEnumeration>
-{
-    const zbar_symbol_set_t *set;
-    BOOL filterSymbols;
-}
-
-@property (readonly, nonatomic) int count;
-@property (readonly, nonatomic) const zbar_symbol_set_t *zbarSymbolSet;
-@property (nonatomic) BOOL filterSymbols;
-
-- (id) initWithSymbolSet: (const zbar_symbol_set_t*) set;
-
-@end
+@class ZBarSymbolSet;
 
 
 @interface ZBarSymbol : NSObject
@@ -69,3 +53,22 @@ using namespace zbar;
 + (NSString*) nameForType: (zbar_symbol_type_t) type;
 
 @end
+
+
+// Obj-C wrapper for ZBar result types
+
+@interface ZBarSymbolSet
+: NSObject <NSFastEnumeration>
+{
+    const zbar_symbol_set_t *set;
+    BOOL _filterSymbols;
+}
+
+@property (readonly, nonatomic) int count;
+@property (readonly, nonatomic) const zbar_symbol_set_t *zbarSymbolSet;
+@property (nonatomic) BOOL filterSymbols;
+
+- (id) initWithSymbolSet: (const zbar_symbol_set_t*) set;
+
+@end
+

@@ -29,6 +29,9 @@
 
 #define MODULE ZBarReaderViewController
 #import "debug.h"
+#import "math.h"
+
+#define DEGREES_TO_RADIANS(angle) (angle / 180.0 * M_PI)
 
 <<<<<<< HEAD
 static inline AVCaptureDevicePosition
@@ -196,6 +199,7 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     supportedOrientationsMask,
     tracksSymbols,
     enableCache,
+    isAnimatingReaderView = _isAnimatingReaderView,
     cameraOverlayView,
     cameraViewTransform,
     cameraDevice,
@@ -272,6 +276,7 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     showsZBarControls = YES;
     tracksSymbols = YES;
     enableCache = YES;
+    _isAnimatingReaderView = NO;
     scanCrop = CGRectMake(0, 0, 1, 1);
     cameraViewTransform = CGAffineTransformIdentity;
 
@@ -341,6 +346,7 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     return self;
 }
 
+<<<<<<< HEAD
 - (void) cleanup
 {
     [cameraOverlayView removeFromSuperview];
@@ -370,6 +376,8 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     [super dealloc];
 }
 
+=======
+>>>>>>> 7d61f19... Tweaking files to remove some questionable code.
 - (void) initControls
 {
 <<<<<<< HEAD
@@ -541,6 +549,35 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     self.view = view;
     [view release];
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
+}
+
+
+#pragma mark - Memory Management -
+
+- (void) cleanup
+{
+    [cameraOverlayView removeFromSuperview];
+    cameraSim.readerView = nil;
+    [cameraSim release];
+    cameraSim = nil;
+    _readerView.readerDelegate = nil;
+    [_readerView release];
+    _readerView = nil;
+    [controls release];
+    controls = nil;
+    [shutter release];
+    shutter = nil;
+}
+
+- (void) dealloc
+{
+    [self cleanup];
+    [cameraOverlayView release];
+    cameraOverlayView = nil;
+    [scanner release];
+    scanner = nil;
+    
+    [super dealloc];
 }
 
 
@@ -1002,6 +1039,75 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 }
 
 
+#pragma mark - Autofocus Animations -
+
+- (void) animateIncreasingFocus
+{
+    self.isAnimatingReaderView = YES;
+    
+    [UIView animateWithDuration:0.50
+                     animations:^{
+                      
+                         CGRect frame = self.readerView.targetOutline.bounds;
+                         
+                         frame.size.width  = frame.size.width  * 1.10f;
+                         frame.size.height = frame.size.height * 1.10f;
+                         
+                         CGAffineTransform transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(45));
+                         self.readerView.targetOutline.transform = transform;
+                         
+                         self.readerView.targetOutline.bounds = frame;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         [self animateDecreasingFocus];
+                     }];
+}
+
+
+- (void) animateDecreasingFocus
+{
+    [UIView animateWithDuration:0.50
+                     animations:^{
+                         
+                         CGRect frame = self.readerView.targetOutline.bounds;
+                         
+                         frame.size.width  = frame.size.width  / 110 * 80;
+                         frame.size.height = frame.size.height / 110 * 80;
+                         
+                         CGAffineTransform transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(-45));
+                         self.readerView.targetOutline.transform = transform;
+                         self.readerView.targetOutline.bounds = frame;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         [self animateOriginalFrame];
+                     }];
+}
+
+
+- (void) animateOriginalFrame
+{
+    [UIView animateWithDuration:0.25
+                     animations:^{
+                         
+                         CGRect frame = self.readerView.targetOutline.bounds;
+                         
+                         CGAffineTransform transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(0));
+                         self.readerView.targetOutline.transform = transform;
+                         
+                         frame.size.width  = frame.size.width  / 80 * 100;
+                         frame.size.height = frame.size.height / 80 * 100;
+                         
+                         self.readerView.targetOutline.bounds = frame;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         self.isAnimatingReaderView = NO;
+                     }];
+}
+
+
 #pragma mark - Autofocus Observer -
 
 - (void) observeValueForKeyPath:(NSString *)keyPath
@@ -1013,28 +1119,14 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     if ([keyPath isEqualToString:ZBRVCFocusObserver])
     {
         BOOL adjustingFocus = [ [change objectForKey:NSKeyValueChangeNewKey] isEqualToNumber:[NSNumber numberWithInt:1] ];
-        NSLog(@"Adjusting focus: %@", adjustingFocus ? @"Yes" : @"No");
         
-        [UIView animateWithDuration:.25
-                         animations:^{
-                             
-                             CGRect frame = self.readerView.targetOutline.frame;
-                             
-                             if (adjustingFocus)
-                             {
-                                 frame.size.width  = frame.size.width  * 1.10f;
-                                 frame.size.height = frame.size.height * 1.10f;
-                             }
-                             else
-                             {
-                                 frame.size.width  = frame.size.width  / 110 * 100;
-                                 frame.size.height = frame.size.height / 110 * 100;
-                             }
-                             
-                             self.readerView.targetOutline.frame = frame;
-                         }
-                         completion:^(BOOL finished) {
-                         }];
+        if (adjustingFocus)
+        {
+            if (!self.isAnimatingReaderView)
+            {
+                [self animateIncreasingFocus];
+            }
+        }
     }
 }
 

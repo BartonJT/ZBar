@@ -62,6 +62,7 @@
 <<<<<<< HEAD
 =======
     
+    CGRect _targetOutlineFrame;
     UIImageView *_targetOutline;
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 
@@ -142,7 +143,11 @@
 @property (nonatomic) BOOL enableCache;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+@property (nonatomic, assign) CGRect targetOutlineFrame;
+>>>>>>> 7d61f19... Tweaking files to remove some questionable code.
 @property (nonatomic, retain) UIImageView *targetOutline;
 
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.

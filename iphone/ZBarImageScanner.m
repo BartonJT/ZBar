@@ -28,30 +28,45 @@
 
 @dynamic enableCache, results;
 
+
+#pragma mark - Initialisation -
+
 - (id) init
 {
-    if(self = [super init]) {
+    self = [super init];
+    
+    if (self)
+    {
         scanner = zbar_image_scanner_create();
     }
-    return(self);
+    
+    return self;
 }
 
+
+#pragma mark - Deallocation -
 - (void) dealloc
 {
-    if(scanner) {
+    if (scanner)
+    {
         zbar_image_scanner_destroy(scanner);
         scanner = NULL;
     }
+    
     [super dealloc];
 }
+
+
+#pragma mark - Object Methods -
 
 - (BOOL) enableCache
 {
     assert(0); // FIXME
-    return(NO);
+    
+    return NO;
 }
 
-- (void) setEnableCache: (BOOL) enable
+- (void) setEnableCache:(BOOL)enable
 {
     zbar_image_scanner_enable_cache(scanner, enable);
 }
@@ -59,7 +74,9 @@
 - (ZBarSymbolSet*) results
 {
     const zbar_symbol_set_t *set = zbar_image_scanner_get_results(scanner);
-    return([[[ZBarSymbolSet alloc] initWithSymbolSet: set] autorelease]);
+    ZBarSymbolSet *results = [[[ZBarSymbolSet alloc] initWithSymbolSet: set] autorelease];
+    
+    return results;
 }
 
 // image scanner config wrappers
@@ -69,17 +86,19 @@
     // FIXME throw errors
 }
 
-- (void) setSymbology: (zbar_symbol_type_t) sym
-               config: (zbar_config_t) cfg
-                   to: (int) val
+- (void) setSymbology:(zbar_symbol_type_t)sym
+               config:(zbar_config_t)cfg
+                   to:(int)val
 {
     zbar_image_scanner_set_config(scanner, sym, cfg, val);
     // FIXME throw errors
 }
 
-- (NSInteger) scanImage: (ZBarImage*) image
+- (NSInteger) scanImage:(ZBarImage*)image
 {
-    return(zbar_scan_image(scanner, image.zbarImage));
+    NSInteger scannedImage = zbar_scan_image(scanner, image.zbarImage);
+    
+    return scannedImage;
 }
 
 @end

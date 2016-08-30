@@ -49,7 +49,7 @@
 #if !TARGET_IPHONE_SIMULATOR
     AVCaptureVideoDataOutput *captureOutput;
     id<ZBarCaptureDelegate> captureDelegate;
-    ZBarImageScanner *scanner;
+    ZBarImageScanner *_scanner;
     CGRect scanCrop;
     CGSize size;
     CGFloat framesPerSecond;

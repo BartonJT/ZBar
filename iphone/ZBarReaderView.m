@@ -43,7 +43,8 @@
     scanCrop,
     previewTransform,
     captureReader,
-    targetOutline = _targetOutline;
+    targetOutlineFrame  = _targetOutlineFrame,
+    targetOutline       = _targetOutline;
 
 @dynamic
     scanner,
@@ -141,13 +142,13 @@
                                        UIViewAutoresizingFlexibleLeftMargin  |
                                        UIViewAutoresizingFlexibleBottomMargin);
     
-    CGRect frame = _targetOutline.frame;
+    _targetOutlineFrame = _targetOutline.frame;
     CGFloat viewWidth  = self.frame.size.width;
     CGFloat viewHeight = self.frame.size.height;
-    frame.origin.x = (3 * viewWidth / 4) - (3 * frame.size.width / 4);
-    frame.origin.y = (1 * viewHeight / 10) - (1 * frame.size.height / 10);
+    _targetOutlineFrame.origin.x = (3 * viewWidth / 4) - (3 * _targetOutlineFrame.size.width / 4);
+    _targetOutlineFrame.origin.y = (1 * viewHeight / 10) - (1 * _targetOutlineFrame.size.height / 10);
     
-    _targetOutline.frame = frame;
+    _targetOutline.frame = _targetOutlineFrame;
     
     [self addSubview:_targetOutline];
 }
