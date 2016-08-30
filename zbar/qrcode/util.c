@@ -19,11 +19,7 @@ unsigned qr_isqrt(unsigned _val){
   b=0x8000;
   for(bshift=16;bshift-->0;){
     unsigned t;
-<<<<<<< HEAD
-    t=(g<<1)+b<<bshift;
-=======
     t=((g<<1)+b)<<bshift;
->>>>>>> bbfe4f6... Customised version of ZBar being used by rDriveway.
     if(t<=_val){
       g+=b;
       _val-=t;
@@ -65,28 +61,13 @@ unsigned qr_ihypot(int _x,int _y){
   mask=-(_y<0);
   x+=_y+mask^mask;
   _y-=u+mask^mask;
-<<<<<<< HEAD
-  u=x+1>>1;
-  v=_y+1>>1;
-=======
   u=(x+1)>>1;
   v=(_y+1)>>1;
->>>>>>> bbfe4f6... Customised version of ZBar being used by rDriveway.
   mask=-(_y<0);
   x+=v+mask^mask;
   _y-=u+mask^mask;
   for(i=1;i<16;i++){
     int r;
-<<<<<<< HEAD
-    u=x+1>>2;
-    r=(1<<2*i)>>1;
-    v=_y+r>>2*i;
-    mask=-(_y<0);
-    x+=v+mask^mask;
-    _y=_y-(u+mask^mask)<<1;
-  }
-  return x+((1U<<shift)>>1)>>shift;
-=======
     u=(x+1)>>2;
     r=(1<<2*i)>>1;
     v=(_y+r)>>2*i;
@@ -95,7 +76,6 @@ unsigned qr_ihypot(int _x,int _y){
     _y=(_y-(u+mask^mask))<<1;
   }
   return (x+((1U<<shift)>>1))>>shift;
->>>>>>> bbfe4f6... Customised version of ZBar being used by rDriveway.
 }
 
 #if defined(__GNUC__) && defined(HAVE_FEATURES_H)

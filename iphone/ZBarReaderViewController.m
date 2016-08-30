@@ -31,22 +31,6 @@
 #import "debug.h"
 #import "math.h"
 
-<<<<<<< HEAD
-#define DEGREES_TO_RADIANS(angle) (angle / 180.0 * M_PI)
-
-<<<<<<< HEAD
-static inline AVCaptureDevicePosition
-AVPositionForUICamera (UIImagePickerControllerCameraDevice camera)
-{
-    switch(camera) {
-    case UIImagePickerControllerCameraDeviceRear:
-        return(AVCaptureDevicePositionBack);
-    case UIImagePickerControllerCameraDeviceFront:
-        return(AVCaptureDevicePositionFront);
-    }
-=======
-=======
->>>>>>> f5703ae... Refining code. Removed the dual personality of ZBarReaderView by integrating all of the code from ZBarReaderViewImpl_Capture into it. Now need to decide on efficient workaround for simulator support if desired.
 static CGFloat const ZBRVCControlsHeight = 54.0f;
 
 static inline AVCaptureDevicePosition
@@ -60,12 +44,7 @@ AVPositionForUICamera (UIImagePickerControllerCameraDevice camera)
             return AVCaptureDevicePositionFront;
     }
     
-<<<<<<< HEAD
->>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
-    return(-1);
-=======
     return -1;
->>>>>>> 56cb785... Tweaking files to allow for animations when scanner is focusing or reading barcodes.
 }
 
 static inline UIImagePickerControllerCameraDevice
@@ -73,13 +52,6 @@ UICameraForAVPosition (AVCaptureDevicePosition position)
 {
     switch (position)
     {
-<<<<<<< HEAD
-    case AVCaptureDevicePositionBack:
-        return(UIImagePickerControllerCameraDeviceRear);
-    case AVCaptureDevicePositionFront:
-        return(UIImagePickerControllerCameraDeviceFront);
-    }
-=======
         case AVCaptureDevicePositionBack:
             return UIImagePickerControllerCameraDeviceRear;
         case AVCaptureDevicePositionFront:
@@ -88,42 +60,21 @@ UICameraForAVPosition (AVCaptureDevicePosition position)
             break;
     }
     
-<<<<<<< HEAD
->>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
-    return(-1);
-=======
     return -1;
->>>>>>> 56cb785... Tweaking files to allow for animations when scanner is focusing or reading barcodes.
 }
 
 static inline AVCaptureDevice*
 AVDeviceForUICamera (UIImagePickerControllerCameraDevice camera)
 {
     AVCaptureDevicePosition position = AVPositionForUICamera(camera);
-<<<<<<< HEAD
-    if(position < 0)
-        return(nil);
-=======
     
     if (position < 0)
     {
         return nil;
     }
->>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 
 #if !TARGET_IPHONE_SIMULATOR
-<<<<<<< HEAD
-    NSArray *allDevices =
-        [AVCaptureDevice devicesWithMediaType: AVMediaTypeVideo];
-<<<<<<< HEAD
-    for(AVCaptureDevice *device in allDevices)
-        // FIXME how to quantify "best" of several (theoretical) possibilities
-        if(device.position == position)
-            return(device);
-=======
-=======
     NSArray *allDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
->>>>>>> 56cb785... Tweaking files to allow for animations when scanner is focusing or reading barcodes.
     for (AVCaptureDevice *device in allDevices)
     {
         // FIXME how to quantify "best" of several (theoretical) possibilities
@@ -132,7 +83,6 @@ AVDeviceForUICamera (UIImagePickerControllerCameraDevice camera)
             return device;
         }
     }
->>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 #endif
     return nil;
 }
@@ -142,15 +92,6 @@ AVTorchModeForUIFlashMode (UIImagePickerControllerCameraFlashMode mode)
 {
     switch (mode)
     {
-<<<<<<< HEAD
-    case UIImagePickerControllerCameraFlashModeAuto:
-        return(AVCaptureTorchModeAuto);
-    case UIImagePickerControllerCameraFlashModeOn:
-        return(AVCaptureTorchModeOn);
-    case UIImagePickerControllerCameraFlashModeOff:
-        break;
-    }
-=======
         case UIImagePickerControllerCameraFlashModeAuto:
             return AVCaptureTorchModeAuto;
         case UIImagePickerControllerCameraFlashModeOn:
@@ -159,12 +100,7 @@ AVTorchModeForUIFlashMode (UIImagePickerControllerCameraFlashMode mode)
             break;
     }
     
-<<<<<<< HEAD
->>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
-    return(AVCaptureTorchModeOff);
-=======
     return AVCaptureTorchModeOff;
->>>>>>> 56cb785... Tweaking files to allow for animations when scanner is focusing or reading barcodes.
 }
 
 static inline NSString*
@@ -345,57 +281,14 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     return self;
 }
 
-<<<<<<< HEAD
-- (void) cleanup
-{
-    [cameraOverlayView removeFromSuperview];
-    cameraSim.readerView = nil;
-    [cameraSim release];
-    cameraSim = nil;
-    _readerView.readerDelegate = nil;
-    [_readerView release];
-    _readerView = nil;
-    [controls release];
-    controls = nil;
-    [shutter release];
-    shutter = nil;
-}
-
-- (void) dealloc
-{
-    [self cleanup];
-    [cameraOverlayView release];
-    cameraOverlayView = nil;
-    [scanner release];
-    scanner = nil;
-<<<<<<< HEAD
-=======
-    
->>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
-    [super dealloc];
-}
-
-=======
->>>>>>> 7d61f19... Tweaking files to remove some questionable code.
 - (void) initControls
 {
-<<<<<<< HEAD
-    if(!showsZBarControls && controls) {
-=======
     if (!showsZBarControls && controls)
     {
->>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
         [controls removeFromSuperview];
         [controls release];
         controls = nil;
     }
-<<<<<<< HEAD
-    if(!showsZBarControls)
-        return;
-
-    UIView *view = self.view;
-    if(controls) {
-=======
     
     if (!showsZBarControls)
     {
@@ -406,65 +299,12 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     
     if (controls)
     {
-<<<<<<< HEAD
->>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
-        assert(controls.superview == view);
-        [view bringSubviewToFront: controls];
-=======
         NSAssert(controls.superview == view, @"The wrong constrols has been obtained");
         [view bringSubviewToFront:controls];
->>>>>>> 56cb785... Tweaking files to allow for animations when scanner is focusing or reading barcodes.
         return;
     }
 
     CGRect r = view.bounds;
-<<<<<<< HEAD
-    r.origin.y = r.size.height - 54;
-    r.size.height = 54;
-    controls = [[UIView alloc]
-                   initWithFrame: r];
-    controls.autoresizingMask =
-        UIViewAutoresizingFlexibleWidth |
-        UIViewAutoresizingFlexibleHeight |
-        UIViewAutoresizingFlexibleTopMargin;
-    controls.backgroundColor = [UIColor blackColor];
-
-    UIToolbar *toolbar =
-        [UIToolbar new];
-    r.origin.y = 0;
-    toolbar.frame = r;
-    toolbar.barStyle = UIBarStyleBlackOpaque;
-    toolbar.autoresizingMask =
-        UIViewAutoresizingFlexibleWidth |
-        UIViewAutoresizingFlexibleHeight;
-
-    UIButton *info =
-        [UIButton buttonWithType: UIButtonTypeInfoLight];
-    [info addTarget: self
-          action: @selector(info)
-          forControlEvents: UIControlEventTouchUpInside];
-
-    toolbar.items =
-        [NSArray arrayWithObjects:
-            [[[UIBarButtonItem alloc]
-                 initWithBarButtonSystemItem: UIBarButtonSystemItemCancel
-                 target: self
-                 action: @selector(cancel)]
-                autorelease],
-            [[[UIBarButtonItem alloc]
-                 initWithBarButtonSystemItem: UIBarButtonSystemItemFlexibleSpace
-                 target: nil
-                 action: nil]
-                autorelease],
-            [[[UIBarButtonItem alloc]
-                 initWithCustomView: info]
-                autorelease],
-            nil];
-    [controls addSubview: toolbar];
-    [toolbar release];
-
-    [view addSubview: controls];
-=======
     r.origin.y = r.size.height - ZBRVCControlsHeight;
     r.size.height = ZBRVCControlsHeight;
     controls = [[UIView alloc] initWithFrame:r];
@@ -508,7 +348,6 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     [toolbar release];
 
     [view addSubview:controls];
->>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 }
 
 - (void) initVideoQuality
@@ -536,18 +375,9 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 
 - (void) loadView
 {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    self.view = [[UIView alloc]
-                    initWithFrame: CGRectMake(0, 0, 320, 480)];
-=======
-    UIView *view = [[UIView alloc] initWithFrame: CGRectMake(0, 0, 320, 480)];
-=======
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
->>>>>>> 56cb785... Tweaking files to allow for animations when scanner is focusing or reading barcodes.
     self.view = view;
     [view release];
->>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 }
 
 
@@ -585,21 +415,6 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 - (void) viewDidLoad
 {
     [super viewDidLoad];
-<<<<<<< HEAD
-    UIView *view = self.view;
-    view.backgroundColor = [UIColor blackColor];
-    view.autoresizingMask =
-        UIViewAutoresizingFlexibleWidth |
-        UIViewAutoresizingFlexibleHeight;
-
-    readerView = [[ZBarReaderView alloc]
-                     initWithImageScanner: scanner];
-    CGRect bounds = view.bounds;
-    CGRect r = bounds;
-    NSUInteger autoresize =
-        UIViewAutoresizingFlexibleWidth |
-        UIViewAutoresizingFlexibleHeight;
-=======
     
     UIView *view = self.view;
     view.backgroundColor = [UIColor blackColor];
@@ -611,28 +426,17 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     CGRect r = bounds;
     NSUInteger autoresize = (UIViewAutoresizingFlexibleWidth |
                              UIViewAutoresizingFlexibleHeight);
->>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 
     if (showsZBarControls ||
         self.parentViewController.presentedViewController == self)
     {
         autoresize |= UIViewAutoresizingFlexibleBottomMargin;
-<<<<<<< HEAD
-        r.size.height -= 54;
-    }
-=======
         //r.size.height -= ZBRVCControlsHeight;
     }
 
     self.readerView.frame = r;
     self.readerView.autoresizingMask = autoresize;
     
-<<<<<<< HEAD
->>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
-    readerView.frame = r;
-    readerView.autoresizingMask = autoresize;
-=======
->>>>>>> 56cb785... Tweaking files to allow for animations when scanner is focusing or reading barcodes.
     AVCaptureDevice *device = AVDeviceForUICamera(cameraDevice);
     if (device &&
         device != self.readerView.device)

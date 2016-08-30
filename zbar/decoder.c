@@ -504,17 +504,7 @@ int zbar_decoder_set_config (zbar_decoder_t *dcode,
         
         return 0;
     }
-<<<<<<< HEAD
-
-=======
     
-<<<<<<< HEAD
->>>>>>> bbfe4f6... Customised version of ZBar being used by rDriveway.
-    if(cfg >= 0 && cfg < ZBAR_CFG_NUM)
-        return(decoder_set_config_bool(dcode, sym, cfg, val));
-    else if(cfg >= ZBAR_CFG_MIN_LEN && cfg <= ZBAR_CFG_MAX_LEN)
-        return(decoder_set_config_int(dcode, sym, cfg, val));
-=======
     if (cfg >= 0 &&
         cfg < ZBAR_CFG_NUM)
     {
@@ -529,7 +519,6 @@ int zbar_decoder_set_config (zbar_decoder_t *dcode,
         
         return success;
     }
->>>>>>> c0153d8... Fixing implicit conversion warnings to ensure that program always correctly converts ints and longs.
     else
     {
         return 1;

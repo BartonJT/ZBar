@@ -60,13 +60,10 @@
     NSInteger torchMode;
     UIInterfaceOrientation interfaceOrientation;
     NSTimeInterval animationDuration;
-<<<<<<< HEAD
-=======
     
     BOOL  _isAnimatingTargetOutline;
     CGRect _targetOutlineFrame;
     UIImageView *_targetOutline;
->>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 
     CALayer *preview, *overlay, *tracking, *cropLayer;
     UIView *fpsView;
@@ -157,17 +154,8 @@
 // this flag still works, but its use is deprecated
 @property (nonatomic) BOOL enableCache;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
-=======
 @property (nonatomic, assign) BOOL isAnimatingTargetOutline;
->>>>>>> f5703ae... Refining code. Removed the dual personality of ZBarReaderView by integrating all of the code from ZBarReaderViewImpl_Capture into it. Now need to decide on efficient workaround for simulator support if desired.
 @property (nonatomic, assign) CGRect targetOutlineFrame;
->>>>>>> 7d61f19... Tweaking files to remove some questionable code.
 @property (nonatomic, retain) UIImageView *targetOutline;
 
->>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 @end

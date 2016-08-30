@@ -537,24 +537,15 @@ unsigned char *qr_binarize(const unsigned char *_img,int _width,int _height){
     /*We keep the window size fairly large to ensure it doesn't fit completely
        inside the center of a finder pattern of a version 1 QR code at full
        resolution.*/
-<<<<<<< HEAD
-    for(logwindw=4;logwindw<8&&(1<<logwindw)<(_width+7>>3);logwindw++);
-    for(logwindh=4;logwindh<8&&(1<<logwindh)<(_height+7>>3);logwindh++);
-=======
     for(logwindw = 4; logwindw < 8 && (1 << logwindw) < ((_width + 7) >> 3); logwindw++);
     for(logwindh=4;logwindh<8&&(1<<logwindh)<((_height+7)>>3);logwindh++);
->>>>>>> bbfe4f6... Customised version of ZBar being used by rDriveway.
     windw=1<<logwindw;
     windh=1<<logwindh;
     col_sums=(unsigned *)malloc(_width*sizeof(*col_sums));
     /*Initialize sums down each column.*/
     for(x=0;x<_width;x++){
       g=_img[x];
-<<<<<<< HEAD
-      col_sums[x]=(g<<logwindh-1)+g;
-=======
       col_sums[x]=(g<<(logwindh-1))+g;
->>>>>>> bbfe4f6... Customised version of ZBar being used by rDriveway.
     }
     for(y=1;y<(windh>>1);y++){
       y1offs=QR_MINI(y,_height-1)*_width;
@@ -568,11 +559,7 @@ unsigned char *qr_binarize(const unsigned char *_img,int _width,int _height){
       int      x0;
       int      x1;
       /*Initialize the sum over the window.*/
-<<<<<<< HEAD
-      m=(col_sums[0]<<logwindw-1)+col_sums[0];
-=======
       m=(col_sums[0]<<(logwindw-1))+col_sums[0];
->>>>>>> bbfe4f6... Customised version of ZBar being used by rDriveway.
       for(x=1;x<(windw>>1);x++){
         x1=QR_MINI(x,_width-1);
         m+=col_sums[x1];
@@ -581,11 +568,7 @@ unsigned char *qr_binarize(const unsigned char *_img,int _width,int _height){
         /*Perform the test against the threshold T = (m/n)-D,
            where n=windw*windh and D=3.*/
         g=_img[y*_width+x];
-<<<<<<< HEAD
-        mask[y*_width+x]=-(g+3<<logwindw+logwindh<m)&0xFF;
-=======
         mask[y*_width+x]=-((g+3)<<(logwindw+logwindh)<m)&0xFF;
->>>>>>> bbfe4f6... Customised version of ZBar being used by rDriveway.
         /*Update the window sum.*/
         if(x+1<_width){
           x0=QR_MAXI(0,x-(windw>>1));
