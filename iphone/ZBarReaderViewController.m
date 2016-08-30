@@ -306,7 +306,7 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
                        to:3];
 }
 
-- (id) init
+- (instancetype) init
 {
     if (!TARGET_IPHONE_SIMULATOR &&
        !NSClassFromString(@"AVCaptureSession"))
@@ -332,7 +332,7 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     return self;
 }
 
-- (id) initWithCoder:(NSCoder*) decoder
+- (instancetype) initWithCoder:(NSCoder*) decoder
 {
     self = [super initWithCoder:decoder];
     
@@ -614,7 +614,7 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 
     if (showsZBarControls ||
-        self.parentViewController.modalViewController == self)
+        self.parentViewController.presentedViewController == self)
     {
         autoresize |= UIViewAutoresizingFlexibleBottomMargin;
 <<<<<<< HEAD
@@ -875,7 +875,7 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     }
     else
     {
-        [self dismissModalViewControllerAnimated:YES];
+        [self dismissViewControllerAnimated:YES completion:^{}];
     }
 }
 

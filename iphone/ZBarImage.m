@@ -55,7 +55,7 @@ static void image_cleanup(zbar_image_t *zimg)
 
 #pragma mark - Initialisation -
 
-- (id) initWithImage:(zbar_image_t*)image
+- (instancetype) initWithImage:(zbar_image_t*)image
 {
     if (!image)
     {
@@ -76,7 +76,7 @@ static void image_cleanup(zbar_image_t *zimg)
     return self;
 }
 
-- (id) init
+- (instancetype) init
 {
     zbar_image_t *image = zbar_image_create();
     
@@ -94,9 +94,9 @@ static void image_cleanup(zbar_image_t *zimg)
     return self;
 }
 
-- (id) initWithCGImage:(CGImageRef)image
-                  crop:(CGRect)crop
-                  size:(CGSize)size
+- (instancetype) initWithCGImage:(CGImageRef)image
+                            crop:(CGRect)crop
+                            size:(CGSize)size
 {
     self = [self init];
     
@@ -164,8 +164,8 @@ static void image_cleanup(zbar_image_t *zimg)
     return self;
 }
 
-- (id) initWithCGImage:(CGImageRef)image
-                  size:(CGSize)size
+- (instancetype) initWithCGImage:(CGImageRef)image
+                            size:(CGSize)size
 {
     CGRect crop = CGRectMake(0, 0,
                              CGImageGetWidth(image),
@@ -177,7 +177,7 @@ static void image_cleanup(zbar_image_t *zimg)
     return self;
 }
 
-- (id) initWithCGImage: (CGImageRef) image
+- (instancetype) initWithCGImage: (CGImageRef) image
 {
     CGRect crop = CGRectMake(0, 0,
                              CGImageGetWidth(image),

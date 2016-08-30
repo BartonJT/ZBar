@@ -51,7 +51,7 @@ CGImageRef UIGetScreenImage(void);
     showsHelpOnFail, takesPicture, enableCache, tracksSymbols;
 @dynamic showsZBarControls;
 
-- (id) init
+- (instancetype) init
 {
     if(self = [super init]) {
         showsHelpOnFail = YES;
@@ -588,8 +588,9 @@ CGImageRef UIGetScreenImage(void);
     help.delegate = (id<ZBarHelpDelegate>)self;
 
     if(self.sourceType != UIImagePickerControllerSourceTypeCamera) {
-        [self presentModalViewController: help
-              animated: YES];
+        [self presentViewController: help
+                           animated: YES
+                         completion: ^{}];
         return;
     }
 
@@ -650,7 +651,7 @@ CGImageRef UIGetScreenImage(void);
             [readerDelegate imagePickerController: self
                             didFinishPickingMediaWithInfo: newinfo];
         else
-            [self dismissModalViewControllerAnimated: YES];
+            [self dismissViewControllerAnimated: YES completion: ^{}];
         [newinfo release];
         return;
     }
@@ -667,7 +668,7 @@ CGImageRef UIGetScreenImage(void);
                         withRetry: retry];
     else if(!retry)
         // must dismiss stock controller
-        [self dismissModalViewControllerAnimated: YES];
+        [self dismissViewControllerAnimated: YES completion: ^{}];
 }
 
 - (void) imagePickerControllerDidCancel: (UIImagePickerController*) picker
@@ -676,7 +677,7 @@ CGImageRef UIGetScreenImage(void);
     if([readerDelegate respondsToSelector: cb])
         [readerDelegate imagePickerControllerDidCancel: self];
     else
-        [self dismissModalViewControllerAnimated: YES];
+        [self dismissViewControllerAnimated: YES completion: ^{}];
 }
 
 // ZBarHelpDelegate
@@ -691,7 +692,7 @@ CGImageRef UIGetScreenImage(void);
         [self initScanning];
     }
     else
-        [hlp dismissModalViewControllerAnimated: YES];
+        [hlp dismissViewControllerAnimated: YES completion: ^{}];
 }
 
 - (id <NSFastEnumeration>) scanImage: (CGImageRef) image

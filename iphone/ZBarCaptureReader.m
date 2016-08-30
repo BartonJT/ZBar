@@ -57,7 +57,7 @@ enum {
     result.format = [ZBarImage fourcc: @"CV2P"];
 }
 
-- (id) initWithImageScanner:(ZBarImageScanner*)aScanner
+- (instancetype) initWithImageScanner:(ZBarImageScanner*)aScanner
 {
     self = [super init];
     
@@ -100,7 +100,7 @@ enum {
     return self;
 }
 
-- (id) init
+- (instancetype) init
 {
     ZBarImageScanner *newScanner = [[ZBarImageScanner alloc] init];
     

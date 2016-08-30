@@ -82,7 +82,7 @@
 }
 
 // supply a pre-configured image scanner.
-- (id) initWithImageScanner:(ZBarImageScanner*)imageScanner;
+- (instancetype) initWithImageScanner:(ZBarImageScanner*)imageScanner;
 
 - (void) initSubviews;
 

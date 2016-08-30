@@ -37,7 +37,7 @@
     UIPopoverController *pickerPopover;
 }
 
-- (id) initWithViewController: (UIViewController*) viewController;
+- (instancetype) initWithViewController: (UIViewController*) viewController;
 - (void) takePicture;
 
 @property (nonatomic, assign) ZBarReaderView *readerView;

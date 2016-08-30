@@ -48,7 +48,7 @@ using namespace zbar;
 @property (readonly, nonatomic) const zbar_symbol_t *zbarSymbol;
 @property (readonly, nonatomic) CGRect bounds;
 
-- (id) initWithSymbol: (const zbar_symbol_t*) symbol;
+- (instancetype) initWithSymbol: (const zbar_symbol_t*) symbol;
 
 + (NSString*) nameForType: (zbar_symbol_type_t) type;
 
@@ -68,7 +68,7 @@ using namespace zbar;
 @property (readonly, nonatomic) const zbar_symbol_set_t *zbarSymbolSet;
 @property (nonatomic) BOOL filterSymbols;
 
-- (id) initWithSymbolSet: (const zbar_symbol_set_t*) set;
+- (instancetype) initWithSymbolSet: (const zbar_symbol_set_t*) set;
 
 @end
 

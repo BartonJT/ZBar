@@ -123,7 +123,7 @@ static NSString *const ZBRVFocusObserver = @"adjustingFocus";
                                           blue:1
                                          alpha:1];
     fpsLabel.font = [UIFont systemFontOfSize:18];
-    fpsLabel.textAlignment = UITextAlignmentRight;
+    fpsLabel.textAlignment = NSTextAlignmentRight;
     [fpsView addSubview:fpsLabel];
 
     self.zoom = 1.25;
@@ -234,7 +234,7 @@ static NSString *const ZBRVFocusObserver = @"adjustingFocus";
                 context:nil];
 }
 
-- (id) initWithImageScanner:(ZBarImageScanner*)scanner
+- (instancetype) initWithImageScanner:(ZBarImageScanner*)scanner
 {
     self = [super initWithFrame:CGRectMake(0, 0, 320, 426)];
     
@@ -253,7 +253,7 @@ static NSString *const ZBRVFocusObserver = @"adjustingFocus";
     return self;
 }
 
-- (id) init
+- (instancetype) init
 {
     ZBarImageScanner *scanner = [[[ZBarImageScanner alloc] init] autorelease];
     
@@ -273,7 +273,7 @@ static NSString *const ZBRVFocusObserver = @"adjustingFocus";
     return self;
 }
 
-- (id) initWithCoder:(NSCoder*)decoder
+- (instancetype) initWithCoder:(NSCoder*)decoder
 {
     self = [super initWithCoder:decoder];
     

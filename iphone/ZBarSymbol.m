@@ -47,7 +47,7 @@
 
 #pragma mark - Initialisation -
 
-- (id) initWithSymbol:(const zbar_symbol_t*)sym
+- (instancetype) initWithSymbol:(const zbar_symbol_t*)sym
 {
     self = [super init];
     
@@ -197,7 +197,7 @@
 
 #pragma mark - Initialisation -
 
-- (id) initWithSymbolSet:(const zbar_symbol_set_t*)s
+- (instancetype) initWithSymbolSet:(const zbar_symbol_set_t*)s
 {
     if (!s)
     {

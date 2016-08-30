@@ -30,7 +30,7 @@
 
 @synthesize readerView;
 
-- (id) initWithViewController: (UIViewController*) vc
+- (instancetype) initWithViewController: (UIViewController*) vc
 {
     if(!TARGET_IPHONE_SIMULATOR) {
         [self release];
@@ -93,8 +93,9 @@
                        animated: YES];
     }
     else
-        [viewController presentModalViewController: picker
-                        animated: YES];
+        [viewController presentViewController: picker
+									 animated: YES
+								   completion: ^{}];
 }
 
 - (void)  imagePickerController: (UIImagePickerController*) _picker
@@ -105,7 +106,7 @@
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
         [pickerPopover dismissPopoverAnimated: YES];
     else
-        [_picker dismissModalViewControllerAnimated: YES];
+		[_picker dismissViewControllerAnimated: YES completion: ^{}];
 
     [readerView performSelector: @selector(scanImage:)
                 withObject: image
@@ -114,7 +115,7 @@
 
 - (void) imagePickerControllerDidCancel: (UIImagePickerController*) _picker
 {
-    [_picker dismissModalViewControllerAnimated: YES];
+	[_picker dismissViewControllerAnimated: YES completion: ^{}];
 }
 
 @end

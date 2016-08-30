@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -332,7 +332,7 @@
 		DC1A49A311FF33B300BCDA30 /* zbar-helpicons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "zbar-helpicons.png"; path = "res/zbar-helpicons.png"; sourceTree = "<group>"; };
 		DC1A49A411FF33B300BCDA30 /* zbar-samples.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "zbar-samples.png"; path = "res/zbar-samples.png"; sourceTree = "<group>"; };
 		DC1A49C111FF537000BCDA30 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		DC26004B118631C200FA987B /* ZBarCaptureReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBarCaptureReader.m; sourceTree = "<group>"; usesTabs = 0; };
+		DC26004B118631C200FA987B /* ZBarCaptureReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ZBarCaptureReader.m; sourceTree = "<group>"; usesTabs = 0; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		DC290E261351496400A9B857 /* codabar.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = codabar.c; sourceTree = "<group>"; };
 		DC290E271351496400A9B857 /* codabar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = codabar.h; sourceTree = "<group>"; };
 		DC299AF51208B7BD006A023C /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = include/config.h; sourceTree = "<group>"; };
@@ -343,14 +343,14 @@
 		DC3CE47611FA1622008FAF88 /* ZBarReaderViewImpl_Capture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBarReaderViewImpl_Capture.m; sourceTree = "<group>"; usesTabs = 0; };
 		DC3CE47711FA1622008FAF88 /* ZBarReaderViewImpl_Simulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBarReaderViewImpl_Simulator.m; sourceTree = "<group>"; usesTabs = 0; };
 		DC3CEF9D121633C500D7A786 /* readertest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = readertest.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		DC3CEFA51216347100D7A786 /* ZBarCaptureReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZBarCaptureReader.h; path = include/ZBarSDK/ZBarCaptureReader.h; sourceTree = "<group>"; };
-		DC3CEFA61216347100D7A786 /* ZBarImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZBarImage.h; path = include/ZBarSDK/ZBarImage.h; sourceTree = "<group>"; };
+		DC3CEFA51216347100D7A786 /* ZBarCaptureReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = ZBarCaptureReader.h; path = include/ZBarSDK/ZBarCaptureReader.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		DC3CEFA61216347100D7A786 /* ZBarImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = ZBarImage.h; path = include/ZBarSDK/ZBarImage.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		DC3CEFA71216347100D7A786 /* ZBarImageScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZBarImageScanner.h; path = include/ZBarSDK/ZBarImageScanner.h; sourceTree = "<group>"; };
 		DC3CEFA81216347100D7A786 /* ZBarReaderController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZBarReaderController.h; path = include/ZBarSDK/ZBarReaderController.h; sourceTree = "<group>"; };
-		DC3CEFA91216347100D7A786 /* ZBarReaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZBarReaderView.h; path = include/ZBarSDK/ZBarReaderView.h; sourceTree = "<group>"; };
+		DC3CEFA91216347100D7A786 /* ZBarReaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = ZBarReaderView.h; path = include/ZBarSDK/ZBarReaderView.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		DC3CEFAA1216347100D7A786 /* ZBarReaderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZBarReaderViewController.h; path = include/ZBarSDK/ZBarReaderViewController.h; sourceTree = "<group>"; };
 		DC3CEFAB1216347100D7A786 /* ZBarSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZBarSDK.h; path = include/ZBarSDK/ZBarSDK.h; sourceTree = "<group>"; };
-		DC3CEFAC1216347100D7A786 /* ZBarSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZBarSymbol.h; path = include/ZBarSDK/ZBarSymbol.h; sourceTree = "<group>"; };
+		DC3CEFAC1216347100D7A786 /* ZBarSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = ZBarSymbol.h; path = include/ZBarSDK/ZBarSymbol.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		DC3CF141121721A100D7A786 /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLog; sourceTree = "<group>"; };
 <<<<<<< HEAD
 		DC3CF2081218358C00D7A786 /* ReaderSample */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ReaderSample; path = examples/ReaderSample; sourceTree = "<group>"; };
@@ -358,12 +358,12 @@
 =======
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 		DC3CF2A212197A7200D7A786 /* zbar-back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "zbar-back.png"; path = "res/zbar-back.png"; sourceTree = "<group>"; };
-		DC3EBB2C119DDB2100107EE9 /* ZBarReaderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBarReaderViewController.m; sourceTree = "<group>"; usesTabs = 0; };
-		DC48C5401219FE550047193B /* readertest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = readertest.m; path = examples/readertest/readertest.m; sourceTree = "<group>"; };
+		DC3EBB2C119DDB2100107EE9 /* ZBarReaderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ZBarReaderViewController.m; sourceTree = "<group>"; usesTabs = 0; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		DC48C5401219FE550047193B /* readertest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = readertest.m; path = examples/readertest/readertest.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		DC48C55F121A1E7F0047193B /* ZBarSDK */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ZBarSDK; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC48C5A7121B1F840047193B /* Documentation.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = Documentation.html; path = doc/Documentation.html; sourceTree = "<group>"; };
-		DC4920EC10A70475000E4D43 /* ZBarImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBarImage.m; sourceTree = "<group>"; usesTabs = 0; };
-		DC4920ED10A70475000E4D43 /* ZBarImageScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBarImageScanner.m; sourceTree = "<group>"; usesTabs = 0; };
+		DC4920EC10A70475000E4D43 /* ZBarImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ZBarImage.m; sourceTree = "<group>"; usesTabs = 0; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		DC4920ED10A70475000E4D43 /* ZBarImageScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ZBarImageScanner.m; sourceTree = "<group>"; usesTabs = 0; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		DC50453D1203396B009FF359 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		DC50453F1203396B009FF359 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		DC5045411203396B009FF359 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
@@ -380,8 +380,8 @@
 		DC50467B12034D60009FF359 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		DC50467C12034D71009FF359 /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = COPYING; path = ../COPYING; sourceTree = SOURCE_ROOT; };
 		DC50467D12034D71009FF359 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = SOURCE_ROOT; };
-		DC5D76C2136FA8C40069AEF5 /* ZBarCameraSimulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBarCameraSimulator.m; sourceTree = "<group>"; };
-		DC5D76C5136FA8F20069AEF5 /* ZBarCameraSimulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZBarCameraSimulator.h; path = include/ZBarSDK/ZBarCameraSimulator.h; sourceTree = "<group>"; };
+		DC5D76C2136FA8C40069AEF5 /* ZBarCameraSimulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ZBarCameraSimulator.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		DC5D76C5136FA8F20069AEF5 /* ZBarCameraSimulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = ZBarCameraSimulator.h; path = include/ZBarSDK/ZBarCameraSimulator.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		DC67C08210A079BE0033B702 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		DC67C11710A07A810033B702 /* zbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zbar.h; path = ../include/zbar.h; sourceTree = SOURCE_ROOT; usesTabs = 0; };
 		DC67C11F10A07AD30033B702 /* config.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = config.c; sourceTree = "<group>"; usesTabs = 0; };
@@ -423,11 +423,12 @@
 		DC67C15710A07AD30033B702 /* scanner.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = scanner.c; sourceTree = "<group>"; usesTabs = 0; };
 		DC67C15A10A07AD30033B702 /* symbol.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = symbol.c; sourceTree = "<group>"; usesTabs = 0; };
 		DC67C15B10A07AD30033B702 /* symbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = symbol.h; sourceTree = "<group>"; usesTabs = 0; };
-		DC67C1BE10A07B6B0033B702 /* ZBarHelpController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBarHelpController.m; sourceTree = "<group>"; usesTabs = 0; };
-		DC67C1BF10A07B6B0033B702 /* ZBarReaderController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBarReaderController.m; sourceTree = "<group>"; usesTabs = 0; };
-		DC67C1C010A07B6B0033B702 /* ZBarSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBarSymbol.m; sourceTree = "<group>"; usesTabs = 0; };
+		DC67C1BE10A07B6B0033B702 /* ZBarHelpController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ZBarHelpController.m; sourceTree = "<group>"; usesTabs = 0; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		DC67C1BF10A07B6B0033B702 /* ZBarReaderController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ZBarReaderController.m; sourceTree = "<group>"; usesTabs = 0; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		DC67C1C010A07B6B0033B702 /* ZBarSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ZBarSymbol.m; sourceTree = "<group>"; usesTabs = 0; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		DC67C1CB10A07BEE0033B702 /* svg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = svg.h; sourceTree = "<group>"; usesTabs = 0; };
 		DC8245EE1629DC140010B2E6 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "examples/readertest/Default-568h@2x.png"; sourceTree = "<group>"; };
+<<<<<<< HEAD
 		DCB3789A12A43C7E0059B07B /* ZBarHelpController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZBarHelpController.h; path = include/ZBarSDK/ZBarHelpController.h; sourceTree = "<group>"; };
 <<<<<<< HEAD
 		DCC9324E137B509B0040A82D /* EmbedReader */ = {isa = PBXFileReference; lastKnownFileType = folder; name = EmbedReader; path = examples/EmbedReader; sourceTree = "<group>"; };
@@ -435,6 +436,10 @@
 =======
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 		DCDC6E2F11ADCA8E00021380 /* ZBarReaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBarReaderView.m; sourceTree = "<group>"; usesTabs = 0; };
+=======
+		DCB3789A12A43C7E0059B07B /* ZBarHelpController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = ZBarHelpController.h; path = include/ZBarSDK/ZBarHelpController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		DCDC6E2F11ADCA8E00021380 /* ZBarReaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ZBarReaderView.m; sourceTree = "<group>"; usesTabs = 0; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+>>>>>>> b996f01... Changed deployment target to iOS 6. Removing depreciated code.
 		DCE9900B129719F100D2655C /* code93.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = code93.c; sourceTree = "<group>"; };
 		DCE9900C129719F100D2655C /* code93.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = code93.h; sourceTree = "<group>"; };
 		DCF5C9AB11EA3AD100E7DC21 /* databar.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = databar.c; sourceTree = "<group>"; };
@@ -767,10 +772,11 @@
 <<<<<<< HEAD
 =======
 			attributes = {
+				LastUpgradeCheck = 0640;
 			};
 >>>>>>> 2ffc30c... Customised version of ZBar being used by rDriveway.
 			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "zbar" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -943,7 +949,7 @@
 					../zbar,
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = zbar;
 				PUBLIC_HEADERS_FOLDER_PATH = zbar;
@@ -964,7 +970,6 @@
 					../zbar,
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = zbar;
 				PUBLIC_HEADERS_FOLDER_PATH = zbar;
@@ -988,7 +993,8 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG_OBJC=1";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-all_load";
 				PREBINDING = NO;
 				PROVISIONING_PROFILE = "";
@@ -1012,7 +1018,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "NDEBUG=1";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_LDFLAGS = "-all_load";
 				PREBINDING = NO;
 				PROVISIONING_PROFILE = "";
@@ -1055,7 +1061,6 @@
 				);
 				INFOPLIST_FILE = examples/readertest/readertest.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PREBINDING = NO;
 				PRODUCT_NAME = readertest;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1077,7 +1082,6 @@
 				);
 				INFOPLIST_FILE = examples/readertest/readertest.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PREBINDING = NO;
 				PRODUCT_NAME = readertest;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1099,7 +1103,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "NDEBUG=1";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_LDFLAGS = "-all_load";
 				PREBINDING = NO;
 				PROVISIONING_PROFILE = "";
@@ -1122,7 +1126,6 @@
 					../zbar,
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = zbar;
 				PUBLIC_HEADERS_FOLDER_PATH = zbar;
@@ -1167,7 +1170,6 @@
 				);
 				INFOPLIST_FILE = examples/readertest/readertest.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PREBINDING = NO;
 				PRODUCT_NAME = readertest;
 				TARGETED_DEVICE_FAMILY = "1,2";

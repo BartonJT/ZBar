@@ -50,7 +50,7 @@
 }
 
 // supply a pre-configured image scanner
-- (id) initWithImageScanner: (ZBarImageScanner*) imageScanner;
+- (instancetype) initWithImageScanner: (ZBarImageScanner*) imageScanner;
 
 // this must be called before the session is started
 - (void) willStartRunning;
