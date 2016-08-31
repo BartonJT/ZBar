@@ -119,6 +119,7 @@
 		DCE9900D129719F100D2655C /* code93.c in Sources */ = {isa = PBXBuildFile; fileRef = DCE9900B129719F100D2655C /* code93.c */; };
 		DCF5C9AD11EA3AD100E7DC21 /* databar.c in Sources */ = {isa = PBXBuildFile; fileRef = DCF5C9AB11EA3AD100E7DC21 /* databar.c */; };
 		FD4CC8B3194A8F1D003627B6 /* ZBarCaptureReader.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC3CEFA51216347100D7A786 /* ZBarCaptureReader.h */; };
+		FD5DA3DE1D7568DF00B114B1 /* Resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FD5DA3DD1D7568D700B114B1 /* Resources.xcassets */; };
 		FDA987C819417325005735AC /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = DC299AF51208B7BD006A023C /* config.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FDA987C919417325005735AC /* ZBarCVImage.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3AAB4C11B71A040021C7B1 /* ZBarCVImage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FDA987CA19417325005735AC /* ZBarCameraSimulator.h in Headers */ = {isa = PBXBuildFile; fileRef = DC5D76C5136FA8F20069AEF5 /* ZBarCameraSimulator.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -406,6 +407,7 @@
 		DCE9900C129719F100D2655C /* code93.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = code93.h; sourceTree = "<group>"; };
 		DCF5C9AB11EA3AD100E7DC21 /* databar.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = databar.c; sourceTree = "<group>"; };
 		DCF5C9AC11EA3AD100E7DC21 /* databar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = databar.h; sourceTree = "<group>"; };
+		FD5DA3DD1D7568D700B114B1 /* Resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Resources.xcassets; path = res/Resources.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -478,6 +480,7 @@
 				DC1A49A211FF33B300BCDA30 /* zbar-help.html */,
 				DC1A49A311FF33B300BCDA30 /* zbar-helpicons.png */,
 				DC1A49A411FF33B300BCDA30 /* zbar-samples.png */,
+				FD5DA3DD1D7568D700B114B1 /* Resources.xcassets */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -741,6 +744,7 @@
 				DC299AA51208B63C006A023C /* zbar-help.html in Resources */,
 				DC299AA61208B63C006A023C /* zbar-helpicons.png in Resources */,
 				DC299AA71208B63C006A023C /* zbar-samples.png in Resources */,
+				FD5DA3DE1D7568DF00B114B1 /* Resources.xcassets in Resources */,
 				DC48C5341219FDDE0047193B /* zbar-back.png in Resources */,
 				DC8245EF1629DC340010B2E6 /* Default-568h@2x.png in Resources */,
 			);

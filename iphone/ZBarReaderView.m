@@ -128,12 +128,9 @@ static NSString *const ZBRVFocusObserver = @"adjustingFocus";
 
     self.zoom = 1.25;
     
-    NSString *pngFileExtension = @"png";
-    UIImage *_targetImage = [[UIImage alloc] initWithContentsOfFile:
-                                [[NSBundle mainBundle] pathForResource:@"squaretarget2" ofType:pngFileExtension]];
+    UIImage *_targetImage = [UIImage imageNamed:@"squaretarget2"];
     
-    UIImage *_targetImage2 = [[UIImage alloc] initWithContentsOfFile:
-                                [[NSBundle mainBundle] pathForResource:@"squaretarget2_green" ofType:pngFileExtension]];
+    UIImage *_targetImage2 = [UIImage imageNamed:@"squaretarget2_green"];
 
     _targetOutline = [[UIImageView alloc] initWithImage:_targetImage];
     _targetOutline.animationImages = [NSArray arrayWithObjects:
@@ -141,9 +138,6 @@ static NSString *const ZBRVFocusObserver = @"adjustingFocus";
                                       nil];
     _targetOutline.animationDuration = 5.0f;
     _targetOutline.animationRepeatCount = 0;
-    
-    [_targetImage  release];
-    [_targetImage2 release];
     
     _targetOutline.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin   |
                                        UIViewAutoresizingFlexibleRightMargin |
@@ -153,8 +147,12 @@ static NSString *const ZBRVFocusObserver = @"adjustingFocus";
     _targetOutlineFrame = _targetOutline.frame;
     CGFloat viewWidth  = self.frame.size.width;
     CGFloat viewHeight = self.frame.size.height;
-    _targetOutlineFrame.origin.x = (3 * viewWidth / 4) - (3 * _targetOutlineFrame.size.width / 4);
-    _targetOutlineFrame.origin.y = (1 * viewHeight / 10) - (1 * _targetOutlineFrame.size.height / 10);
+    // Keep the target at 60% of the view size;
+    _targetOutlineFrame.size.height = viewHeight * 0.6;
+    _targetOutlineFrame.size.width = _targetOutlineFrame.size.height;
+    // Place the target in the top right-hand corner of the view.
+    _targetOutlineFrame.origin.x = (viewWidth * 3 / 4) - (_targetOutlineFrame.size.width * 3 / 4);
+    _targetOutlineFrame.origin.y = (viewHeight / 10) - (_targetOutlineFrame.size.height / 10);
     
     _targetOutline.frame = _targetOutlineFrame;
     

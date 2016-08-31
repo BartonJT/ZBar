@@ -111,7 +111,7 @@
                   action: @selector(dismiss)];
 
     backBtn = [[UIBarButtonItem alloc]
-                  initWithImage: [UIImage imageNamed: @"zbar-back.png"]
+                  initWithImage: [UIImage imageNamed: @"zbar-back"]
                   style: UIBarButtonItemStylePlain
                   target: webView
                   action: @selector(goBack)];
