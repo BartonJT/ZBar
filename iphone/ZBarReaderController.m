@@ -253,7 +253,9 @@ CGImageRef UIGetScreenImage(void);
                 if(scanCrop.origin.x + scanCrop.size.width > .8875)
                     scanCrop.size.width = .8875 - scanCrop.origin.x;
 
+                #if USE_PRIVATE_APIS
                 meth = @selector(scanScreen);
+                #endif
             }
             else
                 meth = @selector(takePicture);
