@@ -51,8 +51,6 @@
     readerView = nil;
     [picker release];
     picker = nil;
-    [pickerPopover release];
-    pickerPopover = nil;
     [super dealloc];
 }
 
@@ -84,13 +82,19 @@
         picker.delegate = self;
     }
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        if(!pickerPopover)
-            pickerPopover = [[UIPopoverController alloc]
-                                initWithContentViewController: picker];
-        [pickerPopover presentPopoverFromRect: CGRectZero
-                       inView: readerView
-                       permittedArrowDirections: UIPopoverArrowDirectionAny
-                       animated: YES];
+		
+		[picker setModalPresentationStyle:UIModalPresentationPopover];
+		
+		[viewController presentViewController:picker
+									 animated:YES
+								   completion:nil];
+		
+		// Get the popover presentation controller and configure it.
+		UIPopoverPresentationController *presentationController = [picker popoverPresentationController];
+		presentationController.delegate = self;
+		presentationController.permittedArrowDirections = UIPopoverArrowDirectionAny;
+		presentationController.sourceView = readerView;
+		presentationController.sourceRect = CGRectZero;
     }
     else
         [viewController presentViewController: picker
@@ -104,7 +108,7 @@
     UIImage *image = [info objectForKey: UIImagePickerControllerOriginalImage];
 
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-        [pickerPopover dismissPopoverAnimated: YES];
+        [viewController dismissViewControllerAnimated:YES completion:nil];
     else
 		[_picker dismissViewControllerAnimated: YES completion: ^{}];
 
