@@ -29,19 +29,19 @@ using namespace zbar;
 #endif
 
 typedef enum {
-    // default interface provided by UIImagePickerController - user manually
-    // captures an image by pressing a button
+    /** default interface provided by UIImagePickerController - user manually
+     captures an image by pressing a button */
     ZBarReaderControllerCameraModeDefault = 0,
 
-    // automatically scan by taking screenshots with UIGetScreenImage().
-    // resolution is limited by the screen, so this is inappropriate for
-    // longer codes
+    /** automatically scan by taking screenshots with UIGetScreenImage().
+     resolution is limited by the screen, so this is inappropriate for
+     longer codes */
     ZBarReaderControllerCameraModeSampling,
 
-    // automatically scan by rapidly taking pictures with takePicture.
-    // tradeoff resolution with frame rate by adjusting the crop, and size
-    // properties of the reader along with the density configs of the image
-    // scanner
+    /** automatically scan by rapidly taking pictures with takePicture.
+     tradeoff resolution with frame rate by adjusting the crop, and size
+     properties of the reader along with the density configs of the image
+     scanner */
     ZBarReaderControllerCameraModeSequence,
 
 } ZBarReaderControllerCameraMode;
@@ -52,8 +52,11 @@ typedef enum {
 @protocol ZBarReaderDelegate <UIImagePickerControllerDelegate>
 @optional
 
-// called when no barcode is found in an image selected by the user.
-// if retry is NO, the delegate *must* dismiss the controller
+/**
+ * Called when no barcode is found in an image selected by the user.
+ *
+ * @param retry If NO, the delegate *must* dismiss the controller.
+ */
 - (void) readerControllerDidFailToRead: (ZBarReaderController*) reader
                              withRetry: (BOOL) retry;
 
@@ -84,54 +87,60 @@ typedef enum {
     ZBarSymbol *symbol;
 }
 
-// access to configure image scanner
+/** Access to configure image scanner. */
 @property (readonly, nonatomic) ZBarImageScanner *scanner;
 
-// barcode result recipient (NB don't use delegate)
+/** Barcode result recipient (NB don't use delegate). */
 @property (nonatomic, assign) id <ZBarReaderDelegate> readerDelegate;
 
-// whether to use alternate control set
+/** Whether to use alternate control set. */
 @property (nonatomic) BOOL showsZBarControls;
 
-// whether to display helpful information when decoding fails
+/** Whether to display helpful information when decoding fails. */
 @property (nonatomic) BOOL showsHelpOnFail;
 
-// how to use the camera (when sourceType == Camera)
+/** How to use the camera (when sourceType == Camera). */
 @property (nonatomic) ZBarReaderControllerCameraMode cameraMode;
 
-// whether to outline symbols with the green tracking box.
+/** Whether to outline symbols with the green tracking box. */
 @property (nonatomic) BOOL tracksSymbols;
 
-// whether to automatically take a full picture when a barcode is detected
-// (when cameraMode == Sampling)
+/** Whether to automatically take a full picture when a barcode is detected
+ (when cameraMode == Sampling) */
 @property (nonatomic) BOOL takesPicture;
 
-// whether to use the "cache" for realtime modes (default YES).  this can be
-// used to safely disable the inter-frame consistency and duplicate checks,
-// speeding up recognition, iff:
-//     1. the controller is dismissed when a barcode is read and
-//     2. unreliable symbologies are disabled (all EAN/UPC variants and I2/5)
+/**
+ Whether to use the "cache" for realtime modes (default YES). This can be
+ used to safely disable the inter-frame consistency and duplicate checks,
+ speeding up recognition, iff:
+     1. the controller is dismissed when a barcode is read and.
+     2. unreliable symbologies are disabled (all EAN/UPC variants and I2/5).
+ */
 @property (nonatomic) BOOL enableCache;
 
-// crop images for scanning.  the original image will be cropped to this
-// rectangle before scanning.  the rectangle is normalized to the image size
-// and aspect ratio; useful values will place the rectangle between 0 and 1
-// on each axis, where the x-axis corresponds to the image major axis.
-// defaults to the full image (0, 0, 1, 1).
+/** Crop images for scanning. The original image will be cropped to this
+ rectangle before scanning. The rectangle is normalized to the image size
+ and aspect ratio; useful values will place the rectangle between 0 and 1
+ on each axis, where the x-axis corresponds to the image major axis.
+ Defaults to the full image (0, 0, 1, 1). */
 @property (nonatomic) CGRect scanCrop;
 
-// scale image to scan.  after cropping, the image will be scaled if
-// necessary, such that neither of its dimensions exceed this value.
-// defaults to 640.
+/** Scale image to scan. After cropping, the image will be scaled if
+ necessary, such that neither of its dimensions exceed this value.
+ Defaults to 640. */
 @property (nonatomic) NSInteger maxScanDimension;
 
-// display the built-in help browser.  for use with custom overlays if
-// you don't also want to create your own help view.  only send this
-// message when the reader is displayed.  the argument will be passed
-// to the onZBarHelp() javascript function.
+/**
+ *  Display the built-in help browser. For use with custom overlays if
+ *  you don't also want to create your own help view. Only send this
+ *  message when the reader is displayed. The argument will be passed
+ * to the onZBarHelp() javascript function.
+ */
 - (void) showHelpWithReason: (NSString*) reason;
 
-// direct scanner interface - scan UIImage and return something enumerable
+/**
+ *  Direct scanner interface - scan UIImage and return something enumerable
+ */
 - (id <NSFastEnumeration>) scanImage: (CGImageRef) image;
 
 @end

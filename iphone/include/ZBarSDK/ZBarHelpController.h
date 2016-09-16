@@ -33,8 +33,9 @@
 @end
 
 
-// failure dialog w/a few useful tips
-
+/**
+ *  Failure dialog with a few useful tips
+ */
 @interface ZBarHelpController : UIViewController
                               < UIWebViewDelegate,
                                 UIAlertViewDelegate >

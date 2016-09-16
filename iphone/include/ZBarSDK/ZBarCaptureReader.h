@@ -49,44 +49,54 @@
     CGFloat dt_frame;
 }
 
-// supply a pre-configured image scanner
+/**
+ *  Supply a pre-configured image scanner.
+ */
 - (instancetype) initWithImageScanner: (ZBarImageScanner*) imageScanner;
 
-// this must be called before the session is started
+/**
+ *  This must be called before the session is started.
+ */
 - (void) willStartRunning;
 
-// this must be called *before* the session is stopped
+/**
+ *  This must be called *before* the session is stopped.
+ */
 - (void) willStopRunning;
 
-// clear the internal result cache
+/**
+ *  Clears the internal result cache.
+ */
 - (void) flushCache;
 
-// capture the next frame after processing.  the captured image will
-// follow the same delegate path as an image with decoded symbols.
+/**
+ *  Capture the next frame after processing. The captured image will
+ *  follow the same delegate path as an image with decoded symbols.
+ */
 - (void) captureFrame;
 
-// the capture output.  add this to an instance of AVCaptureSession
+/** The capture output.  add this to an instance of AVCaptureSession */
 @property (nonatomic, readonly) AVCaptureOutput *captureOutput;
 
-// delegate is notified of decode results and symbol tracking.
+/** Delegate is notified of decode results and symbol tracking. */
 @property (nonatomic, assign) id<ZBarCaptureDelegate> captureDelegate;
 
-// access to image scanner for configuration.
+/** Access to image scanner for configuration. */
 @property (nonatomic, readonly) ZBarImageScanner *scanner;
 
-// region of image to scan in normalized coordinates.
-// NB horizontal crop currently ignored...
+/** Region of image to scan in normalized coordinates.
+ NB horizontal crop currently ignored... */
 @property (nonatomic, assign) CGRect scanCrop;
 
-// size of video frames.
+/** Size of video frames. */
 @property (nonatomic, readonly) CGSize size;
 
-// (quickly) gate the reader function without interrupting the video
-// stream. Also flushes the cache when enabled. Defaults to *NO*
+/** (Quickly) gate the reader function without interrupting the video
+ stream. Also flushes the cache when enabled. Defaults to *NO* */
 @property (nonatomic) BOOL enableReader;
 
-// Current frame rate (for debug/optimization).
-// Only valid while running.
+/** Current frame rate (for debug/optimization).
+ Only valid while running. */
 @property (nonatomic, readonly) CGFloat framesPerSecond;
 
 @property (nonatomic) BOOL enableCache;
@@ -96,15 +106,25 @@
 
 @protocol ZBarCaptureDelegate <NSObject>
 
-// Called when a new barcode is detected. The image refers to the
-// video buffer and must not be retained for long.
+/**
+ *  Called when a new barcode is detected. The image refers to the
+ *  video buffer and must not be retained for long.
+ *
+ *  @param captureReader The instance of ZBarCaptureReader that called 
+ *  the method on its delegate.
+ *
+ *  @param image The image from the video buffer. Must not be retained 
+ *  for long.
+ */
 - (void)       captureReader:(ZBarCaptureReader*)captureReader
   didReadNewSymbolsFromImage:(ZBarImage*)image;
 
 @optional
-// Called when a potential/uncertain barcode is detected. Will also
-// be called *after* captureReader:didReadNewSymbolsFromImage:
-// when good barcodes are detected.
+/**
+ *  Called when a potential/uncertain barcode is detected. Will also
+ *  be called *after* captureReader:didReadNewSymbolsFromImage:
+ *  when good barcodes are detected.
+ */
 - (void) captureReader:(ZBarCaptureReader*)captureReader
        didTrackSymbols:(ZBarSymbolSet*)symbols;
 
