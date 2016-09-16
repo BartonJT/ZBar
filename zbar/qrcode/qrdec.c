@@ -1219,7 +1219,7 @@ static int qr_finder_quick_crossing_check(const unsigned char *_img,
    _x1<0||_x1>=_width||_y1<0||_y1>=_height){
     return -1;
   }
-  if(!_img[_y0*_width+_x0]!=_v||(!_img[_y1*_width+_x1])!=_v)return 1;
+  if((!_img[_y0*_width+_x0])!=_v||(!_img[_y1*_width+_x1])!=_v)return 1;
   if((!_img[((_y0+_y1)>>1)*_width+((_x0+_x1)>>1)])==_v)return -1;
   return 0;
 }
