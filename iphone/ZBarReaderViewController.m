@@ -226,7 +226,7 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     }
     else
     {
-        cameraDevice = nil;
+        cameraDevice = UIImagePickerControllerCameraDeviceFront;
     }
 
     // create our own scanner to store configuration,
