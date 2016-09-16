@@ -98,9 +98,9 @@ struct zbar_decoder_s {
     unsigned s6;                        /* 6-element character width */
 
     /* everything above here is automatically reset */
-    unsigned buf_alloc;                 /* dynamic buffer allocation */
-    unsigned buflen;                    /* binary data length */
-    unsigned char *buf;                 /* decoded characters */
+    unsigned long buf_alloc;            /* dynamic buffer allocation */
+    unsigned long bufferLength;         /* binary data length */
+    unsigned char *buffer;              /* decoded characters */
     void *userdata;                     /* application data */
     zbar_decoder_handler_t *handler;    /* application callback */
 
@@ -267,30 +267,44 @@ static inline char release_lock (zbar_decoder_t *dcode,
 
 /* ensure output buffer has sufficient allocation for request */
 static inline char size_buf (zbar_decoder_t *dcode,
-                             unsigned len)
+                             unsigned long len)
 {
     unsigned char *buf;
-    if(len <= BUFFER_MIN)
+    
+    if (len <= BUFFER_MIN) {
         return(0);
-    if(len < dcode->buf_alloc)
+    }
+    
+    if (len < dcode->buf_alloc) {
         /* FIXME size reduction heuristic? */
         return(0);
-    if(len > BUFFER_MAX)
-        return(1);
-    if(len < dcode->buf_alloc + BUFFER_INCR) {
-        len = dcode->buf_alloc + BUFFER_INCR;
-        if(len > BUFFER_MAX)
-            len = BUFFER_MAX;
     }
-    buf = realloc(dcode->buf, len);
-    if(!buf)
+    
+    if (len > BUFFER_MAX) {
         return(1);
-    dcode->buf = buf;
+    }
+    
+    if (len < dcode->buf_alloc + BUFFER_INCR)
+    {
+        len = dcode->buf_alloc + BUFFER_INCR;
+        
+        if (len > BUFFER_MAX) {
+            len = BUFFER_MAX;
+        }
+    }
+    
+    buf = realloc(dcode->buffer, len);
+    
+    if (!buf) {
+        return(1);
+    }
+    
+    dcode->buffer = buf;
     dcode->buf_alloc = len;
     return(0);
 }
 
-extern const char *_zbar_decoder_buf_dump (unsigned char *buf,
-                                           unsigned int buflen);
+extern const char *_zbar_decoder_buf_dump (unsigned char *buffer,
+                                           unsigned long bufferLength);
 
 #endif

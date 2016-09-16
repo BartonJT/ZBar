@@ -135,7 +135,7 @@ static inline int i25_acquire_lock (zbar_decoder_t *dcode)
 
     /* copy holding buffer */
     for(i = 4; --i >= 0; )
-        dcode->buf[i] = dcode->i25.buf[i];
+        dcode->buffer[i] = dcode->i25.buf[i];
     return(0);
 }
 
@@ -172,9 +172,9 @@ static inline signed char i25_decode_end (zbar_decoder_t *dcode)
         int i;
         for(i = 0; i < dcode25->character / 2; i++) {
             unsigned j = dcode25->character - 1 - i;
-            char c = dcode->buf[i];
-            dcode->buf[i] = dcode->buf[j];
-            dcode->buf[j] = c;
+            char c = dcode->buffer[i];
+            dcode->buffer[i] = dcode->buffer[j];
+            dcode->buffer[j] = c;
         }
     }
 
@@ -189,9 +189,9 @@ static inline signed char i25_decode_end (zbar_decoder_t *dcode)
 
     zassert(dcode25->character < dcode->buf_alloc, ZBAR_NONE, "i=%02x %s\n",
             dcode25->character,
-            _zbar_decoder_buf_dump(dcode->buf, dcode25->character));
-    dcode->buflen = dcode25->character;
-    dcode->buf[dcode25->character] = '\0';
+            _zbar_decoder_buf_dump(dcode->buffer, dcode25->character));
+    dcode->bufferLength = dcode25->character;
+    dcode->buffer[dcode25->character] = '\0';
     dcode->modifiers = 0;
     dbprintf(2, " [valid end]\n");
     dcode25->character = -1;
@@ -239,7 +239,7 @@ zbar_symbol_type_t _zbar_decode_i25 (zbar_decoder_t *dcode)
 
     unsigned char *buf;
     if(dcode25->character >= 4)
-        buf = dcode->buf;
+        buf = dcode->buffer;
     else
         buf = dcode25->buf;
     buf[dcode25->character++] = c + '0';

@@ -132,48 +132,48 @@ typedef enum zbar_symbol_type_e {
  */
 typedef enum zbar_orientation_e {
     ZBAR_ORIENT_UNKNOWN = -1,   /**< unable to determine orientation */
-    ZBAR_ORIENT_UP,             /**< upright, read left to right */
-    ZBAR_ORIENT_RIGHT,          /**< sideways, read top to bottom */
-    ZBAR_ORIENT_DOWN,           /**< upside-down, read right to left */
-    ZBAR_ORIENT_LEFT,           /**< sideways, read bottom to top */
+    ZBAR_ORIENT_UP      =  0,   /**< upright, read left to right */
+    ZBAR_ORIENT_RIGHT   =  1,   /**< sideways, read top to bottom */
+    ZBAR_ORIENT_DOWN    =  2,   /**< upside-down, read right to left */
+    ZBAR_ORIENT_LEFT    =  3,   /**< sideways, read bottom to top */
 } zbar_orientation_t;
 
 /** error codes. */
 typedef enum zbar_error_e {
-    ZBAR_OK = 0,                /**< no error */
-    ZBAR_ERR_NOMEM,             /**< out of memory */
-    ZBAR_ERR_INTERNAL,          /**< internal library error */
-    ZBAR_ERR_UNSUPPORTED,       /**< unsupported request */
-    ZBAR_ERR_INVALID,           /**< invalid request */
-    ZBAR_ERR_SYSTEM,            /**< system error */
-    ZBAR_ERR_LOCKING,           /**< locking error */
-    ZBAR_ERR_BUSY,              /**< all resources busy */
-    ZBAR_ERR_XDISPLAY,          /**< X11 display error */
-    ZBAR_ERR_XPROTO,            /**< X11 protocol error */
-    ZBAR_ERR_CLOSED,            /**< output window is closed */
-    ZBAR_ERR_WINAPI,            /**< windows system error */
-    ZBAR_ERR_NUM                /**< number of error codes */
+    ZBAR_OK                 = 0,    /**< no error */
+    ZBAR_ERR_NOMEM          = 1,    /**< out of memory */
+    ZBAR_ERR_INTERNAL       = 2,    /**< internal library error */
+    ZBAR_ERR_UNSUPPORTED    = 3,    /**< unsupported request */
+    ZBAR_ERR_INVALID        = 4,    /**< invalid request */
+    ZBAR_ERR_SYSTEM         = 5,    /**< system error */
+    ZBAR_ERR_LOCKING        = 6,    /**< locking error */
+    ZBAR_ERR_BUSY           = 7,    /**< all resources busy */
+    ZBAR_ERR_XDISPLAY       = 8,    /**< X11 display error */
+    ZBAR_ERR_XPROTO         = 9,    /**< X11 protocol error */
+    ZBAR_ERR_CLOSED         = 10,   /**< output window is closed */
+    ZBAR_ERR_WINAPI         = 11,   /**< windows system error */
+    ZBAR_ERR_NUM            = 12,   /**< number of error codes */
 } zbar_error_t;
 
 /** decoder configuration options.
  * @since 0.4
  */
 typedef enum zbar_config_e {
-    ZBAR_CFG_ENABLE = 0,        /**< enable symbology/feature */
-    ZBAR_CFG_ADD_CHECK,         /**< enable check digit when optional */
-    ZBAR_CFG_EMIT_CHECK,        /**< return check digit when present */
-    ZBAR_CFG_ASCII,             /**< enable full ASCII character set */
-    ZBAR_CFG_NUM,               /**< number of boolean decoder configs */
+    ZBAR_CFG_ENABLE         = 0,        /**< enable symbology/feature */
+    ZBAR_CFG_ADD_CHECK      = 1,        /**< enable check digit when optional */
+    ZBAR_CFG_EMIT_CHECK     = 2,        /**< return check digit when present */
+    ZBAR_CFG_ASCII          = 3,        /**< enable full ASCII character set */
+    ZBAR_CFG_NUM            = 4,        /**< number of boolean decoder configs */
 
-    ZBAR_CFG_MIN_LEN = 0x20,    /**< minimum data length for valid decode */
-    ZBAR_CFG_MAX_LEN,           /**< maximum data length for valid decode */
+    ZBAR_CFG_MIN_LEN        = 0x20,     /**< minimum data length for valid decode */
+    ZBAR_CFG_MAX_LEN        = 0x30,     /**< maximum data length for valid decode */
 
-    ZBAR_CFG_UNCERTAINTY = 0x40,/**< required video consistency frames */
+    ZBAR_CFG_UNCERTAINTY    = 0x40,     /**< required video consistency frames */
 
-    ZBAR_CFG_POSITION = 0x80,   /**< enable scanner to collect position data */
+    ZBAR_CFG_POSITION       = 0x80,     /**< enable scanner to collect position data */
 
-    ZBAR_CFG_X_DENSITY = 0x100, /**< image scanner vertical scan density */
-    ZBAR_CFG_Y_DENSITY,         /**< image scanner horizontal scan density */
+    ZBAR_CFG_X_DENSITY      = 0x100,    /**< image scanner vertical scan density */
+    ZBAR_CFG_Y_DENSITY      = 0x110,    /**< image scanner horizontal scan density */
 } zbar_config_t;
 
 /** decoder symbology modifier flags.
@@ -189,10 +189,10 @@ typedef enum zbar_modifier_e {
     /** barcode tagged as AIM reserved
      * (eg, FNC1 after first character or digit pair)
      */
-    ZBAR_MOD_AIM,
+    ZBAR_MOD_AIM = 1,
 
     /** number of modifiers */
-    ZBAR_MOD_NUM,
+    ZBAR_MOD_NUM = 2,
 } zbar_modifier_t;
 
 /** retrieve runtime library version information.
@@ -354,7 +354,7 @@ extern const char *zbar_symbol_get_data(const zbar_symbol_t *symbol);
 /** retrieve length of binary data.
  * @returns the length of the decoded data
  */
-extern unsigned int zbar_symbol_get_data_length(const zbar_symbol_t *symbol);
+extern unsigned long zbar_symbol_get_data_length(const zbar_symbol_t *symbol);
 
 /** retrieve a symbol confidence metric.
  * @returns an unscaled, relative quantity: larger values are better
@@ -442,7 +442,7 @@ zbar_symbol_first_component(const zbar_symbol_t *symbol);
  */
 extern char *zbar_symbol_xml(const zbar_symbol_t *symbol,
                              char **buffer,
-                             unsigned *buflen);
+                             unsigned long *bufferLength);
 
 /*@}*/
 
@@ -1354,11 +1354,12 @@ extern zbar_color_t zbar_decoder_get_color(const zbar_decoder_t *decoder);
  */
 extern const char *zbar_decoder_get_data(const zbar_decoder_t *decoder);
 
-/** retrieve length of binary data.
- * @returns the length of the decoded data or 0 if no new data
- * available.
+/** 
+ *  retrieve length of binary data.
+ *  @returns the length of the decoded data or 0 if no new data
+ *  available.
  */
-extern unsigned int
+extern unsigned long
 zbar_decoder_get_data_length(const zbar_decoder_t *decoder);
 
 /** retrieve last decoded symbol type.

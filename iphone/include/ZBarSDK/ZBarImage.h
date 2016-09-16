@@ -47,11 +47,11 @@ using namespace zbar;
 @property (readonly, nonatomic) zbar_image_t *zbarImage;
 @property (readonly, nonatomic) UIImage *UIImage;
 
-- (id) initWithImage: (zbar_image_t*) image;
-- (id) initWithCGImage: (CGImageRef) image;
-- (id) initWithCGImage: (CGImageRef) image
+- (instancetype) initWithImage: (zbar_image_t*) image;
+- (instancetype) initWithCGImage: (CGImageRef) image;
+- (instancetype) initWithCGImage: (CGImageRef) image
                   size: (CGSize) size;
-- (id) initWithCGImage: (CGImageRef) image
+- (instancetype) initWithCGImage: (CGImageRef) image
                   crop: (CGRect) crop
                   size: (CGSize) size;
 

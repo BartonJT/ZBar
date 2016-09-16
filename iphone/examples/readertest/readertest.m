@@ -75,7 +75,7 @@ static const CGFloat const zoom_choices[] = {
 
 @implementation AppDelegate
 
-- (id) init
+- (instancetype) init
 {
     return([super initWithStyle: UITableViewStyleGrouped]);
 }
@@ -558,10 +558,17 @@ static const CGFloat const zoom_choices[] = {
     [super dealloc];
 }
 
-- (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) orient
+- (BOOL) shouldAutorotate
 {
-    return(YES);
+    return YES;
 }
+
+
+- (NSUInteger) supportedInterfaceOrientations
+{
+	return UIInterfaceOrientationMaskAll;
+}
+
 
 - (void) scan
 {

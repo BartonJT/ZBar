@@ -22,9 +22,10 @@
 //------------------------------------------------------------------------
 
 #import <UIKit/UIKit.h>
+
 #import "ZBarImageScanner.h"
 
-@class AVCaptureSession, AVCaptureDevice;
+@class AVCaptureSession, AVCaptureDevice, AVCaptureInput;
 @class CALayer;
 @class ZBarImageScanner, ZBarCaptureReader, ZBarReaderView;
 
@@ -32,14 +33,14 @@
 
 @protocol ZBarReaderViewDelegate < NSObject >
 
-- (void) readerView: (ZBarReaderView*) readerView
-     didReadSymbols: (ZBarSymbolSet*) symbols
-          fromImage: (UIImage*) image;
+- (void) readerView:(ZBarReaderView*)readerView
+     didReadSymbols:(ZBarSymbolSet*)symbols
+          fromImage:(UIImage*)image;
 
 @optional
-- (void) readerViewDidStart: (ZBarReaderView*) readerView;
-- (void) readerView: (ZBarReaderView*) readerView
-   didStopWithError: (NSError*) error;
+- (void) readerViewDidStart:(ZBarReaderView*)readerView;
+- (void) readerView:(ZBarReaderView*)readerView
+   didStopWithError:(NSError*)error;
 
 @end
 
@@ -47,8 +48,7 @@
 // a complete video capture session feeding a ZBarCaptureReader and
 // presents the associated preview with symbol tracking annotations.
 
-@interface ZBarReaderView
-    : UIView
+@interface ZBarReaderView : UIView
 {
     id<ZBarReaderViewDelegate> readerDelegate;
     ZBarCaptureReader *captureReader;
@@ -60,6 +60,10 @@
     NSInteger torchMode;
     UIInterfaceOrientation interfaceOrientation;
     NSTimeInterval animationDuration;
+    
+    BOOL  _isAnimatingTargetOutline;
+    CGRect _targetOutlineFrame;
+    UIImageView *_targetOutline;
 
     CALayer *preview, *overlay, *tracking, *cropLayer;
     UIView *fpsView;
@@ -68,10 +72,22 @@
     CGFloat imageScale;
     CGSize imageSize;
     BOOL started, running, locked;
+    
+    AVCaptureSession *session;
+    AVCaptureDevice *device;
+    AVCaptureInput *input;
 }
 
 // supply a pre-configured image scanner.
-- (id) initWithImageScanner: (ZBarImageScanner*) imageScanner;
+- (instancetype) initWithImageScanner:(ZBarImageScanner*)imageScanner;
+
+- (void) initSubviews;
+
+- (void) updateCrop;
+
+- (void) setImageSize:(CGSize)size;
+
+- (void) didTrackSymbols:(ZBarSymbolSet*)syms;
 
 // start the video stream and barcode reader.
 - (void) start;
@@ -83,8 +99,9 @@
 - (void) flushCache;
 
 // compensate for device/camera/interface orientation
-- (void) willRotateToInterfaceOrientation: (UIInterfaceOrientation) orient
-                                 duration: (NSTimeInterval) duration;
+- (void) willRotateToInterfaceOrientation:(UIInterfaceOrientation)orient
+                                 duration:(NSTimeInterval)duration;
+
 
 // delegate is notified of decode results.
 @property (nonatomic, assign) id<ZBarReaderViewDelegate> readerDelegate;
@@ -114,8 +131,8 @@
 // also updated by pinch-zoom gesture.  clipped to range [1,maxZoom],
 // defaults to 1.25
 @property (nonatomic) CGFloat zoom;
-- (void) setZoom: (CGFloat) zoom
-        animated: (BOOL) animated;
+- (void) setZoom:(CGFloat)zoom
+        animated:(BOOL)animated;
 
 // maximum settable zoom factor.
 @property (nonatomic) CGFloat maxZoom;
@@ -136,5 +153,9 @@
 
 // this flag still works, but its use is deprecated
 @property (nonatomic) BOOL enableCache;
+
+@property (nonatomic, assign) BOOL isAnimatingTargetOutline;
+@property (nonatomic, assign) CGRect targetOutlineFrame;
+@property (nonatomic, retain) UIImageView *targetOutline;
 
 @end

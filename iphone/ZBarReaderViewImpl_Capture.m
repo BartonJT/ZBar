@@ -20,7 +20,7 @@
 //
 //  http://sourceforge.net/projects/zbar
 //------------------------------------------------------------------------
-
+/*
 #import <AVFoundation/AVFoundation.h>
 #import <CoreMedia/CoreMedia.h>
 #import <CoreVideo/CoreVideo.h>
@@ -39,8 +39,8 @@
 - (void) didTrackSymbols: (ZBarSymbolSet*) syms;
 @end
 
-@interface ZBarReaderViewImpl
-    : ZBarReaderView
+
+@interface ZBarReaderViewImpl : ZBarReaderView
 {
     AVCaptureSession *session;
     AVCaptureDevice *device;
@@ -49,102 +49,123 @@
 
 @end
 
+
 @implementation ZBarReaderViewImpl
 
-@synthesize device, session;
+//@synthesize device, session;
 
-- (void) _initWithImageScanner: (ZBarImageScanner*) scanner
+
+#pragma mark - Initialisation Methods -
+
+- (void) _initWithImageScanner:(ZBarImageScanner*)scanner
 {
-    [super _initWithImageScanner: scanner];
+    [super _initWithImageScanner:scanner];
 
     session = [AVCaptureSession new];
-    NSNotificationCenter *notify =
-        [NSNotificationCenter defaultCenter];
-    [notify addObserver: self
-            selector: @selector(onVideoError:)
-            name: AVCaptureSessionRuntimeErrorNotification
-            object: session];
-    [notify addObserver: self
-            selector: @selector(onVideoStart:)
-            name: AVCaptureSessionDidStartRunningNotification
-            object: session];
-    [notify addObserver: self
-            selector: @selector(onVideoStop:)
-            name: AVCaptureSessionDidStopRunningNotification
-            object: session];
-    [notify addObserver: self
-            selector: @selector(onVideoStop:)
-            name: AVCaptureSessionWasInterruptedNotification
-            object: session];
-    [notify addObserver: self
-            selector: @selector(onVideoStart:)
-            name: AVCaptureSessionInterruptionEndedNotification
-            object: session];
+    
+    NSNotificationCenter *notify = [NSNotificationCenter defaultCenter];
+    
+    [notify addObserver:self
+               selector:@selector(onVideoError:)
+                   name:AVCaptureSessionRuntimeErrorNotification
+                 object:session];
+    
+    [notify addObserver:self
+               selector:@selector(onVideoStart:)
+                   name:AVCaptureSessionDidStartRunningNotification
+                 object:session];
+    
+    [notify addObserver:self
+               selector:@selector(onVideoStop:)
+                   name:AVCaptureSessionDidStopRunningNotification
+                 object:session];
+    
+    [notify addObserver:self
+               selector:@selector(onVideoStop:)
+                   name:AVCaptureSessionWasInterruptedNotification
+                 object:session];
+    
+    [notify addObserver:self
+               selector:@selector(onVideoStart:)
+                   name:AVCaptureSessionInterruptionEndedNotification
+                 object:session];
 
-    self.device = [AVCaptureDevice
-                      defaultDeviceWithMediaType: AVMediaTypeVideo];
+    self.device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
 
-    captureReader = [[ZBarCaptureReader alloc]
-                        initWithImageScanner: scanner];
+    captureReader = [[ZBarCaptureReader alloc] initWithImageScanner:scanner];
     captureReader.captureDelegate = (id<ZBarCaptureDelegate>)self;
     [session addOutput: captureReader.captureOutput];
 
-    if([session canSetSessionPreset: AVCaptureSessionPreset640x480])
+    if ([session canSetSessionPreset: AVCaptureSessionPreset640x480])
+    {
         session.sessionPreset = AVCaptureSessionPreset640x480;
+    }
 
-    [captureReader addObserver: self
-                   forKeyPath: @"size"
-                   options: 0
-                   context: NULL];
+    [captureReader addObserver:self
+                    forKeyPath:@"size"
+                       options:0
+                       context:NULL];
 
     [self initSubviews];
 }
 
 - (void) initSubviews
 {
-    AVCaptureVideoPreviewLayer *videoPreview =
-        [[AVCaptureVideoPreviewLayer
-             layerWithSession: session]
-            retain];
-    preview = videoPreview;
+    preview = [[AVCaptureVideoPreviewLayer layerWithSession: session] retain];
     CGRect bounds = self.bounds;
     bounds.origin = CGPointZero;
     preview.bounds = bounds;
     preview.position = CGPointMake(bounds.size.width / 2,
                                    bounds.size.height / 2);
+    
+    AVCaptureVideoPreviewLayer *videoPreview = (AVCaptureVideoPreviewLayer *)preview;
     videoPreview.videoGravity = AVLayerVideoGravityResizeAspectFill;
     [self.layer addSublayer: preview];
 
     [super initSubviews];
 }
 
+
+#pragma mark - Deallocation Method -
+
 - (void) dealloc
 {
-    [[NSNotificationCenter defaultCenter]
-        removeObserver: self];
-    if(showsFPS) {
-        @try {
-            [captureReader removeObserver: self
-                           forKeyPath: @"framesPerSecond"];
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+    
+    if (showsFPS)
+    {
+        @try
+        {
+            [captureReader removeObserver:self
+                               forKeyPath:@"framesPerSecond"];
         }
         @catch(...) { }
     }
-    @try {
-        [captureReader removeObserver: self
-                       forKeyPath: @"size"];
+    @try
+    {
+        [captureReader removeObserver:self
+                           forKeyPath:@"size"];
     }
     @catch(...) { }
+    
     captureReader.captureDelegate = nil;
     [captureReader release];
     captureReader = nil;
+    
     [device release];
     device = nil;
+    
     [input release];
     input = nil;
+    
     [session release];
     session = nil;
+    
     [super dealloc];
 }
+
+
+#pragma mark - Object Methods -
 
 - (void) updateCrop
 {
@@ -157,7 +178,7 @@
     return(captureReader.scanner);
 }
 
-- (void) setDevice: (AVCaptureDevice*) newdev
+- (void) setDevice:(AVCaptureDevice*)newdev
 {
     id olddev = device;
     AVCaptureInput *oldinput = input;
@@ -165,21 +186,30 @@
 
     NSError *error = nil;
     device = [newdev retain];
-    if(device) {
+    
+    if (device)
+    {
         assert([device hasMediaType: AVMediaTypeVideo]);
-        input = [[AVCaptureDeviceInput alloc]
-                    initWithDevice: newdev
-                    error: &error];
+        input = [[AVCaptureDeviceInput alloc] initWithDevice:newdev
+                                                       error:&error];
         assert(input);
     }
     else
+    {
         input = nil;
+    }
 
     [session beginConfiguration];
+    
     if(oldinput)
+    {
         [session removeInput: oldinput];
+    }
     if(input)
+    {
         [session addInput: input];
+    }
+    
     [session commitConfiguration];
 
     [olddev release];
@@ -191,41 +221,54 @@
     return(captureReader.enableCache);
 }
 
-- (void) setEnableCache: (BOOL) enable
+- (void) setEnableCache:(BOOL)enable
 {
     captureReader.enableCache = enable;
 }
 
-- (void) setTorchMode: (NSInteger) mode
+- (void) setTorchMode:(NSInteger)mode
 {
     [super setTorchMode: mode];
-    if(running && [device isTorchModeSupported: mode])
-        @try {
+    
+    if (running && [device isTorchModeSupported: mode])
+    {
+        @try
+        {
             device.torchMode = mode;
         }
         @catch(...) { }
+    }
 }
 
-- (void) setShowsFPS: (BOOL) show
+- (void) setShowsFPS:(BOOL)show
 {
     [super setShowsFPS: show];
-    @try {
+    
+    @try
+    {
         if(show)
-            [captureReader addObserver: self
-                           forKeyPath: @"framesPerSecond"
-                           options: 0
-                           context: NULL];
+        {
+            [captureReader addObserver:self
+                            forKeyPath:@"framesPerSecond"
+                               options:0
+                               context:NULL];
+        }
         else
-            [captureReader removeObserver: self
-                           forKeyPath: @"framesPerSecond"];
+        {
+            [captureReader removeObserver:self
+                               forKeyPath:@"framesPerSecond"];
+        }
     }
     @catch(...) { }
 }
 
 - (void) start
 {
-    if(started)
+    if (started)
+    {
         return;
+    }
+    
     [super start];
 
     [session startRunning];
@@ -234,8 +277,11 @@
 
 - (void) stop
 {
-    if(!started)
+    if (!started)
+    {
         return;
+    }
+    
     [super stop];
 
     captureReader.enableReader = NO;
@@ -249,154 +295,203 @@
 
 - (void) configureDevice
 {
-    if([device isFocusModeSupported: AVCaptureFocusModeContinuousAutoFocus])
+    if ([device isFocusModeSupported: AVCaptureFocusModeContinuousAutoFocus])
+    {
         device.focusMode = AVCaptureFocusModeContinuousAutoFocus;
-    if([device isTorchModeSupported: torchMode])
+    }
+    
+    if ([device isTorchModeSupported: torchMode])
+    {
         device.torchMode = torchMode;
+    }
 }
 
 - (void) lockDevice
 {
-    if(!running || locked) {
+    if (!running || locked)
+    {
         assert(0);
+        
         return;
     }
 
     // lock device and set focus mode
     NSError *error = nil;
-    if([device lockForConfiguration: &error]) {
+    if ([device lockForConfiguration:&error])
+    {
         locked = YES;
         [self configureDevice];
     }
-    else {
+    else
+    {
         zlog(@"failed to lock device: %@", error);
         // just keep trying
-        [self performSelector: @selector(lockDevice)
-              withObject: nil
-              afterDelay: .5];
+        [self performSelector:@selector(lockDevice)
+                   withObject:nil
+                   afterDelay:0.5];
     }
 }
 
 
-// AVCaptureSession notifications
+#pragma mark - AVCaptureSession Notifications -
 
-- (void) onVideoStart: (NSNotification*) note
+- (void) onVideoStart:(NSNotification*)note
 {
     zlog(@"onVideoStart: running=%d %@", running, note);
-    if(running)
+
+    if (running)
+    {
         return;
+    }
+    
     running = YES;
     locked = NO;
 
     [self lockDevice];
 
-    if([readerDelegate respondsToSelector: @selector(readerViewDidStart:)])
-        [readerDelegate readerViewDidStart: self];
+    if ([readerDelegate respondsToSelector:@selector(readerViewDidStart:)])
+    {
+        [readerDelegate readerViewDidStart:self];
+    }
 }
 
-- (void) onVideoStop: (NSNotification*) note
+- (void) onVideoStop:(NSNotification*)note
 {
     zlog(@"onVideoStop: %@", note);
-    if(!running)
+    
+    if (!running)
+    {
         return;
+    }
+    
     running = NO;
 
-    if(locked)
+    if (locked)
+    {
         [device unlockForConfiguration];
+    }
     else
-        [NSObject cancelPreviousPerformRequestsWithTarget: self
-                  selector: @selector(lockDevice)
-                  object: nil];
+    {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self
+                                                 selector:@selector(lockDevice)
+                                                   object:nil];
+    }
+    
     locked = NO;
 
-    if([readerDelegate respondsToSelector:
-                           @selector(readerView:didStopWithError:)])
-        [readerDelegate readerView: self
-                        didStopWithError: nil];
+    if (readerDelegate &&
+        [readerDelegate respondsToSelector:@selector(readerView:didStopWithError:)])
+    {
+        [readerDelegate readerView:self
+                  didStopWithError:nil];
+    }
 }
 
 - (void) onVideoError: (NSNotification*) note
 {
     zlog(@"onVideoError: %@", note);
-    if(running) {
+    
+    if (running)
+    {
         // FIXME does session always stop on error?
         running = started = NO;
         [device unlockForConfiguration];
     }
-    NSError *err =
-        [note.userInfo objectForKey: AVCaptureSessionErrorKey];
+    
+    NSError *err = [note.userInfo objectForKey: AVCaptureSessionErrorKey];
 
-    if([readerDelegate respondsToSelector:
-                           @selector(readerView:didStopWithError:)])
-        [readerDelegate readerView: self
-                        didStopWithError: err];
+    if (readerDelegate &&
+        [readerDelegate respondsToSelector:@selector(readerView:didStopWithError:)])
+    {
+        [readerDelegate readerView:self
+                  didStopWithError:err];
+    }
     else
+    {
         NSLog(@"ZBarReaderView: ERROR during capture: %@: %@",
               [err localizedDescription],
               [err localizedFailureReason]);
+    }
 }
 
-// NSKeyValueObserving
 
-- (void) observeValueForKeyPath: (NSString*) path
-                       ofObject: (id) obj
-                         change: (NSDictionary*) info
-                        context: (void*) ctx
+#pragma mark - NSKeyValueObserving -
+
+- (void) observeValueForKeyPath:(NSString*)path
+                       ofObject:(id)obj
+                         change:(NSDictionary*)info
+                        context:(void*)ctx
 {
-    if(obj == captureReader &&
-       [path isEqualToString: @"size"])
+    if (obj == captureReader &&
+        [path isEqualToString: @"size"])
+    {
         // adjust preview to match image size
         [self setImageSize: captureReader.size];
-    else if(obj == captureReader &&
-       [path isEqualToString: @"framesPerSecond"])
+    }
+    else if (obj == captureReader &&
+             [path isEqualToString: @"framesPerSecond"])
+    {
         fpsLabel.text = [NSString stringWithFormat: @"%.2ffps ",
                                   captureReader.framesPerSecond];
+    }
 }
 
-// ZBarCaptureDelegate
 
-- (void) captureReader: (ZBarCaptureReader*) reader
-       didTrackSymbols: (ZBarSymbolSet*) syms
+#pragma mark - ZBarCaptureDelegate -
+
+- (void) captureReader:(ZBarCaptureReader*)reader
+       didTrackSymbols:(ZBarSymbolSet*)syms
 {
     [self didTrackSymbols: syms];
 }
 
-- (void)       captureReader: (ZBarCaptureReader*) reader
-  didReadNewSymbolsFromImage: (ZBarImage*) zimg
+- (void)       captureReader:(ZBarCaptureReader*)reader
+  didReadNewSymbolsFromImage:(ZBarImage*)zimg
 {
     zlog(@"scanned %d symbols: %@", zimg.symbols.count, zimg);
-    if(!readerDelegate)
+    
+    if (!readerDelegate)
+    {
         return;
+    }
 
     UIImageOrientation orient = [UIDevice currentDevice].orientation;
-    if(!UIDeviceOrientationIsValidInterfaceOrientation(orient)) {
-        orient = interfaceOrientation;
-        if(orient == UIInterfaceOrientationLandscapeLeft)
-            orient = UIDeviceOrientationLandscapeLeft;
-        else if(orient == UIInterfaceOrientationLandscapeRight)
-            orient = UIDeviceOrientationLandscapeRight;
-    }
-    switch(orient)
+    
+    if (!UIDeviceOrientationIsValidInterfaceOrientation(orient))
     {
-    case UIDeviceOrientationPortraitUpsideDown:
-        orient = UIImageOrientationLeft;
-        break;
-    case UIDeviceOrientationLandscapeLeft:
-        orient = UIImageOrientationUp;
-        break;
-    case UIDeviceOrientationLandscapeRight:
-        orient = UIImageOrientationDown;
-        break;
-    default:
-        orient = UIImageOrientationRight;
-        break;
+        orient = interfaceOrientation;
+        
+        if (orient == UIInterfaceOrientationLandscapeLeft)
+        {
+            orient = UIDeviceOrientationLandscapeLeft;
+        }
+        else if (orient == UIInterfaceOrientationLandscapeRight)
+        {
+            orient = UIDeviceOrientationLandscapeRight;
+        }
+    }
+    switch (orient)
+    {
+        case UIDeviceOrientationPortraitUpsideDown:
+            orient = UIImageOrientationLeft;
+            break;
+        case UIDeviceOrientationLandscapeLeft:
+            orient = UIImageOrientationUp;
+            break;
+        case UIDeviceOrientationLandscapeRight:
+            orient = UIImageOrientationDown;
+            break;
+        default:
+            orient = UIImageOrientationRight;
+            break;
     }
 
     UIImage *uiimg = [zimg UIImageWithOrientation: orient];
-    [readerDelegate
-        readerView: self
-        didReadSymbols: zimg.symbols
-        fromImage: uiimg];
+    
+    [readerDelegate readerView:self
+                didReadSymbols:zimg.symbols
+                     fromImage:uiimg];
 }
 
 @end
+ */

@@ -29,15 +29,14 @@
     : NSObject
     < UINavigationControllerDelegate,
       UIImagePickerControllerDelegate,
-      UIPopoverControllerDelegate >
+      UIPopoverPresentationControllerDelegate>
 {
     UIViewController *viewController;
     ZBarReaderView *readerView;
     UIImagePickerController *picker;
-    UIPopoverController *pickerPopover;
 }
 
-- (id) initWithViewController: (UIViewController*) viewController;
+- (instancetype) initWithViewController: (UIViewController*) viewController;
 - (void) takePicture;
 
 @property (nonatomic, assign) ZBarReaderView *readerView;

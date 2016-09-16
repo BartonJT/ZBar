@@ -25,7 +25,7 @@
 #define MODULE ZBarCVImage
 #import "debug.h"
 
-static NSOperationQueue *conversionQueue;
+static NSOperationQueue *_conversionQueue;
 
 static const void*
 asyncProvider_getBytePointer (void *info)
@@ -49,57 +49,83 @@ static const CGDataProviderDirectCallbacks asyncProvider = {
 
 @implementation ZBarCVImage
 
-@synthesize pixelBuffer, rgbBuffer;
+@synthesize
+    pixelBuffer = _pixelBuffer,
+    rgbBuffer   = _rgbBuffer;
+
+
+#pragma mark - Deallocation Method -
 
 - (void) dealloc
 {
-    self.pixelBuffer = NULL;
-    if(rgbBuffer) {
-        free(rgbBuffer);
-        rgbBuffer = NULL;
+    _pixelBuffer = NULL;
+    
+    if (_rgbBuffer)
+    {
+        free(_rgbBuffer);
+        _rgbBuffer = NULL;
     }
+    
     [conversion release];
     conversion = nil;
+    
     [super dealloc];
 }
 
-- (void) setPixelBuffer: (CVPixelBufferRef) newbuf
+
+#pragma mark - Object Methods -
+
+- (void) setPixelBuffer:(CVPixelBufferRef)newbuf
 {
-    CVPixelBufferRef oldbuf = pixelBuffer;
-    if(newbuf)
+    CVPixelBufferRef oldbuf = _pixelBuffer;
+    
+    if (newbuf)
+    {
         CVPixelBufferRetain(newbuf);
-    pixelBuffer = newbuf;
-    if(oldbuf)
+    }
+    
+    _pixelBuffer = newbuf;
+    
+    if (oldbuf)
+    {
         CVPixelBufferRelease(oldbuf);
+    }
 }
 
 - (void) waitUntilConverted
 {
     // operation will at least have been queued already
     NSOperation *op = [conversion retain];
-    if(!op)
+    
+    if (!op)
+    {
         return;
+    }
+    
     [op waitUntilFinished];
     [op release];
 }
 
-- (UIImage*) UIImageWithOrientation: (UIImageOrientation) orient
+- (UIImage*) UIImageWithOrientation:(UIImageOrientation)orient
 {
-    if(!conversion && !rgbBuffer) {
-        // start format conversion in separate thread
-        NSOperationQueue *queue = conversionQueue;
-        if(!queue) {
-            queue = conversionQueue = [NSOperationQueue new];
-            queue.maxConcurrentOperationCount = 1;
+    if (!conversion && !self.rgbBuffer)
+    {
+        // Start format conversion in separate thread
+        
+        if (!_conversionQueue)
+        {
+            _conversionQueue = [[NSOperationQueue alloc] init];
+            _conversionQueue.maxConcurrentOperationCount = 1;
         }
         else
-            [queue waitUntilAllOperationsAreFinished];
+        {
+            [_conversionQueue waitUntilAllOperationsAreFinished];
+        }
 
-        conversion = [[NSInvocationOperation alloc]
-                         initWithTarget: self
-                         selector: @selector(convertCVtoRGB)
-                         object: nil];
-        [queue addOperation: conversion];
+        conversion = [[NSInvocationOperation alloc] initWithTarget:self
+                                                          selector:@selector(convertCVtoRGB)
+                                                            object:nil];
+        [_conversionQueue addOperation:conversion];
         [conversion release];
     }
 
@@ -118,13 +144,12 @@ static const CGDataProviderDirectCallbacks asyncProvider = {
     CGColorSpaceRelease(cs);
     CGDataProviderRelease(datasrc);
 
-    UIImage *uiimg =
-        [UIImage imageWithCGImage: cgimg
-                 scale: 1
-                 orientation: orient];
+    UIImage *uiimg = [UIImage imageWithCGImage:cgimg
+                                         scale:1
+                                   orientation:orient];
     CGImageRelease(cgimg);
 
-    return(uiimg);
+    return uiimg;
 }
 
 // convert video frame to a CGImage compatible RGB format
@@ -134,32 +159,45 @@ static const CGDataProviderDirectCallbacks asyncProvider = {
     timer_start;
     unsigned long format = self.format;
     assert(format == zbar_fourcc('C','V','2','P'));
-    if(format != zbar_fourcc('C','V','2','P'))
+    
+    if (format != zbar_fourcc('C','V','2','P'))
+    {
         return;
+    }
 
-    CVPixelBufferLockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
-    int w = CVPixelBufferGetWidth(pixelBuffer);
-    int h = CVPixelBufferGetHeight(pixelBuffer);
-    int dy = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0);
-    int duv = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1);
-    uint8_t *py = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 0);
-    uint8_t *puv = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 1);
-    if(!py || !puv || dy < w || duv < w)
+    CVPixelBufferLockBaseAddress(self.pixelBuffer, kCVPixelBufferLock_ReadOnly);
+    long w = CVPixelBufferGetWidth(self.pixelBuffer);
+    long h = CVPixelBufferGetHeight(self.pixelBuffer);
+    long dy = CVPixelBufferGetBytesPerRowOfPlane(self.pixelBuffer, 0);
+    long duv = CVPixelBufferGetBytesPerRowOfPlane(self.pixelBuffer, 1);
+    uint8_t *py = CVPixelBufferGetBaseAddressOfPlane(self.pixelBuffer, 0);
+    uint8_t *puv = CVPixelBufferGetBaseAddressOfPlane(self.pixelBuffer, 1);
+    
+    if (!py || !puv || dy < w || duv < w)
+    {
         goto error;
+    }
 
-    int datalen = 3 * w * h;
+    long datalen = 3 * w * h;
     // Quartz accesses some undocumented amount past allocated data?
     // ...allocate extra to compensate
-    uint8_t *pdst = rgbBuffer = malloc(datalen + 3 * w);
-    if(!pdst)
+    uint8_t *pdst = _rgbBuffer = malloc(datalen + 3 * w);
+    
+    if (!pdst)
+    {
         goto error;
-    [self setData: rgbBuffer
-          withLength: datalen];
+    }
+    
+    [self setData:self.rgbBuffer
+       withLength:datalen];
 
-    for(int y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++)
+    {
         const uint8_t *qy = py;
         const uint8_t *quv = puv;
-        for(int x = 0; x < w; x++) {
+        
+        for (int x = 0; x < w; x++)
+        {
             int Y1 = *(qy++) - 16;
             int Cb = *(quv) - 128;
             int Cr = *(quv + 1) - 128;
@@ -177,13 +215,17 @@ static const CGDataProviderDirectCallbacks asyncProvider = {
             *(pdst++) = g;
             *(pdst++) = b;
         }
+        
         py += dy;
-        if(y & 1)
+        
+        if (y & 1)
+        {
             puv += duv;
+        }
     }
 
 error:
-    CVPixelBufferUnlockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
+    CVPixelBufferUnlockBaseAddress(self.pixelBuffer, kCVPixelBufferLock_ReadOnly);
     zlog(@"convert time %gs", timer_elapsed(t_start, timer_now()));
 
     // release buffer as soon as conversion is complete

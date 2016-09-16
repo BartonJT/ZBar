@@ -21,6 +21,7 @@
 //  http://sourceforge.net/projects/zbar
 //------------------------------------------------------------------------
 
+/*
 #import <ZBarSDK/ZBarReaderView.h>
 #import <ZBarSDK/ZBarReaderViewController.h>
 
@@ -217,3 +218,4 @@
 }
 
 @end
+ */

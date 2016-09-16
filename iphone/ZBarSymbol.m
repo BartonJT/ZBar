@@ -22,34 +22,60 @@
 //------------------------------------------------------------------------
 
 #import <ZBarSDK/ZBarSymbol.h>
+#import <CoreGraphics/CoreGraphics.h>
 
 @implementation ZBarSymbol
 
-@dynamic type, typeName, configMask, modifierMask, data, quality, count,
+@dynamic
+    type,
+    typeName,
+    configMask,
+    modifierMask,
+    data,
+    quality,
+    count,
     zbarSymbol;
 
-+ (NSString*) nameForType: (zbar_symbol_type_t) type
+
+#pragma mark -
+
++ (NSString*) nameForType:(zbar_symbol_type_t)type
 {
     return([NSString stringWithUTF8String: zbar_get_symbol_name(type)]);
 }
 
-- (id) initWithSymbol: (const zbar_symbol_t*) sym
+
+#pragma mark - Initialisation -
+
+- (instancetype) initWithSymbol:(const zbar_symbol_t*)sym
 {
-    if(self = [super init]) {
+    self = [super init];
+    
+    if (self)
+    {
         symbol = sym;
         zbar_symbol_ref(sym, 1);
     }
-    return(self);
+    
+    return self;
 }
+
+
+#pragma mark - Deallocation -
 
 - (void) dealloc
 {
-    if(symbol) {
+    if (symbol)
+    {
         zbar_symbol_ref(symbol, -1);
         symbol = NULL;
     }
+    
     [super dealloc];
 }
+
+
+#pragma mark -
 
 - (zbar_symbol_type_t) type
 {
@@ -58,140 +84,215 @@
 
 - (NSString*) typeName
 {
-    return([[self class] nameForType: zbar_symbol_get_type(symbol)]);
+    NSString *typeName = [[self class] nameForType:zbar_symbol_get_type(symbol)];
+    
+    return typeName;
 }
 
 - (NSUInteger) configMask
 {
-    return(zbar_symbol_get_configs(symbol));
+    NSUInteger configMask = zbar_symbol_get_configs(symbol);
+    
+    return configMask;
 }
 
 - (NSUInteger) modifierMask
 {
-    return(zbar_symbol_get_modifiers(symbol));
+    NSUInteger modifierMask = zbar_symbol_get_modifiers(symbol);
+    
+    return modifierMask;
 }
 
 - (NSString*) data
 {
-    return([NSString stringWithUTF8String: zbar_symbol_get_data(symbol)]);
+    NSString *data = [NSString stringWithUTF8String: zbar_symbol_get_data(symbol)];
+    
+    return data;
 }
 
 - (int) quality
 {
-    return(zbar_symbol_get_quality(symbol));
+    int quality = zbar_symbol_get_quality(symbol);
+    
+    return quality;
 }
 
 - (int) count
 {
-    return(zbar_symbol_get_count(symbol));
+    int count = zbar_symbol_get_count(symbol);
+    
+    return count;
 }
 
 - (zbar_orientation_t) orientation
 {
-    return(zbar_symbol_get_orientation(symbol));
+    zbar_orientation_t orientation = zbar_symbol_get_orientation(symbol);
+    
+    return orientation;
 }
 
 - (const zbar_symbol_t*) zbarSymbol
 {
-    return(symbol);
+    return symbol;
 }
 
 - (ZBarSymbolSet*) components
 {
-    return([[[ZBarSymbolSet alloc]
-                initWithSymbolSet: zbar_symbol_get_components(symbol)]
-               autorelease]);
+    ZBarSymbolSet *components = [[[ZBarSymbolSet alloc]
+                                  initWithSymbolSet:zbar_symbol_get_components(symbol)] autorelease];
+    return components;
 }
 
 - (CGRect) bounds
 {
     int n = zbar_symbol_get_loc_size(symbol);
-    if(!n)
-        return(CGRectNull);
+    
+    if (!n)
+    {
+        return CGRectNull;
+    }
 
     int xmin = INT_MAX, xmax = INT_MIN;
     int ymin = INT_MAX, ymax = INT_MIN;
 
-    for(int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++)
+    {
         int t = zbar_symbol_get_loc_x(symbol, i);
-        if(xmin > t) xmin = t;
-        if(xmax < t) xmax = t;
+        
+        if (xmin > t) {
+            xmin = t;
+        }
+        
+        if (xmax < t) {
+            xmax = t;
+        }
+        
         t = zbar_symbol_get_loc_y(symbol, i);
-        if(ymin > t) ymin = t;
-        if(ymax < t) ymax = t;
+        
+        if (ymin > t) {
+            ymin = t;
+        }
+        
+        if (ymax < t) {
+            ymax = t;
+        }
     }
-    return(CGRectMake(xmin, ymin, xmax - xmin, ymax - ymin));
+    
+    CGRect bounds = CGRectMake(xmin, ymin, xmax - xmin, ymax - ymin);
+    
+    return bounds;
 }
 
 @end
 
 
+#pragma mark -
+
 @implementation ZBarSymbolSet
 
 @dynamic count, zbarSymbolSet;
-@synthesize filterSymbols;
 
-- (id) initWithSymbolSet: (const zbar_symbol_set_t*) s
+@synthesize filterSymbols = _filterSymbols;
+
+
+#pragma mark - Initialisation -
+
+- (instancetype) initWithSymbolSet:(const zbar_symbol_set_t*)s
 {
-    if(!s) {
+    if (!s)
+    {
         [self release];
-        return(nil);
+        
+        return nil;
     }
-    if(self = [super init]) {
+    
+    self = [super init];
+    
+    if (self)
+    {
         set = s;
         zbar_symbol_set_ref(s, 1);
-        filterSymbols = YES;
+        _filterSymbols = YES;
     }
-    return(self);
+    
+    return self;
 }
+
+
+#pragma mark - Deallocation -
 
 - (void) dealloc
 {
-    if(set) {
+    if (set)
+    {
         zbar_symbol_set_ref(set, -1);
         set = NULL;
     }
+    
     [super dealloc];
 }
 
+
+#pragma mark -
+
 - (int) count
 {
-    if(filterSymbols)
-        return(zbar_symbol_set_get_size(set));
-
-    int n = 0;
+    int numSymbols = 0;
+    
+    if (self.filterSymbols)
+    {
+        numSymbols = zbar_symbol_set_get_size(set);
+        
+        return numSymbols;
+    }
+    
     const zbar_symbol_t *sym = zbar_symbol_set_first_unfiltered(set);
-    for(; sym; sym = zbar_symbol_next(sym))
-        n++;
-    return(n);
+    
+    for (; sym; sym = zbar_symbol_next(sym))
+    {
+        numSymbols++;
+    }
+    
+    return numSymbols;
 }
 
 - (const zbar_symbol_set_t*) zbarSymbolSet
 {
-    return(set);
+    return set;
 }
 
-- (NSUInteger) countByEnumeratingWithState: (NSFastEnumerationState*) state
-                                   objects: (id*) stackbuf
-                                     count: (NSUInteger) len
+- (NSUInteger) countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                   objects:(id*)stackbuf
+                                     count:(NSUInteger)len
 {
     const zbar_symbol_t *sym = (void*)state->state; // FIXME
-    if(sym)
+    
+    if (sym)
+    {
         sym = zbar_symbol_next(sym);
-    else if(set && filterSymbols)
+    }
+    else if (set && self.filterSymbols)
+    {
         sym = zbar_symbol_set_first_symbol(set);
-    else if(set)
+    }
+    else if (set)
+    {
         sym = zbar_symbol_set_first_unfiltered(set);
+    }
 
-    if(sym)
-        *stackbuf = [[[ZBarSymbol alloc]
-                         initWithSymbol: sym]
-                        autorelease];
+    if (sym)
+    {
+        *stackbuf = [[[ZBarSymbol alloc] initWithSymbol: sym] autorelease];
+    }
 
     state->state = (unsigned long)sym; // FIXME
     state->itemsPtr = stackbuf;
     state->mutationsPtr = (void*)self;
-    return((sym) ? 1 : 0);
+    
+    
+    NSUInteger n = (sym) ? 1 : 0;
+    
+    return n;
 }
 
 @end

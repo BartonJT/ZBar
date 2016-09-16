@@ -30,7 +30,7 @@
 
 @synthesize delegate;
 
-- (id) initWithReason: (NSString*) _reason
+- (instancetype) initWithReason: (NSString*) _reason
 {
     self = [super init];
     if(!self)
@@ -42,7 +42,7 @@
     return(self);
 }
 
-- (id) init
+- (instancetype) init
 {
     return([self initWithReason: nil]);
 }
@@ -111,7 +111,7 @@
                   action: @selector(dismiss)];
 
     backBtn = [[UIBarButtonItem alloc]
-                  initWithImage: [UIImage imageNamed: @"zbar-back.png"]
+                  initWithImage: [UIImage imageNamed: @"zbar-back"]
                   style: UIBarButtonItemStylePlain
                   target: webView
                   action: @selector(goBack)];
@@ -165,15 +165,30 @@
     [super viewWillDisappear: animated];
 }
 
-- (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) orient
+- (BOOL) shouldAutorotate
 {
-    return([self isInterfaceOrientationSupported: orient]);
+    return YES;
 }
 
 - (void) willAnimateRotationToInterfaceOrientation: (UIInterfaceOrientation) orient
                                           duration: (NSTimeInterval) duration
 {
+    [super willAnimateRotationToInterfaceOrientation:orient duration:duration];
+    
     [webView reload];
+}
+
+- (void) viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
+                                                {
+                                                    [webView reload];
+                                                }
+                                 completion:^(id<UIViewControllerTransitionCoordinatorContext> context)
+                                                {
+                                                }];
 }
 
 - (void) didRotateFromInterfaceOrientation: (UIInterfaceOrientation) orient
@@ -184,12 +199,12 @@
          NSStringFromCGRect(toolbar.frame));
 }
 
-- (BOOL) isInterfaceOrientationSupported: (UIInterfaceOrientation) orient
+- (UIInterfaceOrientationMask) supportedInterfaceOrientations
 {
     UIViewController *parent = self.parentViewController;
     if(parent && !orientations)
-        return([parent shouldAutorotateToInterfaceOrientation: orient]);
-    return((orientations >> orient) & 1);
+        return [parent supportedInterfaceOrientations];
+    return orientations;
 }
 
 - (void) setInterfaceOrientation: (UIInterfaceOrientation) orient
@@ -207,7 +222,7 @@
     if([delegate respondsToSelector: @selector(helpControllerDidFinish:)])
         [delegate helpControllerDidFinish: self];
     else
-        [self dismissModalViewControllerAnimated: YES];
+        [self dismissViewControllerAnimated:YES completion:^{}];
 }
 
 - (void) webViewDidFinishLoad: (UIWebView*) view

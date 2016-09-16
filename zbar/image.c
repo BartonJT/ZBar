@@ -107,7 +107,7 @@ unsigned long zbar_image_get_data_length (const zbar_image_t *img)
 void zbar_image_set_format (zbar_image_t *img,
                             unsigned long fmt)
 {
-    img->format = fmt;
+    img->format = (uint32_t)fmt;
 }
 
 void zbar_image_set_sequence (zbar_image_t *img,
@@ -241,7 +241,7 @@ typedef struct zimg_hdr_s {
 int zbar_image_write (const zbar_image_t *img,
                       const char *filebase)
 {
-    int len = strlen(filebase) + 16;
+    long len = strlen(filebase) + 16;
     char *filename = malloc(len);
     int n = 0, rc = 0;
     FILE *f;
@@ -274,7 +274,7 @@ int zbar_image_write (const zbar_image_t *img,
     hdr.format = img->format;
     hdr.width = img->width;
     hdr.height = img->height;
-    hdr.size = img->datalen;
+    hdr.size = (uint32_t)img->datalen;
 
     if(fwrite(&hdr, sizeof(hdr), 1, f) != 1 ||
        fwrite(img->data, 1, img->datalen, f) != img->datalen) {

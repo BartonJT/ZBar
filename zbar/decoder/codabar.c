@@ -287,7 +287,7 @@ codabar_checksum (zbar_decoder_t *dcode,
                   unsigned n)
 {
     unsigned chk = 0;
-    unsigned char *buf = dcode->buf;
+    unsigned char *buf = dcode->buffer;
     while(n--)
         chk += *(buf++);
     return(!!(chk & 0xf));
@@ -301,14 +301,14 @@ codabar_postprocess (zbar_decoder_t *dcode)
     dcode->direction = 1 - 2 * dir;
     int i, n = codabar->character;
     for(i = 0; i < NIBUF; i++)
-        dcode->buf[i] = codabar->buf[i];
+        dcode->buffer[i] = codabar->buf[i];
     if(dir)
         /* reverse buffer */
         for(i = 0; i < n / 2; i++) {
             unsigned j = n - 1 - i;
-            char code = dcode->buf[i];
-            dcode->buf[i] = dcode->buf[j];
-            dcode->buf[j] = code;
+            char code = dcode->buffer[i];
+            dcode->buffer[i] = dcode->buffer[j];
+            dcode->buffer[j] = code;
         }
 
     if(TEST_CFG(codabar->config, ZBAR_CFG_ADD_CHECK)) {
@@ -316,19 +316,19 @@ codabar_postprocess (zbar_decoder_t *dcode)
         if(codabar_checksum(dcode, n))
             return(ZBAR_NONE);
         if(!TEST_CFG(codabar->config, ZBAR_CFG_EMIT_CHECK)) {
-            dcode->buf[n - 2] = dcode->buf[n - 1];
+            dcode->buffer[n - 2] = dcode->buffer[n - 1];
             n--;
         }
     }
 
     for(i = 0; i < n; i++) {
-        unsigned c = dcode->buf[i];
-        dcode->buf[i] = ((c < 0x14)
+        unsigned c = dcode->buffer[i];
+        dcode->buffer[i] = ((c < 0x14)
                          ? codabar_characters[c]
                          : '?');
     }
-    dcode->buflen = i;
-    dcode->buf[i] = '\0';
+    dcode->bufferLength = i;
+    dcode->buffer[i] = '\0';
     dcode->modifiers = 0;
 
     codabar->character = -1;
@@ -376,7 +376,7 @@ _zbar_decode_codabar (zbar_decoder_t *dcode)
             dbprintf(1, " [overflow]\n");
             goto reset;
         }
-        buf = dcode->buf;
+        buf = dcode->buffer;
     }
     buf[codabar->character++] = c;
 

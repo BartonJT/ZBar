@@ -294,7 +294,7 @@ static inline zbar_symbol_type_t ean_part_end4 (ean_pass_t *pass,
         /* invalid parity combination */
         return(ZBAR_NONE);
 
-    if(!par == fwd) {
+    if((!par) == fwd) {
         /* reverse sampled digits */
         unsigned char tmp = pass->raw[1];
         pass->state |= STATE_REV;
@@ -380,7 +380,7 @@ static inline zbar_symbol_type_t ean_part_end7 (ean_decoder_t *ean,
         /* invalid parity combination */
         return(ZBAR_NONE);
 
-    if(!par == fwd) {
+    if((!par) == fwd) {
         unsigned char i;
         pass->state |= STATE_REV;
         /* reverse sampled digits */
@@ -725,15 +725,15 @@ static inline void postprocess (zbar_decoder_t *dcode,
             base--;
 
         for(; j < base && ean->buf[i] >= 0; i++, j++)
-            dcode->buf[j] = ean->buf[i] + '0';
+            dcode->buffer[j] = ean->buf[i] + '0';
 
         if(sym == ZBAR_ISBN10 && j == 9 &&
            TEST_CFG(ean->isbn10_config, ZBAR_CFG_EMIT_CHECK))
             /* recalculate ISBN-10 check digit */
-            dcode->buf[j++] = isbn10_calc_checksum(ean);
+            dcode->buffer[j++] = isbn10_calc_checksum(ean);
     }
-    dcode->buflen = j;
-    dcode->buf[j] = '\0';
+    dcode->bufferLength = j;
+    dcode->buffer[j] = '\0';
     dcode->direction = 1 - 2 * ean->direction;
     dcode->modifiers = 0;
     dbprintf(2, " base=%d j=%d (%s)", base, j, dcode->buf);

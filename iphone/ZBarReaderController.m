@@ -51,7 +51,7 @@ CGImageRef UIGetScreenImage(void);
     showsHelpOnFail, takesPicture, enableCache, tracksSymbols;
 @dynamic showsZBarControls;
 
-- (id) init
+- (instancetype) init
 {
     if(self = [super init]) {
         showsHelpOnFail = YES;
@@ -253,7 +253,9 @@ CGImageRef UIGetScreenImage(void);
                 if(scanCrop.origin.x + scanCrop.size.width > .8875)
                     scanCrop.size.width = .8875 - scanCrop.origin.x;
 
+                #if USE_PRIVATE_APIS
                 meth = @selector(scanScreen);
+                #endif
             }
             else
                 meth = @selector(takePicture);
@@ -350,8 +352,8 @@ CGImageRef UIGetScreenImage(void);
         dt_frame = timer_elapsed(t_frame, now);
     t_frame = now;
 
-    int w = CGImageGetWidth(image);
-    int h = CGImageGetHeight(image);
+    NSInteger w = CGImageGetWidth(image);
+    NSInteger h = CGImageGetHeight(image);
     CGRect crop;
     if(w >= h)
         crop = CGRectMake(scanCrop.origin.x * w, scanCrop.origin.y * h,
@@ -401,7 +403,7 @@ CGImageRef UIGetScreenImage(void);
                           initWithCGImage: image
                           crop: crop
                           size: size];
-    int nsyms = [scanner scanImage: zimg];
+    NSInteger nsyms = [scanner scanImage: zimg];
     [zimg release];
 
     return(nsyms);
@@ -546,8 +548,8 @@ CGImageRef UIGetScreenImage(void);
         return;
     }
 
-    int nsyms = [self scanImage: image.CGImage
-                      withScaling: 0];
+    NSInteger nsyms = [self scanImage:image.CGImage
+                          withScaling:0];
 
     ZBarSymbol *sym = nil;
     if(nsyms)
@@ -588,15 +590,18 @@ CGImageRef UIGetScreenImage(void);
     help.delegate = (id<ZBarHelpDelegate>)self;
 
     if(self.sourceType != UIImagePickerControllerSourceTypeCamera) {
-        [self presentModalViewController: help
-              animated: YES];
+        [self presentViewController: help
+                           animated: YES
+                         completion: ^{}];
         return;
     }
 
     // show help as overlay view to workaround controller bugs
     sampling = NO;
     scanner.enableCache = NO;
-    help.wantsFullScreenLayout = YES;
+    //help.wantsFullScreenLayout = YES;
+    help.edgesForExtendedLayout = UIRectEdgeAll;
+    help.extendedLayoutIncludesOpaqueBars = YES;
     help.view.alpha = 0;
 
     UIView *activeOverlay = [self cameraOverlayView];
@@ -650,7 +655,7 @@ CGImageRef UIGetScreenImage(void);
             [readerDelegate imagePickerController: self
                             didFinishPickingMediaWithInfo: newinfo];
         else
-            [self dismissModalViewControllerAnimated: YES];
+            [self dismissViewControllerAnimated: YES completion: ^{}];
         [newinfo release];
         return;
     }
@@ -667,7 +672,7 @@ CGImageRef UIGetScreenImage(void);
                         withRetry: retry];
     else if(!retry)
         // must dismiss stock controller
-        [self dismissModalViewControllerAnimated: YES];
+        [self dismissViewControllerAnimated: YES completion: ^{}];
 }
 
 - (void) imagePickerControllerDidCancel: (UIImagePickerController*) picker
@@ -676,7 +681,7 @@ CGImageRef UIGetScreenImage(void);
     if([readerDelegate respondsToSelector: cb])
         [readerDelegate imagePickerControllerDidCancel: self];
     else
-        [self dismissModalViewControllerAnimated: YES];
+        [self dismissViewControllerAnimated: YES completion: ^{}];
 }
 
 // ZBarHelpDelegate
@@ -691,57 +696,82 @@ CGImageRef UIGetScreenImage(void);
         [self initScanning];
     }
     else
-        [hlp dismissModalViewControllerAnimated: YES];
+        [hlp dismissViewControllerAnimated: YES completion: ^{}];
 }
 
 - (id <NSFastEnumeration>) scanImage: (CGImageRef) image
 {
-    timer_start;
+    /*timer_start;*/
 
-    int nsyms = [self scanImage: image
-                      withScaling: 0];
+    NSInteger nsyms = [self scanImage:image
+                          withScaling:0];
 
-    if(!nsyms &&
-       CGImageGetWidth(image) >= 640 &&
-       CGImageGetHeight(image) >= 640)
+    if (!nsyms &&
+        CGImageGetWidth(image) >= 640 &&
+        CGImageGetHeight(image) >= 640)
+    {
         // make one more attempt for close up, grainy images
-        nsyms = [self scanImage: image
-                      withScaling: .5];
+        nsyms = [self scanImage:image
+                    withScaling:.5];
+    }
 
     NSMutableArray *syms = nil;
-    if(nsyms) {
+    
+    if (nsyms)
+    {
         // quality/type filtering
         int max_quality = MIN_QUALITY;
-        for(ZBarSymbol *sym in scanner.results) {
+        
+        for (ZBarSymbol *sym in scanner.results)
+        {
             zbar_symbol_type_t type = sym.type;
             int quality;
-            if(type == ZBAR_QRCODE)
+            
+            if (type == ZBAR_QRCODE)
+            {
                 quality = INT_MAX;
+            }
             else
+            {
                 quality = sym.quality;
+            }
 
-            if(quality < max_quality) {
+            if (quality < max_quality)
+            {
                 zlog(@"    type=%d quality=%d < %d\n",
                      type, quality, max_quality);
                 continue;
             }
 
-            if(max_quality < quality) {
+            if (max_quality < quality)
+            {
                 max_quality = quality;
-                if(syms)
+                
+                if (syms)
+                {
                     [syms removeAllObjects];
+                }
             }
+            
             zlog(@"    type=%d quality=%d\n", type, quality);
-            if(!syms)
+            
+            if (!syms)
+            {
                 syms = [NSMutableArray arrayWithCapacity: 1];
+            }
 
             [syms addObject: sym];
         }
     }
 
-    zlog(@"read %d filtered symbols in %gs total\n",
-          (!syms) ? 0 : [syms count], timer_elapsed(t_start, timer_now()));
-    return(syms);
+    /*
+    long numReadSymbols = (!syms) ? 0 : [syms count];
+    double elapsedTimer = timer_elapsed(t_start, timer_now());
+    
+    zlog(@"read %ld filtered symbols in %gs total\n",
+          numReadSymbols, elapsedTimer);
+    */
+    return syms;
 }
 
 @end

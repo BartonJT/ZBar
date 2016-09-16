@@ -152,9 +152,9 @@ const char *zbar_symbol_get_data (const zbar_symbol_t *sym)
     return(sym->data);
 }
 
-unsigned int zbar_symbol_get_data_length (const zbar_symbol_t *sym)
+unsigned long zbar_symbol_get_data_length (const zbar_symbol_t *sym)
 {
-    return(sym->datalen);
+    return sym->dataLength;
 }
 
 int zbar_symbol_get_count (const zbar_symbol_t *sym)
@@ -214,26 +214,49 @@ const zbar_symbol_t *zbar_symbol_first_component (const zbar_symbol_t *sym)
 
 unsigned base64_encode (char *dst,
                         const char *src,
-                        unsigned srclen)
+                        unsigned long srclen)
 {
     static const char alphabet[] =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     char *start = dst;
     int nline = 19;
-    for(; srclen; srclen -= 3) {
+    
+    for(; srclen; srclen -= 3)
+    {
         unsigned int buf = *(src++) << 16;
-        if(srclen > 1) buf |= *(src++) << 8;
-        if(srclen > 2) buf |= *(src++);
+        
+        if (srclen > 1)
+        {
+            buf |= *(src++) << 8;
+        }
+        
+        if (srclen > 2)
+        {
+            buf |= *(src++);
+        }
+        
         *(dst++) = alphabet[(buf >> 18) & 0x3f];
         *(dst++) = alphabet[(buf >> 12) & 0x3f];
         *(dst++) = (srclen > 1) ? alphabet[(buf >> 6) & 0x3f] : '=';
         *(dst++) = (srclen > 2) ? alphabet[buf & 0x3f] : '=';
-        if(srclen < 3) break;
-        if(!--nline) { *(dst++) = '\n'; nline = 19; }
+        
+        if (srclen < 3)
+        {
+            break;
+        }
+        
+        if (!--nline)
+        {
+            *(dst++) = '\n'; nline = 19;
+        }
     }
+    
     *(dst++) = '\n';
     *(dst++) = '\0';
-    return(dst - start - 1);
+    
+    int encodedValue = (int)(dst - start - 1);
+    
+    return encodedValue;
 }
 
 enum {
@@ -254,113 +277,158 @@ enum {
 #define TMPL_COPY(t) do {             \
         static const char *_st = (t); \
         i = strlen(_st);              \
-        memcpy(*buf + n, _st, i + 1); \
+        memcpy(*buffer + n, _st, i + 1); \
         n += i;                       \
         assert(n <= maxlen);          \
     } while(0)
 
 #define TMPL_FMT(t, ...) do {                                 \
         static const char *_st = (t);                         \
-        i = snprintf(*buf + n, maxlen - n, _st, __VA_ARGS__); \
+        i = snprintf(*buffer + n, maxlen - n, _st, __VA_ARGS__); \
         assert(i > 0);                                        \
         n += i;                                               \
         assert(n <= maxlen);                                  \
     } while(0)
 
-char *zbar_symbol_xml (const zbar_symbol_t *sym,
-                       char **buf,
-                       unsigned *len)
+char *zbar_symbol_xml (const zbar_symbol_t *symbol,
+                       char **buffer,
+                       unsigned long *bufferLength)
 {
-    unsigned int datalen, maxlen;
-    int i, n = 0;
+    unsigned long datalen, maxlen;
+    long i, n = 0;
 
-    const char *type = zbar_get_symbol_name(sym->type);
-    const char *orient = zbar_get_orientation_name(sym->orient);
+    const char *type = zbar_get_symbol_name(symbol->type);
+    const char *orient = zbar_get_orientation_name(symbol->orient);
 
     /* check for binary data */
-    unsigned char *data = (unsigned char*)sym->data;
+    unsigned char *data = (unsigned char*)symbol->data;
     char binary = ((data[0] == 0xff && data[1] == 0xfe) ||
                    (data[0] == 0xfe && data[1] == 0xff) ||
-                   !strncmp(sym->data, "<?xml", 5));
-    for(i = 0; !binary && i < sym->datalen; i++) {
-        unsigned char c = sym->data[i];
+                   !strncmp(symbol->data, "<?xml", 5));
+    
+    for (i = 0; !binary && i < symbol->dataLength; i++)
+    {
+        unsigned char c = symbol->data[i];
+        
         binary = ((c < 0x20 && ((~0x00002600 >> c) & 1)) ||
                   (c >= 0x7f && c < 0xa0) ||
-                  (c == ']' && i + 2 < sym->datalen &&
-                   sym->data[i + 1] == ']' &&
-                   sym->data[i + 2] == '>'));
+                  (c == ']' && i + 2 < symbol->dataLength &&
+                   symbol->data[i + 1] == ']' &&
+                   symbol->data[i + 2] == '>'));
     }
 
-    datalen = strlen(sym->data);
-    if(binary)
-        datalen = (sym->datalen + 2) / 3 * 4 + sym->datalen / 57 + 3;
+    datalen = strlen(symbol->data);
+    
+    if (binary)
+    {
+        datalen = (symbol->dataLength + 2) / 3 * 4 + symbol->dataLength / 57 + 3;
+    }
 
     maxlen = (MAX_STATIC + strlen(type) + strlen(orient) +
               datalen + MAX_INT_DIGITS + 1);
-    unsigned int mods = sym->modifiers;
-    if(mods)
+    unsigned int mods = symbol->modifiers;
+    
+    if (mods)
+    {
         maxlen += MAX_MOD;
-    unsigned int cfgs = sym->configs & ~(1 << ZBAR_CFG_ENABLE);
-    if(cfgs)
+    }
+    
+    unsigned int cfgs = symbol->configs & ~(1 << ZBAR_CFG_ENABLE);
+    
+    if (cfgs)
+    {
         maxlen += MAX_CFG;
-    if(binary)
+    }
+    
+    if (binary)
+    {
         maxlen += MAX_INT_DIGITS;
+    }
 
-    if(!*buf || (*len < maxlen)) {
-        if(*buf)
-            free(*buf);
-        *buf = malloc(maxlen);
+    if (!*buffer || (*bufferLength < maxlen))
+    {
+        if (*buffer)
+        {
+            free(*buffer);
+        }
+        
+        *buffer = malloc(maxlen);
         /* FIXME check OOM */
-        *len = maxlen;
+        *bufferLength = maxlen;
     }
 
     TMPL_FMT("<symbol type='%s' quality='%d' orientation='%s'",
-             type, sym->quality, orient);
+             type, symbol->quality, orient);
 
-    if(mods) {
+    if (mods)
+    {
         int j;
+        
         TMPL_COPY(" modifiers='");
-        for(j = 0; mods && j < ZBAR_MOD_NUM; j++, mods >>= 1)
-            if(mods & 1)
+        
+        for (j = 0; mods && j < ZBAR_MOD_NUM; j++, mods >>= 1)
+        {
+            if (mods & 1)
+            {
                 TMPL_FMT("%s ", zbar_get_modifier_name(j));
+            }
+        }
+        
         /* cleanup trailing space */
         n--;
         TMPL_COPY("'");
     }
 
-    if(cfgs) {
+    if (cfgs)
+    {
         int j;
+        
         TMPL_COPY(" configs='");
-        for(j = 0; cfgs && j < ZBAR_CFG_NUM; j++, cfgs >>= 1)
-            if(cfgs & 1)
+        
+        for (j = 0; cfgs && j < ZBAR_CFG_NUM; j++, cfgs >>= 1)
+        {
+            if (cfgs & 1)
+            {
                 TMPL_FMT("%s ", zbar_get_config_name(j));
+            }
+        }
+        
         /* cleanup trailing space */
         n--;
         TMPL_COPY("'");
     }
 
-    if(sym->cache_count)
-        TMPL_FMT(" count='%d'", sym->cache_count);
+    if (symbol->cache_count)
+    {
+        TMPL_FMT(" count='%d'", symbol->cache_count);
+    }
 
     TMPL_COPY("><data");
-    if(binary)
-        TMPL_FMT(" format='base64' length='%d'", sym->datalen);
+    
+    if (binary)
+    {
+        TMPL_FMT(" format='base64' length='%d'", symbol->dataLength);
+    }
+    
     TMPL_COPY("><![CDATA[");
 
-    if(!binary) {
-        memcpy(*buf + n, sym->data, sym->datalen + 1);
-        n += sym->datalen;
+    if (!binary)
+    {
+        memcpy(*buffer + n, symbol->data, symbol->dataLength + 1);
+        n += symbol->dataLength;
     }
-    else {
+    else
+    {
         TMPL_COPY("\n");
-        n += base64_encode(*buf + n, sym->data, sym->datalen);
+        n += base64_encode(*buffer + n, symbol->data, symbol->dataLength);
     }
     assert(n <= maxlen);
 
     TMPL_COPY("]]></data></symbol>");
 
-    *len = n;
-    return(*buf);
+    *bufferLength = n;
+    
+    return *buffer;
 }
 
 

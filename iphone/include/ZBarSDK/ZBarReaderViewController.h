@@ -40,12 +40,11 @@
 // Automatically falls back to a ZBarReaderController if video APIs
 // are unavailable (eg for OS < 4.0)
 
-@interface ZBarReaderViewController
-    : UIViewController
+@interface ZBarReaderViewController : UIViewController
 {
     ZBarImageScanner *scanner;
     id <ZBarReaderDelegate> readerDelegate;
-    ZBarReaderView *readerView;
+    ZBarReaderView *_readerView;
     UIView *cameraOverlayView;
     CGAffineTransform cameraViewTransform;
     CGRect scanCrop;
@@ -94,22 +93,22 @@
 
 // display the built-in help browser.  the argument will be passed to
 // the onZBarHelp() javascript function.
-- (void) showHelpWithReason: (NSString*) reason;
+- (void) showHelpWithReason:(NSString*)reason;
 
 // capture the next frame and send it over the usual delegate path.
 - (void) takePicture;
 
 // these attempt to emulate UIImagePickerController
-+ (BOOL) isCameraDeviceAvailable: (UIImagePickerControllerCameraDevice) cameraDevice;
-+ (BOOL) isFlashAvailableForCameraDevice: (UIImagePickerControllerCameraDevice) cameraDevice;
-+ (NSArray*) availableCaptureModesForCameraDevice: (UIImagePickerControllerCameraDevice) cameraDevice;
++ (BOOL) isCameraDeviceAvailable:(UIImagePickerControllerCameraDevice)cameraDevice;
++ (BOOL) isFlashAvailableForCameraDevice:(UIImagePickerControllerCameraDevice)cameraDevice;
++ (NSArray*) availableCaptureModesForCameraDevice:(UIImagePickerControllerCameraDevice)cameraDevice;
 @property(nonatomic) UIImagePickerControllerCameraDevice cameraDevice;
 @property(nonatomic) UIImagePickerControllerCameraFlashMode cameraFlashMode;
 @property(nonatomic) UIImagePickerControllerCameraCaptureMode cameraCaptureMode;
 @property(nonatomic) UIImagePickerControllerQualityType videoQuality;
 
 // direct access to the ZBarReaderView
-@property (nonatomic, readonly) ZBarReaderView *readerView;
+@property (nonatomic, retain, readonly) ZBarReaderView *readerView;
 
 // this flag still works, but its use is deprecated
 @property (nonatomic) BOOL enableCache;
@@ -125,6 +124,6 @@
 @property (nonatomic) BOOL takesPicture; // NO
 @property (nonatomic) NSInteger maxScanDimension; // ignored
 
-+ (BOOL) isSourceTypeAvailable: (UIImagePickerControllerSourceType) sourceType;
++ (BOOL) isSourceTypeAvailable:(UIImagePickerControllerSourceType)sourceType;
 
 @end
