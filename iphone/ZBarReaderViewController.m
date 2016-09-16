@@ -864,7 +864,10 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 - (void) readerView:(ZBarReaderView*)readerView
      didReadSymbols:(ZBarSymbolSet*)syms
           fromImage:(UIImage*)image
-{    
+{
+    // Vibrate the device to notify the user that it scanned the barcode.
+    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+    
     if (readerDelegate)
     {
         [readerDelegate imagePickerController:(UIImagePickerController*)self
