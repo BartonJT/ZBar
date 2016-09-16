@@ -262,7 +262,8 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
         return nil;
     }
 
-    self.wantsFullScreenLayout = YES;
+    self.edgesForExtendedLayout = UIRectEdgeAll;
+    self.extendedLayoutIncludesOpaqueBars = YES;
     [self _init];
     
     return self;
@@ -505,7 +506,7 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 
     UIApplication *app = [UIApplication sharedApplication];
     BOOL willHideStatusBar =
-        !didHideStatusBar && self.wantsFullScreenLayout && !app.statusBarHidden;
+        !didHideStatusBar && self.edgesForExtendedLayout == UIRectEdgeAll && !app.statusBarHidden;
     
     if (willHideStatusBar)
     {
@@ -754,7 +755,8 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
     
     helpController = [[ZBarHelpController alloc] initWithReason:reason];
     helpController.delegate = (id<ZBarHelpDelegate>)self;
-    helpController.wantsFullScreenLayout = YES;
+    helpController.edgesForExtendedLayout = UIRectEdgeAll;
+    helpController.extendedLayoutIncludesOpaqueBars = YES;
     
     UIView *helpView = helpController.view;
     helpView.alpha = 0;

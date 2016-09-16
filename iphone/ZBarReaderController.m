@@ -597,7 +597,9 @@ CGImageRef UIGetScreenImage(void);
     // show help as overlay view to workaround controller bugs
     sampling = NO;
     scanner.enableCache = NO;
-    help.wantsFullScreenLayout = YES;
+    //help.wantsFullScreenLayout = YES;
+    help.edgesForExtendedLayout = UIRectEdgeAll;
+    help.extendedLayoutIncludesOpaqueBars = YES;
     help.view.alpha = 0;
 
     UIView *activeOverlay = [self cameraOverlayView];
