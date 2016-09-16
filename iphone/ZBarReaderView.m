@@ -1132,19 +1132,19 @@ static inline CGFloat rotationForInterfaceOrientation (int orient)
         return;
     }
     
-    UIImageOrientation orient = [UIDevice currentDevice].orientation;
+    UIImageOrientation orient = (UIImageOrientation)[UIDevice currentDevice].orientation;
     
     if (!UIDeviceOrientationIsValidInterfaceOrientation(orient))
     {
-        orient = interfaceOrientation;
+        orient = (UIImageOrientation)interfaceOrientation;
         
         if (orient == UIInterfaceOrientationLandscapeLeft)
         {
-            orient = UIDeviceOrientationLandscapeLeft;
+            orient = (UIImageOrientation)UIImageOrientationLeft;
         }
         else if (orient == UIInterfaceOrientationLandscapeRight)
         {
-            orient = UIDeviceOrientationLandscapeRight;
+            orient = (UIImageOrientation)UIDeviceOrientationLandscapeRight;
         }
     }
     switch (orient)
