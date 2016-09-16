@@ -255,7 +255,7 @@ int qr_code_data_list_extract_text(const qr_code_data_list *_qrlist,
                     (*sym)->type = ZBAR_PARTIAL;
 
                     /*Skip all contiguous missing segments.*/
-                    for (j++; j < sa_size && sa[j] < 0; j++);
+                    for (j++; j < sa_size && sa[j] < 0; j++)
                     {
                         /*If there aren't any more, stop.*/
                         if (j >= sa_size)
