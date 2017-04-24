@@ -34,12 +34,13 @@
 
 @class ZBarReaderView, ZBarCameraSimulator;
 
-// drop in video scanning replacement for ZBarReaderController.
-// this is a thin controller around a ZBarReaderView that adds the UI
-// controls and select functionality offered by ZBarReaderController.
-// Automatically falls back to a ZBarReaderController if video APIs
-// are unavailable (eg for OS < 4.0)
-
+/**
+ *  Drop in video scanning replacement for ZBarReaderController.
+ *  This is a thin controller around a ZBarReaderView that adds the UI
+ *  controls and select functionality offered by ZBarReaderController.
+ *  Automatically falls back to a ZBarReaderController if video APIs
+ *  are unavailable (eg for OS < 4.0)
+ */
 @interface ZBarReaderViewController : UIViewController
 {
     ZBarImageScanner *scanner;
@@ -60,42 +61,48 @@
     ZBarCameraSimulator *cameraSim;
 }
 
-// access to configure image scanner
+/** Access to configure image scanner. */
 @property (nonatomic, readonly) ZBarImageScanner *scanner;
 
-// barcode result recipient
+/** Barcode result recipient. */
 @property (nonatomic, assign) id <ZBarReaderDelegate> readerDelegate;
 
-// whether to use alternate control set
+/** Whether to use alternate control set. */
 @property (nonatomic) BOOL showsZBarControls;
 
-// whether to show the green tracking box.  note that, even when
-// enabled, the box will only be visible when scanning EAN and I2/5.
+/** Whether to show the green tracking box. Note that, even when
+ enabled, the box will only be visible when scanning EAN and I2/5. */
 @property (nonatomic) BOOL tracksSymbols;
 
-// interface orientation support.  bit-mask of accepted orientations.
-// see eg ZBarOrientationMask() and ZBarOrientationMaskAll
+/** Interface orientation support. Bit-mask of accepted orientations.
+ See eg ZBarOrientationMask() and ZBarOrientationMaskAll */
 @property (nonatomic) NSUInteger supportedOrientationsMask;
 
-// crop images for scanning.  the image will be cropped to this
-// rectangle before scanning.  the rectangle is normalized to the
-// image size and aspect ratio; useful values will place the rectangle
-// between 0 and 1 on each axis, where the x-axis corresponds to the
-// image major axis.  defaults to the full image (0, 0, 1, 1).
+/** Crop images for scanning. The image will be cropped to this
+ rectangle before scanning.  The rectangle is normalized to the
+ image size and aspect ratio; useful values will place the rectangle
+ between 0 and 1 on each axis, where the x-axis corresponds to the
+ image major axis. Defaults to the full image (0, 0, 1, 1). */
 @property (nonatomic) CGRect scanCrop;
 
-// provide a custom overlay.  note that this can be used with
-// showsZBarControls enabled (but not if you want backward compatibility)
+/** provide a custom overlay. Note that this can be used with
+ showsZBarControls enabled (but not if you want backward compatibility). */
 @property (nonatomic, retain) UIView *cameraOverlayView;
 
-// transform applied to the preview image.
+/** Transform applied to the preview image. */
 @property (nonatomic) CGAffineTransform cameraViewTransform;
 
-// display the built-in help browser.  the argument will be passed to
-// the onZBarHelp() javascript function.
+/**
+ *  Display the built-in help browser.  
+ *
+ *  @param reason Argument to be passed to the onZBarHelp() javascript
+ *  function.
+ */
 - (void) showHelpWithReason:(NSString*)reason;
 
-// capture the next frame and send it over the usual delegate path.
+/** 
+ *  Capture the next frame and send it over the usual delegate path.
+ */
 - (void) takePicture;
 
 // these attempt to emulate UIImagePickerController
@@ -107,10 +114,10 @@
 @property(nonatomic) UIImagePickerControllerCameraCaptureMode cameraCaptureMode;
 @property(nonatomic) UIImagePickerControllerQualityType videoQuality;
 
-// direct access to the ZBarReaderView
+/** Direct access to the ZBarReaderView. */
 @property (nonatomic, retain, readonly) ZBarReaderView *readerView;
 
-// this flag still works, but its use is deprecated
+/** This flag still works, but its use is deprecated. */
 @property (nonatomic) BOOL enableCache;
 
 // these are present only for backward compatibility.

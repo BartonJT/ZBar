@@ -29,8 +29,10 @@
 using namespace zbar;
 #endif
 
-// Obj-C wrapper for ZBar image
 
+/**
+ *  Obj-C wrapper for ZBar image
+ */
 @interface ZBarImage : NSObject
 {
     zbar_image_t *zimg;

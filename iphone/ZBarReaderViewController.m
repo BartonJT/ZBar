@@ -487,16 +487,17 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
 
 - (void) viewWillAppear:(BOOL)animated
 {
-    NSInteger orientation = (NSInteger)self.interfaceOrientation;
+    // Note that the app delegate controls the device orientation notifications required to use the device orientation.
+    UIInterfaceOrientation deviceOrientation = (UIInterfaceOrientation)[UIDevice currentDevice].orientation;
     
     zlog(@"willAppear: anim=%d orient=%ld",
-         animated, (long)orientation);
+         animated, (long)deviceOrientation);
     [self initControls];
 
     
     [super viewWillAppear:animated];
 
-    [self.readerView willRotateToInterfaceOrientation:self.interfaceOrientation
+    [self.readerView willRotateToInterfaceOrientation:deviceOrientation
                                              duration:0];
     [self.readerView performSelector:@selector(start)
                           withObject:nil
@@ -578,13 +579,16 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
         [helpController viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     }
     
+    // Note that the app delegate controls the device orientation notifications required to use the device orientation.
+    UIInterfaceOrientation deviceOrientation = (UIInterfaceOrientation)[UIDevice currentDevice].orientation;
+    
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
                                                 {
                                                     rotating = YES;
                                                     
                                                     if (self.readerView)
                                                     {
-                                                        [self.readerView willRotateToInterfaceOrientation:self.interfaceOrientation
+                                                        [self.readerView willRotateToInterfaceOrientation:deviceOrientation
                                                                                                  duration:0];
                                                     }
                                                     
@@ -599,32 +603,15 @@ AVSessionPresetForUIVideoQuality (UIImagePickerControllerQualityType quality)
                                                     
                                                     if (!rotating && self.readerView)
                                                     {
-                                                        // work around UITabBarController bug: willRotate is not called
+                                                        // Work around UITabBarController bug: willRotate is not called
                                                         // for non-portrait initial interface orientation
-                                                        [self.readerView willRotateToInterfaceOrientation:self.interfaceOrientation
+                                                        [self.readerView willRotateToInterfaceOrientation:deviceOrientation
                                                                                                  duration:0];
                                                         [self.readerView setNeedsLayout];
                                                     }
                                                     
                                                     rotating = NO;
                                                 }];
-}
-
-
-- (void) willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation
-                                 duration:(NSTimeInterval)duration
-{
-    [super willRotateToInterfaceOrientation:orientation duration:duration];
-    
-    zlog(@"willRotate: orient=%ld #%g", (long)orientation, duration);
-    
-    rotating = YES;
-    
-    if (self.readerView)
-    {
-        [self.readerView willRotateToInterfaceOrientation:orientation
-                                                 duration:duration];
-    }
 }
 
 - (void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)orientation

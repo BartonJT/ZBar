@@ -55,10 +55,10 @@ using namespace zbar;
 @end
 
 
-// Obj-C wrapper for ZBar result types
-
-@interface ZBarSymbolSet
-: NSObject <NSFastEnumeration>
+/**
+ *  Obj-C wrapper for ZBar result types.
+ */
+@interface ZBarSymbolSet : NSObject <NSFastEnumeration>
 {
     const zbar_symbol_set_t *set;
     BOOL _filterSymbols;
