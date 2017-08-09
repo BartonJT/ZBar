@@ -436,7 +436,7 @@ zbar_symbol_first_component(const zbar_symbol_t *symbol);
  * @param symbol is the symbol to print
  * @param buffer is the inout result pointer, it will be reallocated
  * with a larger size if necessary.
- * @param buflen is inout length of the result buffer.
+ * @param bufferLength is inout length of the result buffer.
  * @returns the buffer pointer
  * @since 0.6
  */
