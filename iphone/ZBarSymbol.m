@@ -22,7 +22,6 @@
 //------------------------------------------------------------------------
 
 #import <ZBarSDK/ZBarSymbol.h>
-#import <CoreGraphics/CoreGraphics.h>
 
 @implementation ZBarSymbol
 
