@@ -21,14 +21,14 @@
  *  http://sourceforge.net/projects/zbar
  *------------------------------------------------------------------------*/
 
-#import "zbar.h"
+#import <zbar/zbar.h>
 
-#import "ZBarSymbol.h"
-#import "ZBarImage.h"
-#import "ZBarImageScanner.h"
-#import "ZBarReaderView.h"
-#import "ZBarReaderViewController.h"
-#import "ZBarReaderController.h"
-#import "ZBarCaptureReader.h"
-#import "ZBarHelpController.h"
-#import "ZBarCameraSimulator.h"
+#import <zbar/ZBarSymbol.h>
+#import <zbar/ZBarImage.h>
+#import <zbar/ZBarImageScanner.h>
+#import <zbar/ZBarReaderView.h>
+#import <zbar/ZBarReaderViewController.h>
+#import <zbar/ZBarReaderController.h>
+#import <zbar/ZBarCaptureReader.h>
+#import <zbar/ZBarHelpController.h>
+#import <zbar/ZBarCameraSimulator.h>
