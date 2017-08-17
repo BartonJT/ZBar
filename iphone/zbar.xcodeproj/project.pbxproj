@@ -121,8 +121,8 @@
 		FD1C54821F43EE8700F87D60 /* module.modulemap in CopyFiles */ = {isa = PBXBuildFile; fileRef = FD1C54811F43EE8100F87D60 /* module.modulemap */; };
 		FD4CC8B3194A8F1D003627B6 /* ZBarCaptureReader.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC3CEFA51216347100D7A786 /* ZBarCaptureReader.h */; };
 		FD5DA3DE1D7568DF00B114B1 /* Resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FD5DA3DD1D7568D700B114B1 /* Resources.xcassets */; };
-		FDA987C819417325005735AC /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = DC299AF51208B7BD006A023C /* config.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FDA987C919417325005735AC /* ZBarCVImage.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3AAB4C11B71A040021C7B1 /* ZBarCVImage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FDA987C819417325005735AC /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = DC299AF51208B7BD006A023C /* config.h */; };
+		FDA987C919417325005735AC /* ZBarCVImage.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3AAB4C11B71A040021C7B1 /* ZBarCVImage.h */; };
 		FDA987CA19417325005735AC /* ZBarCameraSimulator.h in Headers */ = {isa = PBXBuildFile; fileRef = DC5D76C5136FA8F20069AEF5 /* ZBarCameraSimulator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FDA987CB19417325005735AC /* ZBarCaptureReader.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3CEFA51216347100D7A786 /* ZBarCaptureReader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FDA987CC19417325005735AC /* ZBarHelpController.h in Headers */ = {isa = PBXBuildFile; fileRef = DCB3789A12A43C7E0059B07B /* ZBarHelpController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -134,17 +134,15 @@
 		FDA987D219417325005735AC /* ZBarSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3CEFAB1216347100D7A786 /* ZBarSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FDA987D319417325005735AC /* ZBarSymbol.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3CEFAC1216347100D7A786 /* ZBarSymbol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FDA987D419417325005735AC /* zbar.h in Headers */ = {isa = PBXBuildFile; fileRef = DC67C11710A07A810033B702 /* zbar.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FDA987D519417325005735AC /* Decoder.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463512034A4C009FF359 /* Decoder.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FDA987D619417325005735AC /* Exception.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463612034A4C009FF359 /* Exception.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FDA987D719417325005735AC /* Image.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463712034A4C009FF359 /* Image.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FDA987D819417325005735AC /* ImageScanner.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463812034A4C009FF359 /* ImageScanner.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FDA987D919417325005735AC /* Processor.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463912034A4C009FF359 /* Processor.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FDA987DA19417325005735AC /* Scanner.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463A12034A4C009FF359 /* Scanner.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FDA987DB19417325005735AC /* Symbol.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463B12034A4C009FF359 /* Symbol.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FDA987DC19417325005735AC /* Video.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463C12034A4C009FF359 /* Video.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FDA987DD19417325005735AC /* Window.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463D12034A4C009FF359 /* Window.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FDA987DF194173A9005735AC /* config.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC299AF51208B7BD006A023C /* config.h */; };
-		FDA987E0194173A9005735AC /* ZBarCVImage.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC3AAB4C11B71A040021C7B1 /* ZBarCVImage.h */; };
+		FDA987D519417325005735AC /* Decoder.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463512034A4C009FF359 /* Decoder.h */; };
+		FDA987D619417325005735AC /* Exception.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463612034A4C009FF359 /* Exception.h */; };
+		FDA987D719417325005735AC /* Image.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463712034A4C009FF359 /* Image.h */; };
+		FDA987D819417325005735AC /* ImageScanner.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463812034A4C009FF359 /* ImageScanner.h */; };
+		FDA987D919417325005735AC /* Processor.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463912034A4C009FF359 /* Processor.h */; };
+		FDA987DA19417325005735AC /* Scanner.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463A12034A4C009FF359 /* Scanner.h */; };
+		FDA987DB19417325005735AC /* Symbol.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463B12034A4C009FF359 /* Symbol.h */; };
+		FDA987DC19417325005735AC /* Video.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463C12034A4C009FF359 /* Video.h */; };
+		FDA987DD19417325005735AC /* Window.h in Headers */ = {isa = PBXBuildFile; fileRef = DC50463D12034A4C009FF359 /* Window.h */; };
 		FDA987E1194173A9005735AC /* ZBarCameraSimulator.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC5D76C5136FA8F20069AEF5 /* ZBarCameraSimulator.h */; };
 		FDA987E3194173AA005735AC /* ZBarHelpController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DCB3789A12A43C7E0059B07B /* ZBarHelpController.h */; };
 		FDA987E4194173AA005735AC /* ZBarImage.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC3CEFA61216347100D7A786 /* ZBarImage.h */; };
@@ -155,15 +153,6 @@
 		FDA987E9194173AA005735AC /* ZBarSDK.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC3CEFAB1216347100D7A786 /* ZBarSDK.h */; };
 		FDA987EA194173AA005735AC /* ZBarSymbol.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC3CEFAC1216347100D7A786 /* ZBarSymbol.h */; };
 		FDA987EB194173AA005735AC /* zbar.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC67C11710A07A810033B702 /* zbar.h */; };
-		FDA987EC194173AA005735AC /* Decoder.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC50463512034A4C009FF359 /* Decoder.h */; };
-		FDA987ED194173AA005735AC /* Exception.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC50463612034A4C009FF359 /* Exception.h */; };
-		FDA987EE194173AA005735AC /* Image.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC50463712034A4C009FF359 /* Image.h */; };
-		FDA987EF194173AA005735AC /* ImageScanner.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC50463812034A4C009FF359 /* ImageScanner.h */; };
-		FDA987F0194173AA005735AC /* Processor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC50463912034A4C009FF359 /* Processor.h */; };
-		FDA987F1194173AA005735AC /* Scanner.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC50463A12034A4C009FF359 /* Scanner.h */; };
-		FDA987F2194173AA005735AC /* Symbol.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC50463B12034A4C009FF359 /* Symbol.h */; };
-		FDA987F3194173AA005735AC /* Video.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC50463C12034A4C009FF359 /* Video.h */; };
-		FDA987F4194173AA005735AC /* Window.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DC50463D12034A4C009FF359 /* Window.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -279,8 +268,6 @@
 			files = (
 				FD1C54821F43EE8700F87D60 /* module.modulemap in CopyFiles */,
 				FD4CC8B3194A8F1D003627B6 /* ZBarCaptureReader.h in CopyFiles */,
-				FDA987DF194173A9005735AC /* config.h in CopyFiles */,
-				FDA987E0194173A9005735AC /* ZBarCVImage.h in CopyFiles */,
 				FDA987E1194173A9005735AC /* ZBarCameraSimulator.h in CopyFiles */,
 				FDA987E3194173AA005735AC /* ZBarHelpController.h in CopyFiles */,
 				FDA987E4194173AA005735AC /* ZBarImage.h in CopyFiles */,
@@ -291,15 +278,6 @@
 				FDA987E9194173AA005735AC /* ZBarSDK.h in CopyFiles */,
 				FDA987EA194173AA005735AC /* ZBarSymbol.h in CopyFiles */,
 				FDA987EB194173AA005735AC /* zbar.h in CopyFiles */,
-				FDA987EC194173AA005735AC /* Decoder.h in CopyFiles */,
-				FDA987ED194173AA005735AC /* Exception.h in CopyFiles */,
-				FDA987EE194173AA005735AC /* Image.h in CopyFiles */,
-				FDA987EF194173AA005735AC /* ImageScanner.h in CopyFiles */,
-				FDA987F0194173AA005735AC /* Processor.h in CopyFiles */,
-				FDA987F1194173AA005735AC /* Scanner.h in CopyFiles */,
-				FDA987F2194173AA005735AC /* Symbol.h in CopyFiles */,
-				FDA987F3194173AA005735AC /* Video.h in CopyFiles */,
-				FDA987F4194173AA005735AC /* Window.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -646,8 +624,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FDA987C819417325005735AC /* config.h in Headers */,
-				FDA987C919417325005735AC /* ZBarCVImage.h in Headers */,
 				FDA987CA19417325005735AC /* ZBarCameraSimulator.h in Headers */,
 				FDA987CB19417325005735AC /* ZBarCaptureReader.h in Headers */,
 				FDA987CC19417325005735AC /* ZBarHelpController.h in Headers */,
@@ -659,6 +635,7 @@
 				FDA987D219417325005735AC /* ZBarSDK.h in Headers */,
 				FDA987D319417325005735AC /* ZBarSymbol.h in Headers */,
 				FDA987D419417325005735AC /* zbar.h in Headers */,
+				FDA987C819417325005735AC /* config.h in Headers */,
 				FDA987D519417325005735AC /* Decoder.h in Headers */,
 				FDA987D619417325005735AC /* Exception.h in Headers */,
 				FDA987D719417325005735AC /* Image.h in Headers */,
@@ -668,6 +645,7 @@
 				FDA987DB19417325005735AC /* Symbol.h in Headers */,
 				FDA987DC19417325005735AC /* Video.h in Headers */,
 				FDA987DD19417325005735AC /* Window.h in Headers */,
+				FDA987C919417325005735AC /* ZBarCVImage.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
